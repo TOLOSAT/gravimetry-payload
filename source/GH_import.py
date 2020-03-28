@@ -17,7 +17,10 @@
 import numpy as np
 from numpy import pi, sin, cos
 
-from GH_convert import *
+from GH_convert import cart2sphA
+
+
+data_path = "../data"
 
 # =============================================================================
 # FUNCTIONS TO STORE FILES
@@ -85,7 +88,7 @@ def Fetch_Pos(file_name, days = 0.7):
         Time: Associated time sampling of each position
     
     """
-    Eph = np.loadtxt(file_name)
+    Eph = np.loadtxt(f"{data_path}/{file_name}")
     t = np.array(Eph[:,0]) #time in seconds
     x = np.array(Eph[:,1]) #  \
     y = np.array(Eph[:,2]) #  | cordinates, in km
@@ -112,8 +115,9 @@ def Fetch_Coef():
     These coefs are already normalized
     files exist with a degree up to lmax = 2190
     """    
-    HC = np.loadtxt("GeoPot_Coef_cos_deg30.txt")
-    HS = np.loadtxt("GeoPot_Coef_sin_deg30.txt")
+    data_path = "../data"
+    HC = np.loadtxt(f"{data_path}/GeoPot_Coef_cos_deg30.txt")
+    HS = np.loadtxt(data_path+"/GeoPot_Coef_sin_deg30.txt")
     return HC, HS
 
 
@@ -125,6 +129,6 @@ def Fetch_Coef():
 # MAIN 
 # =============================================================================
 if __name__ == '__main__':
-        
+    HC, HS = Fetch_Coef()
     print("\nGH_import done")
 
