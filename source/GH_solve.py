@@ -55,7 +55,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
     N_coef = Cos_len + Sin_len
     
     M_PotGrad = np.ones((N_points * 3, N_coef)) #THE Potential Gradient Matrix
-#    print("BAM shape is", M_PotGrad.shape)
+    print("BAM shape is", M_PotGrad.shape)
     
     for i in range (0, N_points):
         r, theta, phi = Pos[i] #spherical coordinates at the first point

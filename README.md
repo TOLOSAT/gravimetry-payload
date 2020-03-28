@@ -2,10 +2,10 @@
 This is the repository for the software tools developped by the gravimetry payload of the TOLOSAT CubeSat.  
 
 You can find the 'data' directory with the coefficients files and the trajectory files at:  
-eatmyass.com
+https://drive.google.com/drive/folders/19jqZdLf2ABAerFzBV8e-6N0IGVGUOotc
+It must be plqced in the same directory as 'source', which contains all the precious scripts.
 
-
- Main Information: 
+Main Information: 
 
      This tool has been developped to strengthen our claims, here at the 
      TOLOSAT Gravimetry Payload. I have late-night-baptized this tool:
