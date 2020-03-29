@@ -1,9 +1,13 @@
 # tolosat_grav_payload
 This is the repository for the software tools developped by the gravimetry payload of the TOLOSAT CubeSat.  
 
+To download git on windows, use this guide: https://www.computerhope.com/issues/ch001927.htm
+
+
 You can find the 'data' directory with the coefficients files and the trajectory files at:  
 https://drive.google.com/drive/folders/19jqZdLf2ABAerFzBV8e-6N0IGVGUOotc
-It must be plqced in the same directory as 'source', which contains all the precious scripts.
+It must be placed in the same directory as 'source', which contains all the precious scripts.
+If you cannot access this google drive folder, you arent supposed to anyway. Or, sent an email to any contributor
 
 Main Information: 
 
