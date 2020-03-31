@@ -22,7 +22,6 @@ from scipy.special import lpmn
 import GH_convert     as conv
 import GH_import      as imp
 #import GH_generate    as gen
-#import GH_solve       as solv
 #import GH_displayCoef as dcoef
 #import GH_displaySat  as dsat
 

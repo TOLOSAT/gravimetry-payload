@@ -93,7 +93,7 @@ if __name__ == '__main__':
              Acc_solved_sim[:,component], 
              "bo-", alpha=0.3, label="solved")    
     plt.legend()
-    
+    plt.show(block=False)
 
 
 

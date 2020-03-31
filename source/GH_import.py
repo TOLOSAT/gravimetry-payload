@@ -18,7 +18,6 @@ import numpy as np
 from numpy import pi, sin, cos
 
 #import GH_convert     as conv
-#import GH_import      as imp
 #import GH_generate    as gen
 #import GH_solve       as solv
 #import GH_displayCoef as dcoef
@@ -110,7 +109,7 @@ def Fetch_Pos(file_name, days = 0.7):
         L = len(pts)
     Pos = cart2sphA(pts[:L]) 
     Time = t[:L]
-    print(f"Importing Pos file with {L} coordinates")
+    print(f"Importing Pos file with {L} coordinates.")
     return Pos, Time
 
 
@@ -122,11 +121,11 @@ def Fetch_Coef():
     returns the official spherical harmonic coefficients I downloaded
     Data originally extracted from : Coeff_Height_and_Depth_to2190_DTM2006.txt
     These coefs are already normalized
-    files exist with a degree up to lmax = 2190
+    These files exist with a degree up to lmax = 2190
     """    
     data_path = "../data"
     HC = np.loadtxt(f"{data_path}/GeoPot_Coef_cos_deg30.txt")
-    HS = np.loadtxt(data_path+"/GeoPot_Coef_sin_deg30.txt")
+    HS = np.loadtxt(f"{data_path}/GeoPot_Coef_sin_deg30.txt")
     return HC, HS
 
 

@@ -16,7 +16,6 @@
 import numpy as np
 from numpy import pi, sin, cos
 
-#import GH_convert     as conv
 #import GH_import      as imp
 #import GH_generate    as gen
 #import GH_solve       as solv
