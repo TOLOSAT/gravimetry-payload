@@ -24,6 +24,7 @@ import GH_import      as imp
 #import GH_generate    as gen
 #import GH_displayCoef as dcoef
 #import GH_displaySat  as dsat
+#import GH_export      as exp
 
 # =============================================================================
 # FUNCTIONS FOR Sph Harm SOLVE

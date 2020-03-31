@@ -6,7 +6,7 @@
  Information: 
 
     The functions in this script are used to import and fetch values and arrays 
-    from text files, or export and create array files
+    from text files
         
 # =============================================================================
 """
@@ -22,6 +22,7 @@ from numpy import pi, sin, cos
 #import GH_solve       as solv
 #import GH_displayCoef as dcoef
 #import GH_displaySat  as dsat
+#import GH_export      as exp
 
 from GH_convert import cart2sphA
 
@@ -29,32 +30,6 @@ from GH_convert import cart2sphA
 # GLOBAL VARIABLES
 # =============================================================================
 data_path = "../data"
-
-# =============================================================================
-# FUNCTIONS TO STORE FILES
-# =============================================================================
-def Store_array(data, title):  
-    """
-    Stores an array into a text file that can later be imported again
-    
-    Input: 
-        data : the array in question
-        title : a string, of the desired title for the file. 
-                Must incluse ".txt"
-    To import use: 
-        data = np.loadtxt(title)
-    
-    """   
-    length = len(data)
-    file = open(title, "w+")
-    for n in range (len(data)):
-        print("Writing", n, "\tof", length-1)
-        for m in range(len(data[0])):
-            file.write(str(data[n, m]))
-            file.write("\t")
-        file.write("\n")
-    file.close()
-    print("\n\tWriting done\n")
 
 
 # =============================================================================

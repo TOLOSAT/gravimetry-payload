@@ -23,6 +23,7 @@ import GH_convert     as conv
 import GH_solve       as solv
 #import GH_displayCoef as dcoef
 #import GH_displaySat  as dsat
+#import GH_export      as exp
 
 # =============================================================================
 # FUNCTIONS TO GENERATE ACCELERATION ARRAYS
