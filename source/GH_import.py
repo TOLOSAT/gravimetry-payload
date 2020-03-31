@@ -17,9 +17,18 @@
 import numpy as np
 from numpy import pi, sin, cos
 
+#import GH_convert     as conv
+#import GH_import      as imp
+#import GH_generate    as gen
+#import GH_solve       as solv
+#import GH_displayCoef as dcoef
+#import GH_displaySat  as dsat
+
 from GH_convert import cart2sphA
 
-
+# =============================================================================
+# GLOBAL VARIABLES
+# =============================================================================
 data_path = "../data"
 
 # =============================================================================

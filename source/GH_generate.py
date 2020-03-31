@@ -18,9 +18,12 @@
 #import numpy as np
 #from numpy import pi, sin, cos, tan
 
-from GH_convert import *
-from GH_import import *
-from GH_solve import *
+import GH_convert     as conv
+#import GH_import      as imp
+#import GH_generate    as gen
+import GH_solve       as solv
+#import GH_displayCoef as dcoef
+#import GH_displaySat  as dsat
 
 # =============================================================================
 # FUNCTIONS TO GENERATE ACCELERATION ARRAYS
@@ -39,18 +42,18 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
         Acc_sim: simulated acceleration values in spherical coordinates
     
     """
-    print("\nGenerating simulated acclerations, lmax =", lmax, "\n")
+    print("\nGenerating simulated acclerations, lmax =", lmax, "")
     
-    CS = Make_Line_Coef(lmax, HC, HS)
-    print("shape of the Coef array =", CS.shape)
+    CS = conv.Make_Line_Coef(lmax, HC, HS)
+    print(f"Shape of the Coef array = {CS.shape}")
     
-    M_PotGrad = Get_PotGradMatrix(lmax, Pos) # get M_PotGrad    
+    M_PotGrad = solv.Get_PotGradMatrix(lmax, Pos) # get M_PotGrad    
 #    print("shape of M=", M_PotGrad.shape)
     
     Acc_line = M_PotGrad.dot(CS)
 #    print("shape of Acc_line=", Acc_line.shape)
     
-    Acc_sim = Make_Array(Acc_line, 3)
+    Acc_sim = conv.Make_Array(Acc_line, 3)
 #    print("shape of Acc_sim=", Acc_sim.shape)
     
     return Acc_sim

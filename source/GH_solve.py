@@ -19,8 +19,12 @@ import numpy.linalg as npl
 from numpy import sin, cos
 from scipy.special import lpmn
 
-from GH_convert import *
-from GH_import import *
+import GH_convert     as conv
+import GH_import      as imp
+#import GH_generate    as gen
+#import GH_solve       as solv
+#import GH_displayCoef as dcoef
+#import GH_displaySat  as dsat
 
 # =============================================================================
 # FUNCTIONS FOR Sph Harm SOLVE
@@ -124,9 +128,9 @@ def Solve_Coef (lmax, Pos, Acc):
 # =============================================================================
 
     """    
-    print("Solving for coefficients, with lmax = ", lmax)
+    print(f"Solving for coefficients, with lmax = {lmax}")
     
-    Acc_line = Make_Line(Acc)
+    Acc_line = conv.Make_Line(Acc)
     
     M = Get_PotGradMatrix(lmax, Pos) # get M_PotGrad
 
@@ -146,7 +150,7 @@ def Solve_Coef (lmax, Pos, Acc):
 def TEST_Gen_Matrix():
     file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     days = 0.0001
-    Pos, Time = Fetch_Pos(file_name, days)
+    Pos, Time = imp.Fetch_Pos(file_name, days)
     Mat = Get_PotGradMatrix(2,Pos)
     print(Mat)
     return Mat

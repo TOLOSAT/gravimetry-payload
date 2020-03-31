@@ -18,9 +18,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from GH_solve import *
-from GH_generate import *
-from GH_import import *
+#import GH_convert     as conv
+import GH_import      as imp
+#import GH_generate    as gen
+#import GH_solve       as solv
+#import GH_displayCoef as dcoef
+#import GH_displaySat  as dsat
 
 
 # =============================================================================
@@ -31,7 +34,7 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
     
     
     #resize the official coef
-    HC, HS = Fetch_Coef()
+    HC, HS = imp.Fetch_Coef()
     HS_nm_sz = HS[:len(HS_nm_slv), :len(HS_nm_slv)]
     HC_nm_sz = HC[:len(HC_nm_slv), :len(HC_nm_slv)]
 

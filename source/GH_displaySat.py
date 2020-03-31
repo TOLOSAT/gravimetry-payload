@@ -22,8 +22,12 @@ from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
 
-from GH_convert import *
-from GH_import import *
+import GH_convert     as conv
+import GH_import      as imp
+import GH_generate    as gen
+import GH_solve       as solv
+import GH_displayCoef as dcoef
+import GH_displaySat  as dsat
 
 
 # =============================================================================
@@ -96,8 +100,8 @@ def Plot3D_Pos (Pos, Title):
         fig: the index of the created matplotlib figure
         
 # =============================================================================
-# The spyder kernel keeps crashing when i run this. 
-# I used to think it was a basemap issue but it isn't.   
+# The spyder kernel keeps crashing when I run this. 
+# I used to think it was a basemap issue but that isn't it.   
 # =============================================================================
     """   
     X_1 = []
@@ -108,7 +112,7 @@ def Plot3D_Pos (Pos, Title):
     
     for i in range (0, len(Pos)):
         r, theta, phi = Pos[i]
-        xi, yi, zi = sph2cart(r, theta, phi)
+        xi, yi, zi = conv.sph2cart(r, theta, phi)
         X_1.append(xi)
         Y_1.append(yi)
         Z_1.append(zi)
@@ -128,16 +132,20 @@ def Plot3D_Pos (Pos, Title):
     plt.show(2) 
     return fig
 
+
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
 def TEST_Plots ():
     file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     days = 0.9
-    Pos, Time = Fetch_Pos(file_name, days)
+    Pos, Time = imp.Fetch_Pos(file_name, days)
     Title = "Test Earthfixed plot for " + str(days)+ " days"
     fig1 = Plot3D_Pos(Pos, Title)
 #    fig2 = Plot2D_PosEarthfixed(Pos, Title)
+
+
+
 # =============================================================================
 # MAIN 
 # =============================================================================

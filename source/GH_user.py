@@ -34,13 +34,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-from GH_convert import *
-#from GH_import import *
-from GH_generate import *
-from GH_solve import *
-#from GH_displayCoef import *
-#from GH_displaySat import *
+import GH_convert     as conv
+import GH_import      as imp
+import GH_generate    as gen
+import GH_solve       as solv
+#import GH_displayCoef as dcoef
+#import GH_displaySat  as dsat
 
 
 data_path = "../data"
@@ -69,24 +68,18 @@ if __name__ == '__main__':
     # =========================================================================
     
     
-    HC, HS = Fetch_Coef()
-    Pos_sim, Time = Fetch_Pos(file_name, days)
+    HC, HS = imp.Fetch_Coef()
+    Pos_sim, Time = imp.Fetch_Pos(file_name, days)
      
-    Acc_sim = Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
+    Acc_sim = gen.Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
     
-    Solved_coef_sim, Acc_solved_sim = Solve_Coef(lmax_solve, Pos_sim, Acc_sim)
-    HC_sim, HS_sim = Make_Array_Coef(lmax_solve, Solved_coef_sim)
+    Solved_coef_sim, Acc_solved_sim = solv.Solve_Coef(lmax_solve, Pos_sim, Acc_sim)
+    HC_sim, HS_sim = conv.Make_Array_Coef(lmax_solve, Solved_coef_sim)
     
-    Acc_solved_sim = Make_Array(Acc_solved_sim[:-2]) # this "-2" must be replaced with a modulo function to get the highest number thats a multiple o 3, AND smaller than the length of the array
-    
+    Acc_solved_sim = conv.Make_Array(Acc_solved_sim[:-2]) # this "-2" must be replaced with a modulo function to get the highest number thats a multiple of 3, AND smaller than the length of the array
     
     
     fig = plt.figure(1)
-    
-#    Diff = Make_Line(Acc_sim[0:len(Acc_sim)-1]).T - Acc_solved_sim
-#    # Plot_array(Diff)
-    
-    
     
     plt.title("Simulated and solved acceleration")
     plt.xlabel("time (s)")
@@ -98,8 +91,7 @@ if __name__ == '__main__':
              "ro-", alpha=0.3, label="simulated")    
     plt.plot(Time[:Acc_solved_sim.shape[0]], 
              Acc_solved_sim[:,component], 
-             "bo-", alpha=0.3, label="solved")
-    
+             "bo-", alpha=0.3, label="solved")    
     plt.legend()
     
 
