@@ -7,8 +7,10 @@ To download git on windows, use this guide: https://www.computerhope.com/issues/
 You can find the 'data' directory with the coefficients files and the trajectory files at:  
 https://drive.google.com/drive/folders/19jqZdLf2ABAerFzBV8e-6N0IGVGUOotc
 It must be placed in the same directory as 'source', which contains all the precious scripts.
-If you cannot access this google drive folder, you arent supposed to anyway. Or, sent an email to any contributor
+If you cannot access this google drive folder, you arent supposed to anyway. Or, sent an email to any contributor.
 
+
+# =============================================================================
 Main Information: 
 
      This tool has been developped to strengthen our claims, here at the 

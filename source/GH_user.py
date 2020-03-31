@@ -105,7 +105,7 @@ if __name__ == '__main__':
 
 
 
-print("\n\tUser instructions done")
+print("\nUser instructions done")
 
 """  
 # =============================================================================

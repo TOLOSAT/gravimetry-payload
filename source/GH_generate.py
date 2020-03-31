@@ -42,7 +42,7 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
     print("\nGenerating simulated acclerations, lmax =", lmax, "\n")
     
     CS = Make_Line_Coef(lmax, HC, HS)
-    print("shape of CS =", CS.shape)
+    print("shape of the Coef array =", CS.shape)
     
     M_PotGrad = Get_PotGradMatrix(lmax, Pos) # get M_PotGrad    
 #    print("shape of M=", M_PotGrad.shape)

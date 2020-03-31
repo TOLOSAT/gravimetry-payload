@@ -40,7 +40,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
         M_PotGrad: the matrix of the coefficients
         
     """
-    print("Generating BAM\n") #BAM =  "Big Ass Matrix"
+    print("Generating BAM ...") #BAM =  "Big Ass Matrix"
     
     # constants
     R = 6378136.3
@@ -55,7 +55,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
     N_coef = Cos_len + Sin_len
     
     M_PotGrad = np.ones((N_points * 3, N_coef)) #THE Potential Gradient Matrix
-    print("BAM shape is", M_PotGrad.shape)
+    print(f"shape of BAM = {M_PotGrad.shape}")
     
     for i in range (0, N_points):
         r, theta, phi = Pos[i] #spherical coordinates at the first point
@@ -93,7 +93,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
 #        if np.mod(i, 50) == 0 :
 #            print("i=",i)
 #        # end i loop
-        
+    print("BAM done\n")    
     return M_PotGrad
 
 
@@ -124,7 +124,7 @@ def Solve_Coef (lmax, Pos, Acc):
 # =============================================================================
 
     """    
-    print("Solving for coefficients, lmax = ", lmax)
+    print("Solving for coefficients, with lmax = ", lmax)
     
     Acc_line = Make_Line(Acc)
     
