@@ -15,6 +15,11 @@
 # =============================================================================
 # LIBRARIES
 # =============================================================================
+import os   
+os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
+
+from mpl_toolkits.basemap import Basemap
+from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -74,6 +79,18 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
     
     plt.show()
     
+
+
+def Map_Coef (fignum, lmax, HC, HS, tens):
+    
+
+
+
+
+
+
+
+
 
 
 # =============================================================================

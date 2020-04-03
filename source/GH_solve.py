@@ -17,7 +17,6 @@
 import numpy as np
 import numpy.linalg as npl
 from numpy import sin, cos
-from scipy.special import lpmn
 
 import GH_convert     as conv
 import GH_import      as imp
@@ -63,7 +62,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
     
     for i in range (0, N_points):
         r, theta, phi = Pos[i] #spherical coordinates at the first point
-        Plm_z, Plm_dz = lpmn(lmax, lmax, sin(phi))
+        Plm_z, Plm_dz = imp.Pol_Legendre(lmax, lmax, sin(phi))
         
         j = 0        
         k = Cos_len
@@ -93,10 +92,6 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
                     M_PotGrad [3*i : 3*(i+1), k] = Sub_mat
                     k += 1
 
-        
-#        if np.mod(i, 50) == 0 :
-#            print("i=",i)
-#        # end i loop
     print("BAM done\n")    
     return M_PotGrad
 
@@ -116,17 +111,8 @@ def Solve_Coef (lmax, Pos, Acc):
 
 # =============================================================================
 # # ISSUES:
-        - The npl.solve function wants square matrices
-        - The sine coefficients for order m=0 are also 0. the matrix is singular 
-          and cannot be inverted. 
-
-# # SOLUTIONS: 
-        - Put all the cosine before the sine, just like I did last time 
-                - Does not do the trick, as matrix dimensions are not square
-        - Find another function that does the job
-        
+        - Diverges beyond lmax = 8       
 # =============================================================================
-
     """    
     print(f"Solving for coefficients, with lmax = {lmax}")
     

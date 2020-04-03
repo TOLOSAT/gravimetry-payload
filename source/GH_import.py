@@ -16,6 +16,8 @@
 # =============================================================================
 import numpy as np
 from numpy import pi, sin, cos
+from scipy.special import lpmn
+import math
 
 #import GH_convert     as conv
 #import GH_generate    as gen
@@ -56,7 +58,37 @@ def Get_Radius(angle):
 
 
 # =============================================================================
-# FUNCTIONS FOR COORDINATES MANIPULATION
+# FUNCTIONS - MATHEMATICAL VALUES
+# =============================================================================
+
+def Pol_Legendre (l, m, x):
+    """
+    returns an array[m+1,n+1] of the values of the associated Legendre function 
+    of all integer degrees l and order m, at point x
+    """
+    Pnm_z, Pnm_dz = lpmn(m, l, x)
+    return Pnm_z, Pnm_dz #[m, l]
+
+
+def Normalize (l, m):
+    """
+    Returns the normalization coefficient of degree l and order m
+    """
+    d_om = 0
+    if m==0 :
+        d_om = 1
+        
+    P1 = math.factorial(l - m)
+    P2 = (2*l + 1)
+    P3 = (2 - d_om)
+    P4 = math.factorial(l + m)
+    
+    N = np.sqrt(P1*P2*P3/P4)
+    return N    
+
+
+# =============================================================================
+# FUNCTIONS TO FETCH FILES
 # =============================================================================
 def Fetch_Pos(file_name, days = 0.7):
     """
@@ -88,13 +120,10 @@ def Fetch_Pos(file_name, days = 0.7):
     return Pos, Time
 
 
-# =============================================================================
-# FUNCTIONS TO GENERATE ACCELERATION ARRAYS
-# =============================================================================
 def Fetch_Coef():
     """
-    returns the official spherical harmonic coefficients I downloaded
-    Data originally extracted from : Coeff_Height_and_Depth_to2190_DTM2006.txt
+    Returns the spherical harmonic coefficients for Earth's Geoid
+    Data originally extracted from : EGM2008_to2190_ZeroTide.txt
     These coefs are already normalized
     These files exist with a degree up to lmax = 2190
     """    
@@ -104,6 +133,17 @@ def Fetch_Coef():
     return HC, HS
 
 
+def Fetch_Topo_Coef():
+    """
+    Returns the spherical harmonic coefficients for Earth's Topology
+    Data originally extracted from : Coeff_Height_and_Depth_to2190_DTM2006.txt
+    These coefs are already normalized
+    These files exist with a degree up to lmax = 2190
+    """    
+    data_path = "../data"
+    HC_topo = np.loadtxt(f"{data_path}/Height_Coef_cos_deg49.txt")
+    HS_topo = np.loadtxt(f"{data_path}/Height_Coef_sin_deg49.txt")
+    return HC_topo, HS_topo
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
@@ -112,6 +152,7 @@ def Fetch_Coef():
 # MAIN 
 # =============================================================================
 if __name__ == '__main__':
-    HC, HS = Fetch_Coef()
+#    HC, HS = Fetch_Coef()
+    
     print("\nGH_import done")
 
