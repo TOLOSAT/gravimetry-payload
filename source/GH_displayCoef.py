@@ -30,7 +30,7 @@ import GH_import      as imp
 #import GH_displaySat  as dsat
 #import GH_export      as exp
 #import GH_displayTopo as dtopo
-
+#import GH_terminal    as term
 
 # =============================================================================
 # DISPLAY FUNCTIONS  

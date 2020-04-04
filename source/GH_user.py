@@ -42,6 +42,7 @@ import GH_solve       as solv
 #import GH_displaySat  as dsat
 #import GH_export      as exp
 #import GH_displayTopo as dtopo
+#import GH_terminal    as term
 
 data_path = "../data"
 

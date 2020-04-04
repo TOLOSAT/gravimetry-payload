@@ -14,8 +14,6 @@
 # =============================================================================
 # LIBRARIES
 # =============================================================================
-import numpy as np
-from numpy import pi, sin, cos
 import time
 
 
@@ -29,7 +27,7 @@ import time
 # =============================================================================
 # FUNCTIONS TO PRINT TEXT
 # =============================================================================
-def printProgressBar (iteration, total, decimals=1, length=15):
+def printProgressBar (iteration, total, length=15, decimals=1):
     """
     Prints a progress bar. Original code from: 
         https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
@@ -38,21 +36,20 @@ def printProgressBar (iteration, total, decimals=1, length=15):
     Input:
         iteration: current iteration (Int)
         total: total iterations (Int)
-        decimals: positive number of decimals in percent complete (Int)
         length: character length of bar 
+        decimals: positive number of decimals in percent complete
         
     """    
-    prefix="Progress: " #
-    suffix="Complete" #
-    fill="█"        # bar fill character
-    printEnd="\r"   # end character (e.g. "\r", "\r\n")
-    
+    prefix="Progress:" #
+    suffix="Complete" #    
     
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = printEnd)
-    # Print New Line on Complete
+    bar = "█"*filledLength + '-'*(length - filledLength)
+    
+    print(f"\r{prefix} |{bar}| {percent}% {suffix}", end = "\r")
+    
+    # Print new line when complete
     if iteration == total: 
         print()
 
@@ -65,7 +62,6 @@ def TEST_ProgressBar():
     items = list(range(0, 57))
     l = len(items)
     
-    # Initial call to print 0% progress
     printProgressBar(0, l)
     for i, item in enumerate(items):
         # Do stuff...

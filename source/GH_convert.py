@@ -22,6 +22,7 @@ from numpy import pi, sin, cos
 #import GH_displayCoef as dcoef
 #import GH_displaySat  as dsat
 #import GH_export      as exp
+#import GH_terminal    as term
 
 # =============================================================================
 # FUNCTIONS FOR COORDINATES MANIPULATION

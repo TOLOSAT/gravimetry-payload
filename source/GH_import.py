@@ -26,6 +26,7 @@ import math
 #import GH_displaySat  as dsat
 #import GH_export      as exp
 #import GH_displayTopo as dtopo
+#import GH_terminal    as term
 
 from GH_convert import cart2sphA
 

@@ -22,6 +22,7 @@ from numpy import pi, sin, cos
 #import GH_solve       as solv
 #import GH_displayCoef as dcoef
 #import GH_displaySat  as dsat
+#import GH_terminal    as term
 
 # =============================================================================
 # FUNCTIONS TO STORE FILES

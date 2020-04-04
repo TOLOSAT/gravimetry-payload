@@ -26,6 +26,7 @@ import GH_generate    as gen
 #import GH_solve       as solv
 #import GH_displaySat  as dsat
 #import GH_export      as exp
+#import GH_terminal    as term
 
 def Gen_Basemap (fignum):
     """
