@@ -61,9 +61,9 @@ if __name__ == '__main__':
     #file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
     days = 0.01 
     
-    lmax_gen = 5 # when generating the data
+    lmax_gen = 4 # when generating the data
     
-    lmax_solve = 5  # when solving for coefficients
+    lmax_solve = 4  # when solving for coefficients
     
     tens = 5 # between 1 and 10, 36*tens points in Lqt/Long when making a map
     # =========================================================================
@@ -116,6 +116,10 @@ Also the solve functions generate completey different coefficients
 than the originals, and it seems to diverge when the orders go above 8
 
 Also I have a huge doubt: am I confusing Acceleration with gravity potential?
+
+Issue: 
+    There are no coefficients for l=0, l=1. At all. It should be adapted, 
+    just like when the sine coefficients didn't have m=0 
 
 # =============================================================================
 # =============================================================================
