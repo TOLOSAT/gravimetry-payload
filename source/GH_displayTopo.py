@@ -58,7 +58,7 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
     # Get height grid
     G_Height, G_Long, G_Lat = gen.Gen_Topo (lmax, HC_topo, HS_topo, tens)
 
-    print("Plotting")
+    print("Plotting Topology map")
     FIG = plt.figure(fignum)
     plt.clf()
     AX = FIG.add_subplot(111)
@@ -101,7 +101,7 @@ def TEST_Plots():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
     lmax = 8
     tens = 1
-    levels = 10
+    levels = 35
     title = f"TEST map of topology"
     fig1 = Map_Topo(1, lmax, HC_topo, HS_topo, tens, levels, title) 
     

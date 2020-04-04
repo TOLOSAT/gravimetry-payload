@@ -16,7 +16,7 @@
 # LIBRARIES
 # =============================================================================
 import numpy as np
-from numpy import pi, sin, cos, tan
+from numpy import pi, sin, cos
 
 import GH_convert     as conv
 import GH_import      as imp
@@ -25,7 +25,7 @@ import GH_solve       as solv
 #import GH_displaySat  as dsat
 #import GH_export      as exp
 #import GH_displayTopo as dtopo
-#import GH_terminal    as term
+import GH_terminal    as term
 
 # =============================================================================
 # FUNCTIONS TO GENERATE ACCELERATION ARRAYS
@@ -73,6 +73,7 @@ def Get_Topo_Height (lmax, Lat, Long, HC_topo, HS_topo):
     
     for l in range(0, lmax):
         Sum2 = 0
+        
         for m in range (0,l):
             Sum2 = Sum2 + imp.Normalize(l, m) * Pmn[m, l] * (HC_topo[l,m]*cos(m*Long) + HS_topo[l,m]*sin(m*Long))
         
@@ -111,13 +112,16 @@ def Gen_Topo (lmax, HC_topo, HS_topo, tens):
 
     G_Height = np.zeros((size_lat, size_long))
     
-    for i in range(0, len(Line_long)) :
+    for i in range(0, size_long):
+        term.printProgressBar(i+1, size_long)
         Long = Line_long[i]
-
-        for j in range(0, len(Line_lat)) :
+        
+        for j in range(0, size_lat):
             Lat = Line_lat[j]
             G_Height[j,i] = Get_Topo_Height(lmax, Lat, Long, HC_topo, HS_topo)
-
+    
+#    term.printProgressBar(size_long, size_long)
+    
     return G_Height, G_Long*180/pi, G_Lat*180/pi
 
 

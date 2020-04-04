@@ -25,7 +25,7 @@ import GH_import      as imp
 #import GH_displaySat  as dsat
 #import GH_export      as exp
 #import GH_displayTopo as dtopo
-#import GH_terminal    as term
+import GH_terminal    as term
 
 # =============================================================================
 # FUNCTIONS FOR Sph Harm SOLVE
@@ -44,9 +44,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
     Output: 
         M_PotGrad: the matrix of the coefficients
         
-    """
-    print("Generating BAM ...") #BAM =  "Big Ass Matrix"
-    
+    """    
     # constants
     R = 6378136.3
     GM = 3986004.415*10**8 # m**3 s**-2  
@@ -60,9 +58,11 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
     N_coef = Cos_len + Sin_len
     
     M_PotGrad = np.ones((N_points * 3, N_coef)) #THE Potential Gradient Matrix
-    print(f"shape of BAM = {M_PotGrad.shape}")
+    print(f"Generating BAM of shape = {M_PotGrad.shape}")#BAM =  "Big Ass Matrix"
     
     for i in range (0, N_points):
+        term.printProgressBar(i+1, N_points)
+        
         r, theta, phi = Pos[i] #spherical coordinates at the first point
         Plm_z, Plm_dz = imp.Pol_Legendre(lmax, lmax, sin(phi))
         
@@ -93,8 +93,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
                 
                     M_PotGrad [3*i : 3*(i+1), k] = Sub_mat
                     k += 1
-
-    print("BAM done\n")    
+  
     return M_PotGrad
 
 

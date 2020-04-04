@@ -27,7 +27,7 @@ import time
 # =============================================================================
 # FUNCTIONS TO PRINT TEXT
 # =============================================================================
-def printProgressBar (iteration, total, length=15, decimals=1):
+def printProgressBar (iteration, total, length=20, decimals=1):
     """
     Prints a progress bar. Original code from: 
         https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
@@ -51,7 +51,7 @@ def printProgressBar (iteration, total, length=15, decimals=1):
     
     # Print new line when complete
     if iteration == total: 
-        print()
+        print("\n")
 
 
 # =============================================================================
@@ -59,13 +59,13 @@ def printProgressBar (iteration, total, length=15, decimals=1):
 # =============================================================================
 def TEST_ProgressBar():
     # A List of Items
-    items = list(range(0, 57))
+    items = list(range(0, 5))
     l = len(items)
     
     printProgressBar(0, l)
     for i, item in enumerate(items):
         # Do stuff...
-        time.sleep(0.1)
+        time.sleep(1)
         # Update Progress Bar
         printProgressBar(i + 1, l)
         
