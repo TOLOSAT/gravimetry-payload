@@ -30,8 +30,9 @@ import GH_convert      as conv
 #import GH_displayGeoid as dgeo
 #import GH_displaySat   as dsat
 #import GH_export       as exp
-#import GH_displayTopo  as dtopo
+import GH_displayTopo  as dtopo
 #import GH_terminal     as term
+#import GH_basemap      as bmp
 
 # =============================================================================
 # DISPLAY FUNCTIONS  
@@ -54,36 +55,10 @@ def Plot2D_PosEarthfixed (fignum, Pos, Title="No given title"):
     
     FIG = plt.figure(fignum)    
     
-
-    """Basemap parameters"""
-    proj = "mill" # projection
-    LatS = -90 # llcrnrlat
-    LatN = 90 # urcrnrlat 
-    LongW = -180 # llcrnrlon
-    LongE = 180 # urcrnrlon
-    TS = 20 # lat_ts -- I don't know what this is but everyone online uses it so yeah
-    Res = "c" # resolution
-    water_color = 'lightcyan'
-    land_color = 'peachpuff'
-#    parallels = np.arange(-60.,61,30.)
-#    meridians = np.arange(0.,351.,30.)
-
-    MAP = Basemap(projection = proj, 
-                 llcrnrlat = LatS, 
-                 urcrnrlat = LatN, 
-                 llcrnrlon = LongW, 
-                 urcrnrlon = LongE, 
-                 lat_ts = TS, 
-                 resolution = Res)
+    MAP = dtopo.Gen_Basemap(fignum)
     
     """MAP details"""
-    MAP.drawcoastlines()
-#    MAP.fillcontinents(color=land_color,lake_color=water_color)
-#    MAP.drawmapboundary(fill_color=water_color)
-#    MAP.drawmeridians()
-#    MAP.drawparallels()    
-#    MAP.drawparallels(parallels)
-#    MAP.drawmeridians(meridians)
+    MAP.drawcoastlines(linewidth = 0.4)
 
 
     MAP.scatter(Long, Lat, s=0.1, c='r', latlon=True, alpha=1)
@@ -96,7 +71,7 @@ def Plot2D_PosEarthfixed (fignum, Pos, Title="No given title"):
 
 
 
-def Plot3D_Pos (fignum, Pos, Title):    
+def Plot3D_Pos (fignum, Pos, Title):
     """
     This functions creates a matplotlib figure and plots Pos in 3D. 
     
@@ -104,8 +79,7 @@ def Plot3D_Pos (fignum, Pos, Title):
         Pos: array in spherical coordinates of the satellite position
         Title: The title to be displayed on the plot
     Output:
-        FIG: matplotlib figure object created in this function
-        
+        FIG: matplotlib figure object created in this function        
     """   
     X_1 = []
     Y_1 = []

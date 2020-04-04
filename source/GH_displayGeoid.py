@@ -32,6 +32,7 @@ import numpy as np
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
+#import GH_basemap      as bmp
 
 # =============================================================================
 # DISPLAY FUNCTIONS  

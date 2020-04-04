@@ -29,27 +29,7 @@ import GH_generate     as gen
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
-
-
-# =============================================================================
-# FUNCTIONS TO MAKE MAPS
-# =============================================================================
-def Gen_Basemap (fignum):
-    """
-    Generates a Basemap map in the figure numbered fignum
-    """
-    plt.figure(fignum)
-    
-    proj, LatS, LatN, LongW, LongE, TS, Res = imp.Basemap_Parameters()
-    
-    MAP = Basemap(projection = proj, 
-                llcrnrlat = LatS, 
-                urcrnrlat = LatN, 
-                llcrnrlon = LongW, 
-                urcrnrlon = LongE, 
-                lat_ts = TS, 
-                resolution = Res)    
-    return MAP
+import GH_basemap      as bmp
 
 
 # =============================================================================
@@ -75,7 +55,7 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
 #    map_colors = 'gist_earth'
     
     # Make map
-    MAP = Gen_Basemap(FIG.number)
+    MAP = bmp.Gen_Basemap(FIG.number)
     MAP.drawcoastlines(linewidth = 0.4)
     
     # Display of Gm_Height, with coordinates G_phi and G_theta
