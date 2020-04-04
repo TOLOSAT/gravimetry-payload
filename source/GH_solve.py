@@ -18,14 +18,15 @@ import numpy as np
 import numpy.linalg as npl
 from numpy import sin, cos
 
-import GH_convert     as conv
-import GH_import      as imp
-#import GH_generate    as gen
-#import GH_displayCoef as dcoef
-#import GH_displaySat  as dsat
-#import GH_export      as exp
-#import GH_displayTopo as dtopo
-import GH_terminal    as term
+import GH_import       as imp
+import GH_convert      as conv
+#import GH_generate     as gen
+#import GH_solve        as solv
+#import GH_displayGeoid as dgeo
+#import GH_displaySat   as dsat
+#import GH_export       as exp
+#import GH_displayTopo  as dtopo
+import GH_terminal     as term
 
 # =============================================================================
 # FUNCTIONS FOR Sph Harm SOLVE

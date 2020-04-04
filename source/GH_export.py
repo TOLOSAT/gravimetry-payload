@@ -16,13 +16,15 @@
 import numpy as np
 from numpy import pi, sin, cos
 
-#import GH_import      as imp
-#import GH_convert     as conv
-#import GH_generate    as gen
-#import GH_solve       as solv
-#import GH_displayCoef as dcoef
-#import GH_displaySat  as dsat
-#import GH_terminal    as term
+#import GH_import       as imp
+#import GH_convert      as conv
+#import GH_generate     as gen
+#import GH_solve        as solv
+#import GH_displayGeoid as dgeo
+#import GH_displaySat   as dsat
+#import GH_export       as exp
+#import GH_displayTopo  as dtopo
+#import GH_terminal     as term
 
 # =============================================================================
 # FUNCTIONS TO STORE FILES

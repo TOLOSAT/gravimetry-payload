@@ -23,14 +23,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy import cos, sin, pi
 
-import GH_convert     as conv
-import GH_import      as imp
-#import GH_generate    as gen
-#import GH_solve       as solv
-#import GH_displayCoef as dcoef
-#import GH_export      as exp
-#import GH_displayTopo as dtopo
-#import GH_terminal    as term
+import GH_import       as imp
+import GH_convert      as conv
+#import GH_generate     as gen
+#import GH_solve        as solv
+#import GH_displayGeoid as dgeo
+#import GH_displaySat   as dsat
+#import GH_export       as exp
+#import GH_displayTopo  as dtopo
+#import GH_terminal     as term
 
 # =============================================================================
 # DISPLAY FUNCTIONS  
@@ -103,12 +104,8 @@ def Plot3D_Pos (fignum, Pos, Title):
         Pos: array in spherical coordinates of the satellite position
         Title: The title to be displayed on the plot
     Output:
-        fig: the index of the created matplotlib figure
+        FIG: matplotlib figure object created in this function
         
-# =============================================================================
-# The spyder kernel keeps crashing when I run this. 
-# I used to think it was a basemap issue but that isn't it.   
-# =============================================================================
     """   
     X_1 = []
     Y_1 = []

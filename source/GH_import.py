@@ -19,14 +19,15 @@ from numpy import pi, sin, cos
 from scipy.special import lpmn
 import math
 
-#import GH_convert     as conv
-#import GH_generate    as gen
-#import GH_solve       as solv
-#import GH_displayCoef as dcoef
-#import GH_displaySat  as dsat
-#import GH_export      as exp
-#import GH_displayTopo as dtopo
-#import GH_terminal    as term
+#import GH_import       as imp
+#import GH_convert      as conv
+#import GH_generate     as gen
+#import GH_solve        as solv
+#import GH_displayGeoid as dgeo
+#import GH_displaySat   as dsat
+#import GH_export       as exp
+#import GH_displayTopo  as dtopo
+#import GH_terminal     as term
 
 from GH_convert import cart2sphA
 
@@ -103,7 +104,7 @@ def Basemap_Parameters ():
     TS = 20 # lat_ts -- I don't know what this is but everyone online uses it so yeah
     Res = "l" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions
     
-    Bm_Param = [proj, LatS, LatN, LongW, LongE, TS, Res]
+    # Bm_Param = [proj, LatS, LatN, LongW, LongE, TS, Res]
     return proj, LatS, LatN, LongW, LongE, TS, Res
 
 

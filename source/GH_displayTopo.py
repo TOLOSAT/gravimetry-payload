@@ -20,14 +20,20 @@ from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
 
-#import GH_convert     as conv
-import GH_import      as imp
-import GH_generate    as gen
-#import GH_solve       as solv
-#import GH_displaySat  as dsat
-#import GH_export      as exp
-#import GH_terminal    as term
+import GH_import       as imp
+#import GH_convert      as conv
+import GH_generate     as gen
+#import GH_solve        as solv
+#import GH_displayGeoid as dgeo
+#import GH_displaySat   as dsat
+#import GH_export       as exp
+#import GH_displayTopo  as dtopo
+#import GH_terminal     as term
 
+
+# =============================================================================
+# FUNCTIONS TO MAKE MAPS
+# =============================================================================
 def Gen_Basemap (fignum):
     """
     Generates a Basemap map in the figure numbered fignum

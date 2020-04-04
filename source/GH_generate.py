@@ -18,14 +18,15 @@
 import numpy as np
 from numpy import pi, sin, cos
 
-import GH_convert     as conv
-import GH_import      as imp
-import GH_solve       as solv
-#import GH_displayCoef as dcoef
-#import GH_displaySat  as dsat
-#import GH_export      as exp
-#import GH_displayTopo as dtopo
-import GH_terminal    as term
+import GH_import       as imp
+import GH_convert      as conv
+#import GH_generate     as gen
+import GH_solve        as solv
+#import GH_displayGeoid as dgeo
+#import GH_displaySat   as dsat
+#import GH_export       as exp
+#import GH_displayTopo  as dtopo
+import GH_terminal     as term
 
 # =============================================================================
 # FUNCTIONS TO GENERATE ACCELERATION ARRAYS
@@ -120,7 +121,6 @@ def Gen_Topo (lmax, HC_topo, HS_topo, tens):
             Lat = Line_lat[j]
             G_Height[j,i] = Get_Topo_Height(lmax, Lat, Long, HC_topo, HS_topo)
     
-#    term.printProgressBar(size_long, size_long)
     
     return G_Height, G_Long*180/pi, G_Lat*180/pi
 
