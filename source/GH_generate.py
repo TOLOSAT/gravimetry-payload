@@ -24,6 +24,7 @@ import GH_solve       as solv
 #import GH_displayCoef as dcoef
 #import GH_displaySat  as dsat
 #import GH_export      as exp
+#import GH_displayTopo as dtopo
 
 # =============================================================================
 # FUNCTIONS TO GENERATE ACCELERATION ARRAYS
@@ -59,6 +60,26 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
     return Acc_sim
 
 
+# =============================================================================
+# FUNCTIONS TO WORK ON TOPOLOGY
+# =============================================================================
+def Get_Topo_Height (lmax, Lat, Long, HC_topo, HS_topo):
+    """
+    This function returns the height of Earth's etimated topology at Lat Long coordinates
+    """
+    Sum1 = 0
+    Pmn, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat)) # I am allowed to write that. 
+    
+    for l in range(0, lmax):
+        Sum2 = 0
+        for m in range (0,l):
+            Sum2 = Sum2 + imp.Normalize(l, m) * Pmn[m, l] * (HC_topo[l,m]*cos(m*Long) + HS_topo[l,m]*sin(m*Long))
+        
+        Sum1 = Sum1 + Sum2
+
+    return Sum1
+
+
 def Gen_Topo (lmax, HC_topo, HS_topo, tens):
     """
     This function generates an array containing Earth's topology at Lat/Long 
@@ -77,10 +98,11 @@ def Gen_Topo (lmax, HC_topo, HS_topo, tens):
         A progress bar for when there are a lot of points
         https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
     """
-    print(f"Generating topological grid for lmax = {lmax}")
-    
     size_long = 1 + 36*tens
     size_lat  = 1 + 18*tens
+    points = size_long * size_lat
+    
+    print(f"Generating topological grid for lmax = {lmax}, {points} points")
 
     Line_long = np.linspace(0, 2*pi, size_long) # 0 to 360 ; must subtract 180
     Line_lat = np.linspace(0, pi, size_lat) # 0 to 180 ; must do 90 - theta
@@ -88,24 +110,13 @@ def Gen_Topo (lmax, HC_topo, HS_topo, tens):
 
     G_Height = np.zeros((size_lat, size_long))
     
-    
     for i in range(0, len(Line_long)) :
         Long = Line_long[i]
 
         for j in range(0, len(Line_lat)) :
             Lat = Line_lat[j]
-            
-            #  Get the height with the chosen coefs
-            S1 = 0
-            Pmn, Pmndz = imp.Pol_Legendre(lmax, lmax, cos(Lat))
-            for l in range(0, lmax):
-                S2=0
-                for m in range (0,l):
-                    S2 = S2 + imp.Normalize(l, m) * Pmn[m, l] * (HC_topo[l,m]*cos(m*Long) + HS_topo[l,m]*sin(m*Long))
-                S1 = S1 + S2
-            
-            G_Height[j,i] = S1
-    
+            G_Height[j,i] = Get_Topo_Height(lmax, Lat, Long, HC_topo, HS_topo)
+
     return G_Height, G_Long*180/pi, G_Lat*180/pi
 
 

@@ -25,6 +25,7 @@ import math
 #import GH_displayCoef as dcoef
 #import GH_displaySat  as dsat
 #import GH_export      as exp
+#import GH_displayTopo as dtopo
 
 from GH_convert import cart2sphA
 
@@ -85,6 +86,33 @@ def Normalize (l, m):
     
     N = np.sqrt(P1*P2*P3/P4)
     return N    
+
+
+
+# =============================================================================
+# FUNCTIONS - BASEMAP PARAMETERS
+# =============================================================================
+
+def Basemap_Parameters ():
+    proj = "mill" # projection
+    LatS = -90 # llcrnrlat
+    LatN = 90 # urcrnrlat 
+    LongW = -180 # llcrnrlon
+    LongE = 180 # urcrnrlon
+    TS = 20 # lat_ts -- I don't know what this is but everyone online uses it so yeah
+    Res = "l" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions
+    
+    Bm_Param = [proj, LatS, LatN, LongW, LongE, TS, Res]
+    return proj, LatS, LatN, LongW, LongE, TS, Res
+
+
+
+
+
+
+
+
+
 
 
 # =============================================================================

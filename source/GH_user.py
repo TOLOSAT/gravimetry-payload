@@ -41,6 +41,7 @@ import GH_solve       as solv
 #import GH_displayCoef as dcoef
 #import GH_displaySat  as dsat
 #import GH_export      as exp
+#import GH_displayTopo as dtopo
 
 data_path = "../data"
 
