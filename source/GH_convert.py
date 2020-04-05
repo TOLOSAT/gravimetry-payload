@@ -87,7 +87,7 @@ def Make_Array_Coef (lmax, CS):
     Input: 
         CS: line array filled in coefficients in such manner :
         CS = [c00,c10,c11,c20,c21,c22, ... s11,s21,s22,s31,s32,s33 ... ]
-            There are no sine coeffs for order l degree m=0
+            There are no sine coeffs for degree m=0
             There are no coeffs for order l=0, l=1
     Output:
         HC_coef: solved spherical harmonic cosine coefficients

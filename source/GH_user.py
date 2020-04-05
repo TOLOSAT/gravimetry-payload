@@ -33,6 +33,7 @@
 # =============================================================================
 import numpy as np
 import matplotlib.pyplot as plt
+from time import gmtime, strftime
 
 import GH_import       as imp
 import GH_convert      as conv
@@ -48,6 +49,8 @@ import GH_export       as exp
 
 data_path = "../data"
 
+def Get_Time():
+    return strftime("%Y%m%d_%H%M%S ", gmtime())
 
 # =============================================================================
 # MAIN 
@@ -55,20 +58,31 @@ data_path = "../data"
 if __name__ == '__main__':
     
     # =========================================================================
-    # THE THINGS YOU CAN CHANGE AS A USER
+    """THE THINGS YOU CAN CHANGE AS A USER"""
     
+    """ The original satellite path """
     #file_name = "ISS_Earthfixed_1jour_1sec.e"    
     #file_name = "ISS_Earthfixed_1jour_60sec.e"
     file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     #file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
     #file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
-    days = 0.9
+    days = 0.01
     
-    lmax_gen = 25 # when generating the data
+    """ data solving """
+    lmax_gen = 8 # when generating the data
     
-    lmax_solve = 25  # when solving for coefficients
+    lmax_solve = 8  # when solving for coefficients
     
-    tens = 5 # between 1 and 10, 36*tens points in Lqt/Long when making a map
+    """ plotting maps of geoids """
+    lmax_topo = 5
+    tens = 1
+    levels = 50
+    
+    """ save the polts and coefficients """
+    save = False
+    save_im_path = "../Rendered/images"
+    save_co_path = "../Rendered/coefficients"    
+    Time = Get_Time()
     # =========================================================================
     
     
@@ -83,9 +97,9 @@ if __name__ == '__main__':
     Acc_solved_sim = conv.Make_Array(Acc_solved_sim[:-2]) # this "-2" must be replaced with a modulo function to get the highest number thats a multiple of 3, AND smaller than the length of the array
     
     # plotting path simulation
-    fig = plt.figure(1)
-    
-    plt.title("Simulated and solved acceleration")
+    FIG = plt.figure(1)
+    title = "Simulated and solved acceleration"
+    plt.title(title)
     plt.xlabel("time (s)")
     plt.ylabel("acceleration (?)")
     
@@ -98,22 +112,22 @@ if __name__ == '__main__':
              "bo-", alpha=0.3, label="solved")    
     plt.legend()
     plt.show(block=False)
+    if save: plt.savefig(f"{save_im_path}/{Time}{title}", dpi = 500)
 
+   
+    
+    title1 = f"Map of original geoid"
+    MAP_GEN = dgeo.Map_Geoid(2, lmax_gen,   HC,     HS,     tens, levels, title1, lmax_topo) 
+    if save: plt.savefig(f"{save_im_path}/{Time}{title1}", dpi = 500)
 
-    # plotting maps of appropriate geoids
-    lmax_topo = 49
-    tens = 8
-    levels = 50
-    title = f"Map of original geoid"
-    fig1 = dgeo.Map_Geoid(2, lmax_gen, HC, HS, tens, levels, title, lmax_topo) 
 
     title2 = f"Map of simulated geoid"
-    fig1 = dgeo.Map_Geoid(3, lmax_solve, HC, HS, tens, levels, title, lmax_topo)
-
+    MAP_SIM = dgeo.Map_Geoid(3, lmax_solve, HC_sim, HS_sim, tens, levels, title2, lmax_topo)
+    if save: plt.savefig(f"{save_im_path}/{Time}{title2}", dpi = 500)
     
-    save_path = "../Rendered/coefficients"
-    exp.Store_Array(HC_sim, "HC_sim 25 to 25 degrees.txt", save_path)
-    exp.Store_Array(HS_sim, "HS_sim 25 to 25 degrees.txt", save_path)
+    if save: 
+        exp.Store_Array(HC_sim, f"HC_sim {lmax_gen} to {lmax_solve} degrees.txt", save_co_path)
+        exp.Store_Array(HS_sim, f"HS_sim {lmax_gen} to {lmax_solve} degrees.txt", save_co_path)
     
 
 
@@ -136,9 +150,7 @@ than the originals, and it seems to diverge when the orders go above 8
 
 Also I have a huge doubt: am I confusing Acceleration with gravity potential?
 
-Issue: 
-    There are no coefficients for l=0, l=1. At all. It should be adapted, 
-    just like when the sine coefficients didn't have m=0 
+https://stackoverflow.com/questions/32428193/saving-matplotlib-graphs-to-image-as-full-screen
 
 # =============================================================================
 # =============================================================================

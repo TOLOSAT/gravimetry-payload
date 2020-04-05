@@ -86,13 +86,11 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     """
     Makes a map of given geoid coefficients
-    """
-    print("Plotting The Geoid")  
-    
+    """    
     # Get geoid grid
     G_Geoid, G_Long, G_Lat = gen.Gen_Grid ("geoid", lmax, HC, HS, tens, lmax_topo)
 
-    print("Plotting Geoid map")
+    print("Plotting Geoid map\n")
     FIG = plt.figure(fignum)
     plt.clf()
     AX = FIG.add_subplot(111)
@@ -128,8 +126,8 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
 # =============================================================================
 def TEST_plotGeoid():
     HC, HS = imp.Fetch_Coef()
-    lmax = 2
-    lmax_topo = 2
+    lmax = 5
+    lmax_topo = 5
     tens = 2
     levels = 30
     title = f"TEST map of geoid"
