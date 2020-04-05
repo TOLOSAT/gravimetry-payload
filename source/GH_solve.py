@@ -36,8 +36,11 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
     """
     Returns the matrix of the gravitational potential gradient. 
     Watch out, it gets big fast.
-    Multiplying it with tha appropriate column vector of coefficients 
+    Multiplying it with the appropriate column vector of coefficients 
     will return the acceleration at the given coordinates.
+    
+        *There are no geoid coefficients for l=0, l=1*
+        *There are no sine coefficients for m=0*
     
     Input: 
         lmax: max order
@@ -48,19 +51,19 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
         
     """    
     # constants
-    R = 6378136.3
+    R = 6378136.3 # m
     GM = 3986004.415*10**8 # m**3 s**-2  
     # wiki says : gm = 6.673*10**-11*5.975*10**24 = 398711749999999.94
     
     N_points = len(Pos) # number of points
     
-    Cos_len = int( (lmax+1)*(lmax+2) /2 ) # c00,c10,c11,c20,c21,c22, ... 
-    Sin_len = int( (lmax  )*(lmax+1) /2 ) # s11,s21,s22,s31,s32,s33, ...
+    Cos_len = int( (lmax+1)*(lmax+2) /2 ) -3 # c20,c21,c22,c30,c31,c32, ... 
+    Sin_len = int( (lmax  )*(lmax+1) /2 ) -1 # s21,s22,s31,s32,s33, ...
 #    print("cos sin lengths =",Cos_len, ",",Sin_len)
     N_coef = Cos_len + Sin_len
     
-    M_PotGrad = np.ones((N_points * 3, N_coef)) #THE Potential Gradient Matrix
-    print(f"Generating BAM of shape = {M_PotGrad.shape}")#BAM =  "Big Ass Matrix"
+    M_PotGrad = np.ones((N_points * 3, N_coef)) # THE Potential Gradient Matrix
+    print(f"Generating BAM of shape = {M_PotGrad.shape}") # BAM =  "Big Ass Matrix"
     
     for i in range (0, N_points):
         term.printProgressBar(i+1, N_points)
@@ -71,8 +74,8 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
         j = 0        
         k = Cos_len
         
-        for l in range (0, lmax +1):
-            for m in range (0, l +1):# print("lm=",l,m, "\t",(m != 0) and (l != 0))
+        for l in range (2, lmax +1):
+            for m in range (0, l +1): 
                 # These equations were found in the GFZ document page 23
                 W_r = - GM/r**2 * (R/r)**l * (l+1) * Plm_z[m, l]
                 W_theta = W_r * m * r / (l+1)
@@ -86,8 +89,8 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
                 M_PotGrad [3*i : 3*(i+1), j] = Sub_mat
                 j += 1
                 
-                # for lm of non-null sine coefficient
-                if ((m != 0) and (l != 0)): 
+                # for m of non-null, we get a sine coefficient
+                if (m != 0): 
                     Sub_mat = np.zeros ((3,1))
                     Sub_mat = [ sin(m*theta)*W_r, 
                                 cos(m*theta)*W_theta,

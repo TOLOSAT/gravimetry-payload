@@ -87,11 +87,12 @@ def Make_Array_Coef (lmax, CS):
     Input: 
         CS: line array filled in coefficients in such manner :
         CS = [c00,c10,c11,c20,c21,c22, ... s11,s21,s22,s31,s32,s33 ... ]
-            There is no sine coef for order l degree m=0
+            There are no sine coeffs for order l degree m=0
+            There are no coeffs for order l=0, l=1
     Output:
         HC_coef: solved spherical harmonic cosine coefficients
         HS_coef: solved spherical harmonic sine coefficients
-        HS_coef(l,m) = SIN_lm_coef
+            To fetch use: HS_coef(l,m) = {SIN_lm_coef}
   
     """
 #    Cos_len = int( (lmax+1)*(lmax+2) /2 ) # c00,c10,c11,c20,c21,c22, ... 
@@ -101,15 +102,15 @@ def Make_Array_Coef (lmax, CS):
     HS_coef = np.zeros( (lmax+1,lmax+1) ) 
     
     j = 0
-    for l in range (0, lmax +1):
-        for m in range (0, l +1):
+    for l in range (2, lmax+1):
+        for m in range (0, l+1):
             HC_coef[l, m] = CS[j] # Get the Cosine coefs out first
             j += 1
     # end loops
     # Normally, at this point, j == Cos_len
     
-    for l in range (1, lmax +1):
-        for m in range (1, l +1):  
+    for l in range (2, lmax+1):
+        for m in range (1, l+1):  
             HS_coef[l, m] = CS[j] # Get the Sine coefs out next
             j += 1
     # end loops    
@@ -128,21 +129,21 @@ def Make_Line_Coef (lmax, HC, HS):
         CS: line array filled in coefficients
         
     """   
-    Cos_len = int( (lmax+1)*(lmax+2) /2 ) # c00,c10,c11,c20,c21,c22, ... 
-    Sin_len = int( (lmax  )*(lmax+1) /2 ) # s11,s21,s22,s31,s32,s33, ...
+    Cos_len = int( (lmax+1)*(lmax+2) /2 ) -3 # c20,c21,c22, ... 
+    Sin_len = int( (lmax  )*(lmax+1) /2 ) -1 # s21,s22,s31,s32,s33, ...
     
     N_coef = Cos_len + Sin_len
     CS = np.zeros(N_coef)
     
     j=0
-    for l in range (0, lmax +1):
+    for l in range (2, lmax +1):
         for m in range (0, l +1):
             CS[j] = HC[l, m] # Write in the Cosine coefs 
             j += 1
     # end  loops
     # Normally, at this point, j == Cos_len 
 
-    for l in range (1, lmax +1):
+    for l in range (2, lmax +1):
         for m in range (1, l +1):
             CS[j] = HS[l, m] # Write in the Sine coefs            
             j += 1
@@ -166,25 +167,24 @@ def TEST_Line_Array ():
     C = Make_Line(B)
     print("C = \n", C, "\n")    
     
-    CS = np.array([5,
-                   10,11,
-                   20,21,22,
+    CS = np.array([20,21,22,
                    30,31,32,33,
-                   40,41,42,43,44, # Cos coeffs
-                   110,
+                   40,41,42,43,44,
+                   50,51,52,53,54,55,# Cos coeffs
                    210,220,
                    310,320,330,
-                   410,420,430,440]) # Sin coeffs
+                   410,420,430,440,
+                   510,520,530,540,550]) # Sin coeffs
                     
     print("CS shape =", CS.shape)
     
-    HC, HS = Make_Array_Coef(4, CS)
+    HC, HS = Make_Array_Coef(5, CS)
     print("HC = \n", HC, "\n")
     print("HS = \n", HS, "\n")
     
-    lmax = 4
-    Cos_len = int( (lmax+1)*(lmax+2) /2 ) # c00,c10,c11,c20,c21,c22, ... 
-    Sin_len = int( (lmax  )*(lmax+1) /2 ) # s11,s21,s22,s31,s32,s33, ...
+    lmax = 5
+    Cos_len = int( (lmax+1)*(lmax+2) /2 ) -3 # c00,c10,c11,c20,c21,c22, ... 
+    Sin_len = int( (lmax  )*(lmax+1) /2 ) -1 # s11,s21,s22,s31,s32,s33, ...
     print("cos sin lengths =",Cos_len, ",",Sin_len)
     
     CS2 = Make_Line_Coef(lmax, HC, HS)

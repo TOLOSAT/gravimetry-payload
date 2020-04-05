@@ -128,9 +128,9 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
 # =============================================================================
 def TEST_plotGeoid():
     HC, HS = imp.Fetch_Coef()
-    lmax = 18
-    lmax_topo = 18
-    tens = 5
+    lmax = 2
+    lmax_topo = 2
+    tens = 2
     levels = 30
     title = f"TEST map of geoid"
     fig1 = Map_Geoid(1, lmax, HC, HS, tens, levels, title, lmax_topo)     

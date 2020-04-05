@@ -24,13 +24,13 @@ from numpy import pi, sin, cos
 #import GH_displaySat   as dsat
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
-#import GH_terminal     as term
+import GH_terminal     as term
 #import GH_basemap      as bmp
 
 # =============================================================================
 # FUNCTIONS TO STORE FILES
 # =============================================================================
-def Store_array(data, title, path=""):  
+def Store_Array(data, title, path=""):  
     """
     Stores an array into a text file that can later be imported again
     
@@ -43,9 +43,10 @@ def Store_array(data, title, path=""):
     To import use: 
         data = np.loadtxt(title)
     
-    """   
+    """ 
+    print(f"Writing {title} in {path}")
     length = len(data)
-    file = open(title, "w+")
+    file = open(f"{path}/{title}", "w+")
     for n in range (len(data)):
         print("Writing", n, "\tof", length-1)
         for m in range(len(data[0])):
@@ -53,7 +54,7 @@ def Store_array(data, title, path=""):
             file.write("\t")
         file.write("\n")
     file.close()
-    print("\n\tWriting done\n")
+    print(f"\n\tDone writing {title}")
 
 
 # =============================================================================

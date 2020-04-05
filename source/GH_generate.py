@@ -95,16 +95,16 @@ def Get_Geoid_Pot (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     a = 6378136.3 # m
     R = imp.Get_Radius(Lat) + Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !! 
     
-    Sum1=0
+    Sum1 = 0
     Pmn, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
     
-    for l in range (0, lmax+1):    # SHOULD START AT l=2 !!!    
+    for l in range (2, lmax+1):    # SHOULD START AT l=2 !!!    
         Sum2 = 0        
         
         for m in range(0, l+1):
             Sum2 = Sum2 + imp.Normalize(l, m) * Pmn[m,l] * (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long))
         
-        Sum1 = Sum1 + (a/R)**l * Sum2 # OK, the a here is weird, idk what it's doing here
+        Sum1 = Sum1 + (a/R)**l * Sum2 # OK, the "a" here is weird, idk what it's doing here
     
     Pot = GM/R*(1+Sum1)
     
@@ -164,7 +164,7 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
                 G_Grid[j,i] = Get_Geoid_Pot(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
     
     
-    return G_Grid, G_Long*180/pi, G_Lat*180/pi
+    return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
 
 
     

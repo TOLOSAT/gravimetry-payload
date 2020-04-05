@@ -38,9 +38,9 @@ import GH_import       as imp
 import GH_convert      as conv
 import GH_generate     as gen
 import GH_solve        as solv
-#import GH_displayGeoid as dgeo
+import GH_displayGeoid as dgeo
 #import GH_displaySat   as dsat
-#import GH_export       as exp
+import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
 #import GH_basemap      as bmp
@@ -62,11 +62,11 @@ if __name__ == '__main__':
     file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     #file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
     #file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
-    days = 0.01 
+    days = 0.9
     
-    lmax_gen = 4 # when generating the data
+    lmax_gen = 25 # when generating the data
     
-    lmax_solve = 4  # when solving for coefficients
+    lmax_solve = 25  # when solving for coefficients
     
     tens = 5 # between 1 and 10, 36*tens points in Lqt/Long when making a map
     # =========================================================================
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     
     Acc_solved_sim = conv.Make_Array(Acc_solved_sim[:-2]) # this "-2" must be replaced with a modulo function to get the highest number thats a multiple of 3, AND smaller than the length of the array
     
-    
+    # plotting path simulation
     fig = plt.figure(1)
     
     plt.title("Simulated and solved acceleration")
@@ -99,6 +99,22 @@ if __name__ == '__main__':
     plt.legend()
     plt.show(block=False)
 
+
+    # plotting maps of appropriate geoids
+    lmax_topo = 49
+    tens = 8
+    levels = 50
+    title = f"Map of original geoid"
+    fig1 = dgeo.Map_Geoid(2, lmax_gen, HC, HS, tens, levels, title, lmax_topo) 
+
+    title2 = f"Map of simulated geoid"
+    fig1 = dgeo.Map_Geoid(3, lmax_solve, HC, HS, tens, levels, title, lmax_topo)
+
+    
+    save_path = "../Rendered/coefficients"
+    exp.Store_Array(HC_sim, "HC_sim 25 to 25 degrees.txt", save_path)
+    exp.Store_Array(HS_sim, "HS_sim 25 to 25 degrees.txt", save_path)
+    
 
 
 print("\nUser instructions done")
