@@ -2,10 +2,9 @@
 # =============================================================================
  Information: 
     
-    The purpose of this script is to display various graphs, plots to show:
-        anything that has to do with satellite trajectories
+    The purpose of this script is to display various graphs and maps about
+    Satellite trajectories
 
-        
 # =============================================================================
 """
 # =============================================================================

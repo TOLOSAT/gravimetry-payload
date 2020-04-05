@@ -5,10 +5,8 @@
 # =============================================================================
  Information: 
     
-    The purpose of this script is to display various graphs, plots to show:
-        "True" and "solved" Geoids
-        Differences in coefficients
-        
+    The purpose of this script is to display various graphs and maps about 
+    Geoid coefficients
         
 # =============================================================================
 """
@@ -125,22 +123,15 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     plt.show(block=False)
 
 
-
-
-
-
-
-
-
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
 def TEST_plotGeoid():
     HC, HS = imp.Fetch_Coef()
-    lmax = 20
-    lmax_topo = 20
+    lmax = 18
+    lmax_topo = 18
     tens = 5
-    levels = 100
+    levels = 30
     title = f"TEST map of geoid"
     fig1 = Map_Geoid(1, lmax, HC, HS, tens, levels, title, lmax_topo)     
 # =============================================================================

@@ -5,8 +5,8 @@
 # =============================================================================
  Information: 
     
-    The purpose of this script is to display various graphs, plots to show:
-        Earth Topology
+    The purpose of this script is to display various graphs and maps about
+    Topology coefficients
         
 # =============================================================================
 """
