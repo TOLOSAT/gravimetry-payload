@@ -78,7 +78,7 @@ if __name__ == '__main__':
     tens = 1
     levels = 50
     
-    """ save the polts and coefficients """
+    """ save the plots and coefficients """
     save = False
     save_im_path = "../Rendered/images"
     save_co_path = "../Rendered/coefficients"    
