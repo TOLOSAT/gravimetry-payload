@@ -23,17 +23,18 @@ from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
 
-#import GH_import       as imp
+import GH_import       as imp
 #import GH_convert      as conv
-#import GH_generate     as gen
+import GH_generate     as gen
 #import GH_solve        as solv
 #import GH_displayGeoid as dgeo
 #import GH_displaySat   as dsat
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
-#import GH_basemap      as bmp
+import GH_basemap      as bmp
 
+"""
 # =============================================================================
 # DISPLAY FUNCTIONS  
 # =============================================================================
@@ -81,12 +82,47 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 #    plt.legend(loc = 'lower right', title = 'Degree n', fontsize = 5)
     
     plt.show()
+"""    
+
+
+def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
+    """
+    Makes a map of given geoid coefficients
+    """
+    print("Plotting The Geoid")  
     
+    # Get geoid grid
+    G_Geoid, G_Long, G_Lat = gen.Gen_Grid ("geoid", lmax, HC, HS, tens, lmax_topo)
 
-
-def Map_Geoid (fignum, lmax, HC, HS, tens):
+    print("Plotting Geoid map")
+    FIG = plt.figure(fignum)
+    plt.clf()
+    AX = FIG.add_subplot(111)
     
+    """plot parameters"""
+    alpha = 1
+    map_colors = "jet"
+    
+    # Make map
+    MAP = bmp.Gen_Basemap(FIG.number)
+    MAP.drawcoastlines(linewidth = 0.4)
+    
+    # Display of Gm_Height, with coordinates G_phi and G_theta
+    MAP.contourf(G_Long, G_Lat, G_Geoid, latlon = True, 
+                levels = levels, alpha = alpha, 
+                cmap=plt.get_cmap(map_colors))
 
+    """plot apperance"""
+    plt.suptitle(title)
+    plot_specs = f"{1+36*tens}x{1+18*tens} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plt.title(plot_specs)
+
+    # add a colorbar
+    CBAR = MAP.colorbar(location='bottom',pad="5%")
+    CBAR.set_label("Geoid elevation in meters")
+    
+    plt.axis('off')
+    plt.show(block=False)
 
 
 
@@ -99,11 +135,19 @@ def Map_Geoid (fignum, lmax, HC, HS, tens):
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
-    
+def TEST_plotGeoid():
+    HC, HS = imp.Fetch_Coef()
+    lmax = 20
+    lmax_topo = 20
+    tens = 5
+    levels = 100
+    title = f"TEST map of geoid"
+    fig1 = Map_Geoid(1, lmax, HC, HS, tens, levels, title, lmax_topo)     
 # =============================================================================
 # MAIN 
 # =============================================================================
 if __name__ == '__main__':
+    TEST_plotGeoid()
     
-    print("\nGH_displayCoef done")
+    print("\nGH_displayGeoid done")
 

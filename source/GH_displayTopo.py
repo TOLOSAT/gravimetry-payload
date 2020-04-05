@@ -42,7 +42,7 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
     print("Plotting The Topology")  
     
     # Get height grid
-    G_Height, G_Long, G_Lat = gen.Gen_Topo (lmax, HC_topo, HS_topo, tens)
+    G_Height, G_Long, G_Lat = gen.Gen_Grid ("topo", lmax, HC_topo, HS_topo, tens)
 
     print("Plotting Topology map")
     FIG = plt.figure(fignum)
@@ -51,8 +51,8 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
     
     """plot parameters"""
     alpha = 1
-    map_colors = 'terrain' 
-#    map_colors = 'gist_earth'
+    map_colors = "terrain"
+#    map_colors = "gist_earth"
     
     # Make map
     MAP = bmp.Gen_Basemap(FIG.number)
