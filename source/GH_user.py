@@ -40,7 +40,7 @@ import GH_convert      as conv
 import GH_generate     as gen
 import GH_solve        as solv
 import GH_displayGeoid as dgeo
-#import GH_displaySat   as dsat
+import GH_displaySat   as dsat
 import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
@@ -49,24 +49,24 @@ import GH_export       as exp
 
 data_path = "../data"
 
-def Get_Time():
-    return strftime("%Y%m%d_%H%M%S ", gmtime())
 
 # =============================================================================
 # MAIN 
 # =============================================================================
 if __name__ == '__main__':
     
-    # =========================================================================
+# =============================================================================
+# # ===========================================================================
+# =============================================================================
     """THE THINGS YOU CAN CHANGE AS A USER"""
     
     """ The original satellite path """
     #file_name = "ISS_Earthfixed_1jour_1sec.e"    
     #file_name = "ISS_Earthfixed_1jour_60sec.e"
-    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
+#    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     #file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
-    #file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
-    days = 0.01
+    file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
+    days = 0.1
     
     """ data solving """
     lmax_gen = 8 # when generating the data
@@ -81,10 +81,13 @@ if __name__ == '__main__':
     """ save the plots and coefficients """
     save = False
     save_im_path = "../Rendered/images"
-    save_co_path = "../Rendered/coefficients"    
-    Time = Get_Time()
-    # =========================================================================
+    save_co_path = "../Rendered/coefficients"
     
+# =============================================================================
+# # ===========================================================================
+# =============================================================================
+    
+    time_str = imp.Get_Time()    
     
     HC, HS = imp.Fetch_Coef()
     Pos_sim, Time = imp.Fetch_Pos(file_name, days)
@@ -97,38 +100,26 @@ if __name__ == '__main__':
     Acc_solved_sim = conv.Make_Array(Acc_solved_sim[:-2]) # this "-2" must be replaced with a modulo function to get the highest number thats a multiple of 3, AND smaller than the length of the array
     
     # plotting path simulation
-    FIG = plt.figure(1)
-    title = "Simulated and solved acceleration"
-    plt.title(title)
-    plt.xlabel("time (s)")
-    plt.ylabel("acceleration (?)")
-    
-    component = 0 # 0, 1, 2 : r, theta, phi
-    plt.plot(Time[:Acc_sim.shape[0]], 
-             Acc_sim[:,component], 
-             "ro-", alpha=0.3, label="simulated")    
-    plt.plot(Time[:Acc_solved_sim.shape[0]], 
-             Acc_solved_sim[:,component], 
-             "bo-", alpha=0.3, label="solved")    
-    plt.legend()
-    plt.show(block=False)
-    if save: plt.savefig(f"{save_im_path}/{Time}{title}", dpi = 500)
+    title1 = "Simulated and solved acceleration"
+    component = 0 #0, 1, 2 : r, theta, phi
+    FIG_ACC = dsat.Plot_Acc_Sim_Solv(1, Time, Acc_sim, Acc_solved_sim, component, title1)
 
-   
-    
-    title1 = f"Map of original geoid"
-    MAP_GEN = dgeo.Map_Geoid(2, lmax_gen,   HC,     HS,     tens, levels, title1, lmax_topo) 
-    if save: plt.savefig(f"{save_im_path}/{Time}{title1}", dpi = 500)
+    # Mapping the coefficients
+    title2 = f"Map of original geoid"
+    MAP_GEN = dgeo.Map_Geoid(2, lmax_gen,   HC,     HS,     tens, levels, title2, lmax_topo) 
 
-
-    title2 = f"Map of simulated geoid"
-    MAP_SIM = dgeo.Map_Geoid(3, lmax_solve, HC_sim, HS_sim, tens, levels, title2, lmax_topo)
-    if save: plt.savefig(f"{save_im_path}/{Time}{title2}", dpi = 500)
+    title3 = f"Map of simulated geoid"
+    MAP_SIM = dgeo.Map_Geoid(3, lmax_solve, HC_sim, HS_sim, tens, levels, title3, lmax_topo)
+ 
     
-    if save: 
-        exp.Store_Array(HC_sim, f"HC_sim {lmax_gen} to {lmax_solve} degrees.txt", save_co_path)
-        exp.Store_Array(HS_sim, f"HS_sim {lmax_gen} to {lmax_solve} degrees.txt", save_co_path)
-    
+    if save:         
+        print("Saving plots and coefficients")
+#        exp.Store_Array(HC_sim, f"HC_sim {lmax_gen} to {lmax_solve} degrees.txt", save_co_path)
+#        exp.Store_Array(HS_sim, f"HS_sim {lmax_gen} to {lmax_solve} degrees.txt", save_co_path)
+        
+        exp.Store_Figure(FIG_ACC.number, title1, time_str, save_im_path, 500)
+        exp.Store_Figure(MAP_GEN.number, title2, time_str, save_im_path, 500)
+        exp.Store_Figure(MAP_SIM.number, title3, time_str, save_im_path, 500)
 
 
 print("\nUser instructions done")

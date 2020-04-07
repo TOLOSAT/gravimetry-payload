@@ -119,15 +119,15 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     
     plt.axis('off')
     plt.show(block=False)
-
+    return FIG
 
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
 def TEST_plotGeoid():
     HC, HS = imp.Fetch_Coef()
-    lmax = 5
-    lmax_topo = 5
+    lmax = 2
+    lmax_topo = 0
     tens = 2
     levels = 30
     title = f"TEST map of geoid"

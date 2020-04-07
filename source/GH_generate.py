@@ -122,7 +122,7 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
     This function generates an array containing Earth's topology at Lat/Long 
     coordinates. 
     Input:
-        measure: "topo" of "geoid" the measurement to be mapped on Earth
+        measure: "topo" or "geoid", the measurement to be mapped on Earth
         lmax: degree to which the topology should be calculated
         HC_topo: Harmonic cosine coefficients to earth's topology
         HS_topo: Harmonic sine coefficients to earth's topology

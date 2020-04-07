@@ -18,6 +18,8 @@ import numpy as np
 from numpy import pi, sin, cos
 from scipy.special import lpmn
 import math
+import matplotlib.pyplot as plt
+from time import gmtime, strftime
 
 #import GH_import       as imp
 #import GH_convert      as conv
@@ -38,6 +40,18 @@ from GH_convert import cart2sphA
 data_path = "../data"
 
 
+
+# =============================================================================
+# FUNCTIONS - TIME
+# =============================================================================
+def Get_Time(format_="%Y%m%d_%H%M%S"):
+    """Returns the time in the given string format"""
+    time = strftime(format_, gmtime())
+    return time
+
+
+
+
 # =============================================================================
 # FUNCTIONS - GEODESY
 # =============================================================================
@@ -49,7 +63,6 @@ def Get_Radius(angle):
         angle: latitude, inclination from the z axis in degrees
     Output: 
         R: Radius in meters
-        
     """    
     theta = pi/2 -angle
     Radius_eq = 6378137 # m
@@ -77,6 +90,7 @@ def Pol_Legendre (l, m, x):
 def Normalize (l, m):
     """
     Returns the normalization coefficient of degree l and order m
+    Equation obtained fron the dicumentation that came with the EGM2008 coeffs
     """
     d_om = 0
     if m==0 :

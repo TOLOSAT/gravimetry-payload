@@ -76,7 +76,7 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
     
     plt.axis('off')
     plt.show(block=False)
-
+    return FIG
 
 
 # =============================================================================

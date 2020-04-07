@@ -50,7 +50,8 @@ def Plot2D_PosEarthfixed (fignum, Pos, Title="No given title"):
     Long = Pos[:,2] * 180/pi
     
     FIG = plt.figure(fignum)    
-    
+    plt.clf()
+
     MAP = dtopo.Gen_Basemap(fignum)
     
     """MAP details"""
@@ -91,6 +92,8 @@ def Plot3D_Pos (fignum, Pos, Title):
         Z_1.append(zi)
         
     FIG = plt.figure(fignum) 
+    plt.clf()
+
     ax1 = FIG.add_subplot(111, projection = '3d') 
     
     ax1.plot3D( X_1, Y_1, Z_1, 
@@ -103,6 +106,34 @@ def Plot3D_Pos (fignum, Pos, Title):
     plt.suptitle("Position in the terrestrial referential")
     plt.title(Title)
     plt.show(block=False) 
+    
+    return FIG
+
+
+def Plot_Acc_Sim_Solv(fignum, Time, Acc_sim, Acc_solved, component, title):
+    """
+    Plot path acceleration of simuated and solved paths
+    Input:
+        fignum: index of the matplotlib figure to be created
+        Time: array of time sampling of the coordinates
+        Acc_sim: accelerations from the original harmonics model
+        Acc_solved: accelerations from the solved harmonics model
+        component = 0, 1, 2 : r, theta, phi
+        title: plot title
+    """
+    FIG = plt.figure(fignum)
+    plt.clf()
+    
+    plt.title(title)
+    plt.xlabel("time (s)")
+    plt.ylabel("acceleration (?)")
+    
+    plt.plot(Time[:Acc_sim.shape[0]], Acc_sim[:,component], "ro-", alpha=0.3, label="simulated")   
+    
+    plt.plot(Time[:Acc_solved.shape[0]], Acc_solved[:,component], "bo-", alpha=0.3, label="solved") 
+    
+    plt.legend()
+    plt.show(block=False)
     
     return FIG
 

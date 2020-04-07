@@ -15,6 +15,8 @@
 # =============================================================================
 import numpy as np
 from numpy import pi, sin, cos
+import matplotlib.pyplot as plt
+from time import gmtime, strftime
 
 #import GH_import       as imp
 #import GH_convert      as conv
@@ -60,7 +62,21 @@ def Store_Array(data, title, path=""):
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
-  
+def Store_Figure(fignum, title, time, path="", dpi=500):
+    """
+    Stores a figure into a .png format
+    Input: 
+        fignum: matplotlib figure number
+        title: title image name. 
+        path: image path location
+        dpi: pixels per inch density      
+    """
+    plt.figure(fignum)
+    file_name = f"{path}/{time} {title}.png"
+    plt.savefig(file_name, dpi = dpi)
+    
+    
+      
 # =============================================================================
 # MAIN 
 # =============================================================================
