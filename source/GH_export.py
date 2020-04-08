@@ -3,10 +3,10 @@
 @authors:
 
 # =============================================================================
- Information: 
+ Information:
 
     The functions in this script are used to export and create array files
-        
+
 # =============================================================================
 """
 
@@ -32,20 +32,20 @@ import GH_terminal     as term
 # =============================================================================
 # FUNCTIONS TO STORE FILES
 # =============================================================================
-def Store_Array(data, title, path="../Rendered"):  
+def Store_Array(data, title, path="../Rendered"):
     """
     Stores an array into a text file that can later be imported again
-    
-    Input: 
+
+    Input:
         data: the array in question
-        title: a string, of the desired title for the file. 
+        title: a string, of the desired title for the file.
                 Must incluse ".txt"
         path: path in which to store the array
-    
-    To import use: 
+
+    To import use:
         data = np.loadtxt(title)
-    
-    """ 
+
+    """
     print(f"Writing \"{title}\" in \"{path}\"")
     length = len(data)
     file = open(f"{path}/{title}", "w+")
@@ -65,11 +65,11 @@ def Store_Array(data, title, path="../Rendered"):
 def Store_Figure(fignum, title, time="", path="../Rendered/images", dpi=500):
     """
     Stores a figure into a .png format
-    Input: 
+    Input:
         fignum: matplotlib figure number
-        title: title image name. 
+        title: title image name.
         path: image path location
-        dpi: pixels per inch density      
+        dpi: pixels per inch density
     """
     plt.figure(fignum)
 #    mng = plt.get_current_fig_manager()
@@ -77,13 +77,13 @@ def Store_Figure(fignum, title, time="", path="../Rendered/images", dpi=500):
 #    plt.show()
     file_name = f"{path}/{time} {title}.png"
     plt.savefig(file_name, dpi=dpi)
-    
-    
-      
+
+
+
 # =============================================================================
-# MAIN 
+# MAIN
 # =============================================================================
 if __name__ == '__main__':
- 
+
     print("\nGH_export done")
 

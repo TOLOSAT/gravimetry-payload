@@ -3,11 +3,11 @@
 @authors:
 
 # =============================================================================
- Information: 
+ Information:
 
-    The functions in this script are used to import and fetch values and arrays 
+    The functions in this script are used to import and fetch values and arrays
     from text files
-        
+
 # =============================================================================
 """
 
@@ -58,19 +58,19 @@ def Get_Time(format_="%Y%m%d_%H%M%S"):
 def Get_Radius(angle):
     """
     Returns the radius of the reference elipsoid in meters
-    
-    Input: 
+
+    Input:
         angle: latitude, inclination from the z axis in degrees
-    Output: 
+    Output:
         R: Radius in meters
-    """    
+    """
     theta = pi/2 -angle
     Radius_eq = 6378137 # m
     Radius_pol = 6356752.3142 # m
     a = Radius_eq
-    b = Radius_pol     
+    b = Radius_pol
     deno = np.sqrt(a**2*sin(theta)**2 + b**2*np.cos(theta)**2)
-    R = a*b/deno    
+    R = a*b/deno
     return R
 
 
@@ -80,7 +80,7 @@ def Get_Radius(angle):
 
 def Pol_Legendre (l, m, x):
     """
-    returns an array[m+1,n+1] of the values of the associated Legendre function 
+    returns an array[m+1,n+1] of the values of the associated Legendre function
     of all integer degrees l and order m, at point x
     """
     Pnm_z, Pnm_dz = lpmn(m, l, x)
@@ -95,14 +95,14 @@ def Normalize (l, m):
     d_om = 0
     if m==0 :
         d_om = 1
-        
+
     P1 = math.factorial(l - m)
     P2 = (2*l + 1)
     P3 = (2 - d_om)
     P4 = math.factorial(l + m)
-    
+
     N = np.sqrt(P1*P2*P3/P4)
-    return N    
+    return N
 
 
 
@@ -114,15 +114,15 @@ def Normalize (l, m):
 def Fetch_Pos(file_name, days = 0.7):
     """
     Imports coordinates from file_name text file (generated from GMAT)
-    
+
     Input:
         file_name: well, the file's name! remove all header text
-        days: what time duration the outplut file should correspond to 
+        days: what time duration the outplut file should correspond to
               regardless of the sampling rate
-    Output: 
+    Output:
         Pos: The position of the satellite in spherical coordinates
         Time: Associated time sampling of each position
-    
+
     """
     Eph = np.loadtxt(f"{data_path}/{file_name}")
     t = np.array(Eph[:,0]) #time in seconds
@@ -131,11 +131,11 @@ def Fetch_Pos(file_name, days = 0.7):
     z = np.array(Eph[:,3]) # /
     dt = np.int(t[1]*100)/100
     L = np.int(days*(86400/dt))
-    # convert coord system and shorten array if needed 
-    pts = np.transpose(np.array([x,y,z])) 
+    # convert coord system and shorten array if needed
+    pts = np.transpose(np.array([x,y,z]))
     if L >= len(pts):
         L = len(pts)
-    Pos = cart2sphA(pts[:L]) 
+    Pos = cart2sphA(pts[:L])
     Time = t[:L]
     print(f"Importing Pos file with {L} coordinates.")
     return Pos, Time
@@ -147,7 +147,7 @@ def Fetch_Coef():
     Data originally extracted from : EGM2008_to2190_ZeroTide.txt
     These coefs are already normalized
     These files exist with a degree up to lmax = 2190
-    """    
+    """
     data_path = "../data"
     HC = np.loadtxt(f"{data_path}/GeoPot_Coef_cos_deg30.txt")
     HS = np.loadtxt(f"{data_path}/GeoPot_Coef_sin_deg30.txt")
@@ -160,7 +160,7 @@ def Fetch_Topo_Coef():
     Data originally extracted from : Coeff_Height_and_Depth_to2190_DTM2006.txt
     These coefs are already normalized
     These files exist with a degree up to lmax = 2190
-    """    
+    """
     data_path = "../data"
     HC_topo = np.loadtxt(f"{data_path}/Height_Coef_cos_deg49.txt")
     HS_topo = np.loadtxt(f"{data_path}/Height_Coef_sin_deg49.txt")
@@ -168,12 +168,12 @@ def Fetch_Topo_Coef():
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
-  
+
 # =============================================================================
-# MAIN 
+# MAIN
 # =============================================================================
 if __name__ == '__main__':
 #    HC, HS = Fetch_Coef()
-    
+
     print("\nGH_import done")
 

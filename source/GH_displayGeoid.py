@@ -3,17 +3,17 @@
 @authors:
 
 # =============================================================================
- Information: 
-    
-    The purpose of this script is to display various graphs and maps about 
+ Information:
+
+    The purpose of this script is to display various graphs and maps about
     Geoid coefficients
-        
+
 # =============================================================================
 """
 # =============================================================================
 # LIBRARIES
 # =============================================================================
-import os   
+import os
 os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
 
 from mpl_toolkits.basemap import Basemap
@@ -34,12 +34,12 @@ import GH_basemap      as bmp
 
 """
 # =============================================================================
-# DISPLAY FUNCTIONS  
+# DISPLAY FUNCTIONS
 # =============================================================================
 def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
     print("plotting coeff difference")
-    
-    
+
+
     #resize the official coef
     HC, HS = imp.Fetch_Coef()
     HS_nm_sz = HS[:len(HS_nm_slv), :len(HS_nm_slv)]
@@ -48,45 +48,45 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
     #subtract calculated coeffs
     HS_nm_sz -= HS_nm_slv
     HC_nm_sz -= HC_nm_slv
-    
+
     fig_HC = plt.figure(fig_num)
     plt.clf()
     plt.suptitle("Harmonic coeff difference between official and solved; degree: "+str(len(HS_nm_sz)-1))
-    
+
     for n in range (0, len(HC_nm_sz)):
         Ms_n = np.arange(0, n+1)
-        
+
         HC_ni = HC_nm_sz[n, :n+1]
         HS_ni = HS_nm_sz[n, :n+1]
-        
+
         plt.subplot(211)
         plt.plot(Ms_n, HC_ni,'-*', label='n='+str(n))
-        
+
         plt.subplot(212)
         plt.plot(Ms_n, HS_ni,'-*', label='n='+str(n))
-    
+
     plt.subplot(211)
     plt.ylabel("COSINE coeff diff")
     plt.grid(True)
 #    plt.xlabel("order m of derivation (log)")
 #    plt.ylabel("value of HC_nm")
     plt.legend(loc = 'upper right', title = 'Degree n', fontsize = 5)
-    
+
     plt.subplot(212)
     plt.ylabel("SINE coeff diff")
     plt.grid(True)
     plt.xlabel("order m of derivation (log)")
 #    plt.ylabel("value of HS_nm")
 #    plt.legend(loc = 'lower right', title = 'Degree n', fontsize = 5)
-    
+
     plt.show()
-"""    
+"""
 
 
 def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     """
     Makes a map of given geoid coefficients
-    """    
+    """
     # Get geoid grid
     G_Geoid, G_Long, G_Lat = gen.Gen_Grid ("geoid", lmax, HC, HS, tens, lmax_topo)
 
@@ -94,18 +94,18 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     FIG = plt.figure(fignum)
     plt.clf()
     AX = FIG.add_subplot(111)
-    
+
     """plot parameters"""
     alpha = 1
     map_colors = "jet"
-    
+
     # Make map
     MAP = bmp.Gen_Basemap(FIG.number)
     MAP.drawcoastlines(linewidth = 0.4)
-    
+
     # Display of Gm_Height, with coordinates G_phi and G_theta
-    MAP.contourf(G_Long, G_Lat, G_Geoid, latlon = True, 
-                levels = levels, alpha = alpha, 
+    MAP.contourf(G_Long, G_Lat, G_Geoid, latlon = True,
+                levels = levels, alpha = alpha,
                 cmap=plt.get_cmap(map_colors))
 
     """plot apperance"""
@@ -116,7 +116,7 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     # add a colorbar
     CBAR = MAP.colorbar(location='bottom',pad="5%")
     CBAR.set_label("Geoid elevation in meters")
-    
+
     plt.axis('off')
     plt.show(block=False)
     return FIG
@@ -131,12 +131,12 @@ def TEST_plotGeoid():
     tens = 2
     levels = 30
     title = f"TEST map of geoid"
-    fig1 = Map_Geoid(1, lmax, HC, HS, tens, levels, title, lmax_topo)     
+    fig1 = Map_Geoid(1, lmax, HC, HS, tens, levels, title, lmax_topo)
 # =============================================================================
-# MAIN 
+# MAIN
 # =============================================================================
 if __name__ == '__main__':
     TEST_plotGeoid()
-    
+
     print("\nGH_displayGeoid done")
 

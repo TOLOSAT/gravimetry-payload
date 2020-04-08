@@ -3,11 +3,11 @@
 @authors:
 
 # =============================================================================
- Information: 
+ Information:
 
-    The functions in this script are used to write text to the terminal 
+    The functions in this script are used to write text to the terminal
     with a nice layout
-        
+
 # =============================================================================
 """
 
@@ -33,28 +33,28 @@ import time
 # =============================================================================
 def printProgressBar (iteration, total, length=20, decimals=1):
     """
-    Prints a progress bar. Original code from: 
+    Prints a progress bar. Original code from:
         https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
-        
+
     Call in a loop to create a progress bar in the terminal
     Input:
         iteration: current iteration (Int)
         total: total iterations (Int)
-        length: character length of bar 
+        length: character length of bar
         decimals: positive number of decimals in percent complete
-        
-    """    
+
+    """
     prefix="Progress:" #
-    suffix="Complete" #    
-    
+    suffix="Complete" #
+
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
-    bar = "█"*filledLength + '-'*(length - filledLength)
-    
+    bar = "█" * filledLength  +  '-' * (length-filledLength)
+
     print(f"\r{prefix} |{bar}| {percent}% {suffix}", end = "\r")
-    
+
     # Print new line when complete
-    if iteration == total: 
+    if iteration == total:
         print("\n")
 
 
@@ -65,20 +65,20 @@ def TEST_ProgressBar():
     # A List of Items
     items = list(range(0, 20))
     l = len(items)
-    
+
     printProgressBar(0, l)
     for i, item in enumerate(items):
         # Do stuff...
         time.sleep(1)
         # Update Progress Bar
         printProgressBar(i + 1, l)
-        
-        
+
+
 # =============================================================================
-# MAIN 
+# MAIN
 # =============================================================================
 if __name__ == '__main__':
     TEST_ProgressBar()
-    
+
     print("\nGH_export done")
 

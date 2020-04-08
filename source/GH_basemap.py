@@ -3,16 +3,16 @@
 @authors:
 
 # =============================================================================
- Information: 
-    
+ Information:
+
     The functions in this script all regard matters related to mpl Basemap
-        
+
 # =============================================================================
 """
 # =============================================================================
 # LIBRARIES
 # =============================================================================
-import os   
+import os
 os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
 
 from mpl_toolkits.basemap import Basemap
@@ -35,34 +35,34 @@ import numpy as np
 # FUNCTIONS - BASEMAP PARAMETERS
 # =============================================================================
 def Basemap_Parameters (style = "crude mill"):
-    
+
     if (style == "crude mill"):
         proj = "mill" # projection
         LatS = -90 # llcrnrlat
-        LatN = 90 # urcrnrlat 
+        LatN = 90 # urcrnrlat
         LongW = -180 # llcrnrlon
         LongE = 180 # urcrnrlon
         TS = 20 # lat_ts -- I don't know what this is but everyone online uses it so yeah
         Res = "c" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions
-    
+
     elif (style == "low mill"):
         proj = "mill" # projection
         LatS = -90 # llcrnrlat
-        LatN = 90 # urcrnrlat 
+        LatN = 90 # urcrnrlat
         LongW = -180 # llcrnrlon
         LongE = 180 # urcrnrlon
         TS = 20 # lat_ts -- I don't know what this is but everyone online uses it so yeah
-        Res = "l" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions        
+        Res = "l" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions
 
     else:
         Proj = "mill" # projection
         LatS = -90 # llcrnrlat
-        LatN = 90 # urcrnrlat 
+        LatN = 90 # urcrnrlat
         LongW = -180 # llcrnrlon
         LongE = 180 # urcrnrlon
         TS = 20 # lat_ts -- I don't know what this is but everyone online uses it so yeah
         Res = "c" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions
- 
+
     # Bm_Param = [proj, LatS, LatN, LongW, LongE, TS, Res]
     return proj, LatS, LatN, LongW, LongE, TS, Res
 
@@ -75,50 +75,50 @@ def Gen_Basemap (fignum, style = "crude mill"):
     Generates a Basemap map in the figure numbered fignum
     """
     plt.figure(fignum)
-    
+
     proj, LatS, LatN, LongW, LongE, TS, Res = Basemap_Parameters(style)
 
-    MAP = Basemap(projection = proj, 
-                llcrnrlat = LatS, 
-                urcrnrlat = LatN, 
-                llcrnrlon = LongW, 
-                urcrnrlon = LongE, 
-                lat_ts = TS, 
-                resolution = Res)    
+    MAP = Basemap(projection = proj,
+                llcrnrlat = LatS,
+                urcrnrlat = LatN,
+                llcrnrlon = LongW,
+                urcrnrlon = LongE,
+                lat_ts = TS,
+                resolution = Res)
     return MAP
 
 def Map_Earth (fignum):
     """
     Makes a map of Earth
-    """    
+    """
     FIG = plt.figure(fignum)
     plt.clf()
     AX = FIG.add_subplot(111)
     MAP = Gen_Basemap(FIG.number, "low mill")
     MAP.drawcoastlines(linewidth = 0.4)
-    
-    """map parameters"""    
+
+    """map parameters"""
     water_color = 'lightcyan'
     land_color = 'peachpuff'
     MAP.fillcontinents(color=land_color,lake_color=water_color)
     MAP.drawmapboundary(fill_color=water_color)
-    
+
     parallels = np.arange(-60.,61,30.)
     meridians = np.arange(0.,351.,30.)
     MAP.drawparallels(parallels)
     MAP.drawmeridians(meridians)
-    
+
     """plot apperance"""
     plt.title("Map of the Earth")
-    
+
     plt.axis('off')
     plt.show(block=False)
-    
-    
-    
-    
+
+
+
+
 # =============================================================================
-# DISPLAY FUNCTIONS  
+# DISPLAY FUNCTIONS
 # =============================================================================
 
 
@@ -129,10 +129,10 @@ def TEST_MAP():
     Map_Earth(1)
 
 # =============================================================================
-# MAIN 
+# MAIN
 # =============================================================================
 if __name__ == '__main__':
     TEST_MAP()
-    
+
     print("\nGH_displayCoef done")
 

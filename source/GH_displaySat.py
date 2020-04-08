@@ -1,7 +1,7 @@
 """
 # =============================================================================
- Information: 
-    
+ Information:
+
     The purpose of this script is to display various graphs and maps about
     Satellite trajectories
 
@@ -10,7 +10,7 @@
 # =============================================================================
 # LIBRARIES
 # =============================================================================
-import os   
+import os
 os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
 
 from mpl_toolkits.basemap import Basemap
@@ -31,7 +31,7 @@ import GH_displayTopo  as dtopo
 #import GH_basemap      as bmp
 
 # =============================================================================
-# DISPLAY FUNCTIONS  
+# DISPLAY FUNCTIONS
 # =============================================================================
 def Plot2D_PosEarthfixed (fignum, Pos, Title="No given title"):
     """
@@ -42,26 +42,26 @@ def Plot2D_PosEarthfixed (fignum, Pos, Title="No given title"):
         Title: Title of the plot to appear on the figure
     Output:
         FIG: matplotlib figure object created in this function
-        (MAP: basemap plot created in this function)    
+        (MAP: basemap plot created in this function)
     """
 
 #    Rs = Pos[:,0] # in km
     Lat = Pos[:,1] * 180/pi
     Long = Pos[:,2] * 180/pi
-    
-    FIG = plt.figure(fignum)    
+
+    FIG = plt.figure(fignum)
     plt.clf()
 
     MAP = dtopo.Gen_Basemap(fignum)
-    
+
     """MAP details"""
     MAP.drawcoastlines(linewidth = 0.4)
 
 
     MAP.scatter(Long, Lat, s=0.1, c='r', latlon=True, alpha=1)
     plt.suptitle("Position projected on Earth")
-    plt.title(Title)    
-    
+    plt.title(Title)
+
     plt.show(block=False)
     return FIG
 
@@ -70,43 +70,43 @@ def Plot2D_PosEarthfixed (fignum, Pos, Title="No given title"):
 
 def Plot3D_Pos (fignum, Pos, Title):
     """
-    This functions creates a matplotlib figure and plots Pos in 3D. 
-    
+    This functions creates a matplotlib figure and plots Pos in 3D.
+
     Input:
         Pos: array in spherical coordinates of the satellite position
         Title: The title to be displayed on the plot
     Output:
-        FIG: matplotlib figure object created in this function        
-    """   
+        FIG: matplotlib figure object created in this function
+    """
     X_1 = []
     Y_1 = []
     Z_1 = []
     zero = [] #for the center of the Referential
     zero.append(0)
-    
+
     for i in range (0, len(Pos)):
         r, theta, phi = Pos[i]
         xi, yi, zi = conv.sph2cart(r, theta, phi)
         X_1.append(xi)
         Y_1.append(yi)
         Z_1.append(zi)
-        
-    FIG = plt.figure(fignum) 
+
+    FIG = plt.figure(fignum)
     plt.clf()
 
-    ax1 = FIG.add_subplot(111, projection = '3d') 
-    
-    ax1.plot3D( X_1, Y_1, Z_1, 
+    ax1 = FIG.add_subplot(111, projection = '3d')
+
+    ax1.plot3D( X_1, Y_1, Z_1,
                'ro', markersize=0.5, alpha=0.5)
-    
+
     ax1.plot3D(zero, zero, zero, 'b*')
-    ax1.set_xlabel('x') 
-    ax1.set_ylabel('y') 
-    ax1.set_zlabel('z') 
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('y')
+    ax1.set_zlabel('z')
     plt.suptitle("Position in the terrestrial referential")
     plt.title(Title)
-    plt.show(block=False) 
-    
+    plt.show(block=False)
+
     return FIG
 
 
@@ -123,18 +123,18 @@ def Plot_Acc_Sim_Solv(fignum, Time, Acc_sim, Acc_solved, component, title):
     """
     FIG = plt.figure(fignum)
     plt.clf()
-    
+
     plt.title(title)
     plt.xlabel("time (s)")
     plt.ylabel("acceleration (?)")
-    
-    plt.plot(Time[:Acc_sim.shape[0]], Acc_sim[:,component], "ro-", alpha=0.3, label="simulated")   
-    
-    plt.plot(Time[:Acc_solved.shape[0]], Acc_solved[:,component], "bo-", alpha=0.3, label="solved") 
-    
+
+    plt.plot(Time[:Acc_sim.shape[0]], Acc_sim[:,component], "ro-", alpha=0.3, label="simulated")
+
+    plt.plot(Time[:Acc_solved.shape[0]], Acc_solved[:,component], "bo-", alpha=0.3, label="solved")
+
     plt.legend()
     plt.show(block=False)
-    
+
     return FIG
 
 
@@ -152,10 +152,10 @@ def TEST_Plots ():
 
 
 # =============================================================================
-# MAIN 
+# MAIN
 # =============================================================================
 if __name__ == '__main__':
     TEST_Plots()
-    
+
     print("\nGH_displaySat done")
 
