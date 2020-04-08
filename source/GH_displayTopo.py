@@ -26,7 +26,7 @@ import GH_generate     as gen
 #import GH_solve        as solv
 #import GH_displayGeoid as dgeo
 #import GH_displaySat   as dsat
-#import GH_export       as exp
+import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
 import GH_basemap      as bmp
@@ -65,10 +65,10 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
 
     """plot apperance"""
 #    FIG.set_size_inches(8, 6) #(36, 24)
-#    font_s = 10 # 50  
+    font_s = 10 
     plt.suptitle(title) #, fontsize = font_s)
     plot_specs = f"{1+36*tens}x{1+18*tens} points; lmax = {lmax} degrees; {levels} color levels"
-    plt.title(plot_specs) #, fontsize = font_s)
+    plt.title(plot_specs, fontsize = font_s)
 
     # add a colorbar
     CBAR = MAP.colorbar(location='bottom',pad="5%")
@@ -90,7 +90,7 @@ def TEST_Plots():
     levels = 35
     title = f"TEST map of topology"
     fig1 = Map_Topo(1, lmax, HC_topo, HS_topo, tens, levels, title) 
-    
+    exp.Store_Figure(fig1.number, "test")
     
 # =============================================================================
 # MAIN 

@@ -111,7 +111,7 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     """plot apperance"""
     plt.suptitle(title)
     plot_specs = f"{1+36*tens}x{1+18*tens} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
-    plt.title(plot_specs)
+    plt.title(plot_specs, fontsize=10)
 
     # add a colorbar
     CBAR = MAP.colorbar(location='bottom',pad="5%")

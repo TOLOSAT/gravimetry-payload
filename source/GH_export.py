@@ -32,7 +32,7 @@ import GH_terminal     as term
 # =============================================================================
 # FUNCTIONS TO STORE FILES
 # =============================================================================
-def Store_Array(data, title, path=""):  
+def Store_Array(data, title, path="../Rendered"):  
     """
     Stores an array into a text file that can later be imported again
     
@@ -46,7 +46,7 @@ def Store_Array(data, title, path=""):
         data = np.loadtxt(title)
     
     """ 
-    print(f"Writing {title} in {path}")
+    print(f"Writing \"{title}\" in \"{path}\"")
     length = len(data)
     file = open(f"{path}/{title}", "w+")
     for n in range (len(data)):
@@ -62,7 +62,7 @@ def Store_Array(data, title, path=""):
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
-def Store_Figure(fignum, title, time, path="", dpi=500):
+def Store_Figure(fignum, title, time="", path="../Rendered/images", dpi=500):
     """
     Stores a figure into a .png format
     Input: 
@@ -72,8 +72,11 @@ def Store_Figure(fignum, title, time, path="", dpi=500):
         dpi: pixels per inch density      
     """
     plt.figure(fignum)
+#    mng = plt.get_current_fig_manager()
+#    mng.window.showMaximized()
+#    plt.show()
     file_name = f"{path}/{time} {title}.png"
-    plt.savefig(file_name, dpi = dpi)
+    plt.savefig(file_name, dpi=dpi)
     
     
       
