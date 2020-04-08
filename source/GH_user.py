@@ -47,7 +47,7 @@ import GH_export       as exp
 #import GH_basemap      as bmp
 
 
-data_path = "../data"
+from GH_import import data_path #= "../data"
 
 
 # =============================================================================

@@ -63,7 +63,7 @@ def printProgressBar (iteration, total, length=20, decimals=1):
 # =============================================================================
 def TEST_ProgressBar():
     # A List of Items
-    items = list(range(0, 5))
+    items = list(range(0, 20))
     l = len(items)
     
     printProgressBar(0, l)
