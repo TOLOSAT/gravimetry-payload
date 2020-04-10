@@ -55,23 +55,24 @@ def Get_Time(format_="%Y%m%d_%H%M%S"):
 # =============================================================================
 # FUNCTIONS - GEODESY
 # =============================================================================
-def Get_Radius(angle):
+def Get_Radius(Lat):
     """
     Returns the radius of the reference elipsoid in meters
 
     Input:
-        angle: latitude, inclination from the z axis in degrees
+        Lat: latitude, inclination from the z axis in radians
     Output:
         R: Radius in meters
     """
-    theta = pi/2 -angle
     Radius_eq = 6378137 # m
     Flat_factor = 1/298.257223563
-    Radius_pol = Radius_eq * Flat_factor # m
+    Radius_pol = Radius_eq * (1- Flat_factor) # m
     a = Radius_eq
     b = Radius_pol
-    deno = np.sqrt(a**2*sin(theta)**2 + b**2*np.cos(theta)**2)
-    R = a*b/deno
+    
+    numer = (a**2*cos(Lat))**2 + (b**2*sin(Lat))**2
+    denom = (a   *cos(Lat))**2 + (b   *sin(Lat))**2
+    R = np.sqrt(numer/denom)
     return R
 
 
@@ -169,12 +170,17 @@ def Fetch_Topo_Coef():
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
+def TEST_Radius():
+    Lats = np.arange(-90, 91, 10)
+    Rads = Get_Radius(Lats*pi/180)
+#    plt.plot(Rads*sin(Lats*pi/180), Rads*cos(Lats*pi/180))
+    plt.plot(Lats, Rads)
 
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
 #    HC, HS = Fetch_Coef()
-
+    TEST_Radius()
     print("\nGH_import done")
 

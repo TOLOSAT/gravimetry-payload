@@ -30,7 +30,7 @@ import GH_generate     as gen
 #import GH_displaySat   as dsat
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
-#import GH_terminal     as term
+import GH_terminal     as term
 import GH_basemap      as bmp
 
 """
@@ -122,18 +122,35 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     plt.show(block=False)
     return FIG
 
-def Plot_GeoPot_height():
+def Plot_GeoPot_height(fignum, lmax, Lat, Long, HC, HS):
+    """
+    Plots the geopotential at given coordinates from Earth's center to the 
+    surface, and beyond into space.
     """
     
-    """
+    R_earth = imp.Get_Radius(Lat)
+    Rs = np.linspace(95, 105, 100)
+    G_Pot = np.zeros(Rs.shape)
+    G_Pot_Basic = np.zeros(Rs.shape)
     
-
-
-
-
-
-
-
+    for i in range (len(Rs)):
+        term.printProgressBar(i+1, len(Rs))
+        G_Pot[i] = gen.Get_Geo_Pot (lmax, Rs[i]*R_earth, Lat, Long, HC, HS)
+        G_Pot_Basic[i] = Math_calc_geopot_basic(Rs[i]*R_earth)
+        
+        
+    plt.figure(fignum)
+    plt.plot(Rs, G_Pot,       label=f"      {Lat}-{Long}; {lmax}")
+    plt.plot(Rs, G_Pot_Basic, label=f"basic {Lat}-{Long}; {lmax}")
+    plt.title("geopotential against the radius of the Earth")
+    plt.xlabel("Distance from the center to the surface of the Earth (in %)")
+    plt.ylabel("local value of the geopotential (m^2/s^2)")
+    plt.legend(fontsize = 8)
+    plt.show(block=False)
+    
+    
+    
+    
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
@@ -145,11 +162,73 @@ def TEST_plotGeoid():
     levels = 30
     title = f"TEST map of geoid"
     fig1 = Map_Geoid(1, lmax, HC, HS, tens, levels, title, lmax_topo)
+    
+
+
+def TEST_plotGeoPot_Height():
+    HC, HS = imp.Fetch_Coef()    
+    for i in range (1, 4):
+        Plot_GeoPot_height(1, i*5, 0, 0, HC, HS)
+    
+    
+def Math_calc_geopot_basic(z):
+    G = 6.673E-11
+    M = 5.975E24
+    a = 6.378E6
+    
+    P = G*M*(1/a + 1/(a+float(z)))
+    return P
+    
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    TEST_plotGeoid()
+#    TEST_plotGeoid()
+#    TEST_plotGeoPot_Height()
 
+    HC, HS = imp.Fetch_Coef() 
+    plt.figure(1)
+    
+    Lat = 0
+    Long = 0
+    R_earth = imp.Get_Radius(Lat)
+
+    
+    
+#    Rs = np.linspace(95, 105, 100)
+#    G_Pot = np.zeros(Rs.shape)
+#    G_Pot_Basic = np.zeros(Rs.shape)    
+#    for i in range (len(Rs)):
+#        term.printProgressBar(i+1, len(Rs))
+#        G_Pot[i] = gen.Get_Geo_Pot (lmax, Rs[i]*R_earth, Lat, Long, HC, HS)
+#        G_Pot_Basic[i] = Math_calc_geopot_basic(Rs[i]*R_earth)
+#    plt.plot(Rs, G_Pot,       label=f"      {Lat}-{Long}; {lmax}")
+#    plt.plot(Rs, G_Pot_Basic, label=f"basic {Lat}-{Long}; {lmax}")
+#    plt.title("geopotential against the radius of the Earth")
+#    plt.xlabel("Distance from the center to the surface of the Earth (in %)")
+#    plt.ylabel("local value of the geopotential (m^2/s^2)")
+    
+    
+    lmax = np.arange(0, 20, 1)
+    G_Pot = np.zeros(lmax.shape)   
+    for i in range (len(lmax)):
+        term.printProgressBar(i+1, len(lmax))
+        G_Pot[i] = gen.Get_Geo_Pot (lmax[i], R_earth, Lat, Long, HC, HS)
+    plt.plot(lmax, G_Pot,       label=f"{Lat}-{Long}")
+    plt.title("geopotential against lmax")
+    plt.xlabel("lmax")
+    plt.ylabel("local value of the geopotential (m^2/s^2)")   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    plt.legend(fontsize = 8)
+    plt.show(block=False)
+    
     print("\nGH_displayGeoid done")
 

@@ -87,7 +87,7 @@ def Get_Topo_Height (lmax, Lat, Long, HC_topo, HS_topo):
 # =============================================================================
 # FUNCTIONS TO WORK ON GEOID
 # =============================================================================
-def Get_Geoid_Pot (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
+def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS):
     """
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
@@ -95,7 +95,6 @@ def Get_Geoid_Pot (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     GM = 3986004.415E8 # m**3 s**-2 : Earth's standard gravitational parameter
     # wiki says : gm = 6.673*10**-11 * 5.975*10**24 = 398711749999999.94 OR 3.986004418E14
     a = 6378136.3 # m
-    R = imp.Get_Radius(Lat) + Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
 
     Sum1 = 0
     Pmn, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
@@ -119,7 +118,7 @@ def Get_Geoid_Pot (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
 # =============================================================================
 # FUNCTIONS TO GENERATE DATA ARRAYs
 # =============================================================================
-def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
+def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[]):
     """
     This function generates an array containing Earth's topology at Lat/Long
     coordinates.
@@ -163,7 +162,8 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
             if (measure == "topo"):
                 G_Grid[j,i] = Get_Topo_Height(lmax, Lat, Long, HC, HS)
             elif (measure == "geopot"):
-                G_Grid[j,i] = Get_Geoid_Pot(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
+                R = imp.Get_Radius(Lat) + Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
+                G_Grid[j,i] = Get_Geo_Pot(lmax, R, Lat, Long, HC, HS)
 
 
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
