@@ -58,7 +58,7 @@ if __name__ == '__main__':
 # =============================================================================
 # # ===========================================================================
 # =============================================================================
-    """THE THINGS YOU CAN CHANGE AS A USER"""
+    """ THE THINGS YOU CAN CHANGE AS A USER """
 
     """ The original satellite path """
     #file_name = "ISS_Earthfixed_1jour_1sec.e"
@@ -66,17 +66,17 @@ if __name__ == '__main__':
 #    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     #file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
     file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
-    days = 0.1
+    days = 0.5
 
     """ data solving """
-    lmax_gen = 8 # when generating the data
+    lmax_gen = 5 # when generating the data
 
-    lmax_solve = 8  # when solving for coefficients
+    lmax_solve = 5  # when solving for coefficients
 
     """ plotting maps of geoids """
-    lmax_topo = 5
+    lmax_topo = 6
     tens = 1
-    levels = 50
+    levels = 35
 
     """ save the plots and coefficients """
     save = False

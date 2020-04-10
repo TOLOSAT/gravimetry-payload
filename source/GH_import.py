@@ -66,7 +66,8 @@ def Get_Radius(angle):
     """
     theta = pi/2 -angle
     Radius_eq = 6378137 # m
-    Radius_pol = 6356752.3142 # m
+    Flat_factor = 1/298.257223563
+    Radius_pol = Radius_eq * Flat_factor # m
     a = Radius_eq
     b = Radius_pol
     deno = np.sqrt(a**2*sin(theta)**2 + b**2*np.cos(theta)**2)
@@ -93,7 +94,7 @@ def Normalize (l, m):
     Equation obtained fron the dicumentation that came with the EGM2008 coeffs
     """
     d_om = 0
-    if m==0 :
+    if (m == 0) :
         d_om = 1
 
     P1 = math.factorial(l - m)

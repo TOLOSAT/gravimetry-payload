@@ -12,6 +12,7 @@
 # =============================================================================
 # LIBRARIES
 # =============================================================================
+# You might need to comment these two lines out
 import os
 os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
 

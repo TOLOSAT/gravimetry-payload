@@ -13,6 +13,7 @@
 # =============================================================================
 # LIBRARIES
 # =============================================================================
+# You might need to comment these two lines out
 import os
 os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
 
@@ -88,7 +89,7 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     Makes a map of given geoid coefficients
     """
     # Get geoid grid
-    G_Geoid, G_Long, G_Lat = gen.Gen_Grid ("geoid", lmax, HC, HS, tens, lmax_topo)
+    G_Geoid, G_Long, G_Lat = gen.Gen_Grid ("geopot", lmax, HC, HS, tens, lmax_topo)
 
     print("Plotting Geoid map\n")
     FIG = plt.figure(fignum)
@@ -115,11 +116,23 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
 
     # add a colorbar
     CBAR = MAP.colorbar(location='bottom',pad="5%")
-    CBAR.set_label("Geoid elevation in meters")
+    CBAR.set_label("Gravitational potential in m^2/s^2")
 
     plt.axis('off')
     plt.show(block=False)
     return FIG
+
+def Plot_GeoPot_height():
+    """
+    
+    """
+    
+
+
+
+
+
+
 
 # =============================================================================
 # TEST FUNCTIONS

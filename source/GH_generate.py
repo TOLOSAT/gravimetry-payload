@@ -68,7 +68,8 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
 # =============================================================================
 def Get_Topo_Height (lmax, Lat, Long, HC_topo, HS_topo):
     """
-    This function returns the height of Earth's etimated topology at Lat Long coordinates
+    This function returns the height of Earth's estimated topology at Lat/Long coordinates
+    The solution is calculated up to degree lmax in the HC HS model
     """
     Sum1 = 0
     Pmn, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat)) # I am allowed to write that.
@@ -77,9 +78,9 @@ def Get_Topo_Height (lmax, Lat, Long, HC_topo, HS_topo):
         Sum2 = 0
 
         for m in range (0,l+1):
-            Sum2 = Sum2 + imp.Normalize(l, m) * Pmn[m, l] * (HC_topo[l,m]*cos(m*Long) + HS_topo[l,m]*sin(m*Long))
+            Sum2 += (HC_topo[l,m]*cos(m*Long) + HS_topo[l,m]*sin(m*Long)) * Pmn[m, l] * imp.Normalize(l, m)
 
-        Sum1 = Sum1 + Sum2
+        Sum1 += Sum2
 
     return Sum1
 
@@ -88,25 +89,26 @@ def Get_Topo_Height (lmax, Lat, Long, HC_topo, HS_topo):
 # =============================================================================
 def Get_Geoid_Pot (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     """
-    This function returns the potential at given height
+    This function returns the potential at given height/Lat/Long coordinates
+    The solution is calculated up to degree lmax in the HC HS model
     """
-    GM = 3986004.415*10**8 # m**3 s**-2
-    # wiki says : gm = 6.673*10**-11*5.975*10**24 = 398711749999999.94
+    GM = 3986004.415E8 # m**3 s**-2 : Earth's standard gravitational parameter
+    # wiki says : gm = 6.673*10**-11 * 5.975*10**24 = 398711749999999.94 OR 3.986004418E14
     a = 6378136.3 # m
     R = imp.Get_Radius(Lat) + Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
 
     Sum1 = 0
     Pmn, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
 
-    for l in range (2, lmax+1):    # SHOULD START AT l=2 !!!
+    for l in range (2, lmax+1):
         Sum2 = 0
 
         for m in range(0, l+1):
-            Sum2 = Sum2 + imp.Normalize(l, m) * Pmn[m,l] * (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long))
+            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * Pmn[m, l] * imp.Normalize(l, m)
 
-        Sum1 = Sum1 + (a/R)**l * Sum2 # OK, the "a" here is weird, idk what it's doing here
+        Sum1 += (a/R)**l * Sum2 # OK, the "a" here is weird, idk what it's doing here
 
-    Pot = GM/R*(1+Sum1)
+    Pot = GM/R*(1 + Sum1)
 
     return Pot
 
@@ -122,7 +124,7 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
     This function generates an array containing Earth's topology at Lat/Long
     coordinates.
     Input:
-        measure: "topo" or "geoid", the measurement to be mapped on Earth
+        measure: "topo", "geopot" or "geoid", the measurement to be mapped on Earth
         lmax: degree to which the topology should be calculated
         HC_topo: Harmonic cosine coefficients to earth's topology
         HS_topo: Harmonic sine coefficients to earth's topology
@@ -136,7 +138,7 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
         A progress bar for when there are a lot of points
         https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
     """
-    if (measure == "geoid"):
+    if (measure == "geopot"):
         HC_topo, HS_topo = imp.Fetch_Topo_Coef()
 
     size_long = 1 + 36*tens
@@ -160,7 +162,7 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
 
             if (measure == "topo"):
                 G_Grid[j,i] = Get_Topo_Height(lmax, Lat, Long, HC, HS)
-            elif (measure == "geoid"):
+            elif (measure == "geopot"):
                 G_Grid[j,i] = Get_Geoid_Pot(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
 
 

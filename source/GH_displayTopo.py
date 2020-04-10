@@ -13,6 +13,7 @@
 # =============================================================================
 # LIBRARIES
 # =============================================================================
+# You might need to comment these two lines out
 import os
 os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
 
@@ -85,8 +86,8 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
 
 def TEST_Plots():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 8
-    tens = 1
+    lmax = 10
+    tens = 2
     levels = 35
     title = f"TEST map of topology"
     fig1 = Map_Topo(1, lmax, HC_topo, HS_topo, tens, levels, title)
