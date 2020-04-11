@@ -28,6 +28,7 @@ from time import gmtime, strftime
 #import GH_displayTopo  as dtopo
 import GH_terminal     as term
 #import GH_basemap      as bmp
+#import GH_harmonics    as harm
 
 # =============================================================================
 # FUNCTIONS TO STORE FILES

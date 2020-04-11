@@ -19,6 +19,8 @@ os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy import pi, sin, cos
+
 
 #import GH_import       as imp
 #import GH_convert      as conv
@@ -30,12 +32,13 @@ import numpy as np
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
 #import GH_basemap      as bmp
+#import GH_harmonics    as harm
 
 
 # =============================================================================
 # FUNCTIONS - BASEMAP PARAMETERS
 # =============================================================================
-def Basemap_Parameters (style = "crude mill"):
+def init_basemap (style = "crude mill"):
 
     if (style == "crude mill"):
         proj = "mill" # projection
@@ -56,7 +59,7 @@ def Basemap_Parameters (style = "crude mill"):
         Res = "l" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions
 
     else:
-        Proj = "mill" # projection
+        proj = "mill" # projection
         LatS = -90 # llcrnrlat
         LatN = 90 # urcrnrlat
         LongW = -180 # llcrnrlon
@@ -77,7 +80,7 @@ def Gen_Basemap (fignum, style = "crude mill"):
     """
     plt.figure(fignum)
 
-    proj, LatS, LatN, LongW, LongE, TS, Res = Basemap_Parameters(style)
+    proj, LatS, LatN, LongW, LongE, TS, Res = init_basemap(style)
 
     MAP = Basemap(projection = proj,
                 llcrnrlat = LatS,
@@ -116,7 +119,21 @@ def Map_Earth (fignum):
     plt.show(block=False)
 
 
+def init_grid(tens):
+    """
+    Initiates the grid variables based on the number of points wanted
+    """
+    size_long = 1 + 36*tens
+    size_lat  = 1 + 18*tens
+    points = size_long * size_lat
 
+    Line_long = np.linspace(0, 2*pi, size_long) # 0 to 360 ; must subtract 180
+    Line_lat  = np.linspace(0, pi, size_lat) # 0 to 180 ; must do 90 - theta
+    G_Long, G_Lat = np.meshgrid((Line_long - pi), (pi/2 - Line_lat))
+
+    G_Grid = np.zeros((size_lat, size_long))
+    
+    return G_Grid, G_Long, G_Lat, Line_long, Line_lat, size_long, size_lat, points
 
 # =============================================================================
 # DISPLAY FUNCTIONS

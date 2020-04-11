@@ -32,6 +32,7 @@ import GH_generate     as gen
 #import GH_displayTopo  as dtopo
 import GH_terminal     as term
 import GH_basemap      as bmp
+#import GH_harmonics    as harm
 
 """
 # =============================================================================

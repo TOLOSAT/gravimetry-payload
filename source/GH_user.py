@@ -45,6 +45,7 @@ import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
 #import GH_basemap      as bmp
+#import GH_harmonics    as harm
 
 
 from GH_import import data_path #= "../data"
