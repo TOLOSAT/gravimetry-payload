@@ -5,10 +5,8 @@
 # =============================================================================
  Information:
 
-    The purpose of this script is to generate data arrays.
-    Satellite acceleration, Topology
-
-    These arrays must be in spherical coordinates, in km.
+    The purpose of this script is to generate data arrays for satellite 
+    trajectory
 
 # =============================================================================
 """
@@ -29,6 +27,7 @@ import GH_solve        as solv
 import GH_terminal     as term
 import GH_basemap      as bmp
 #import GH_harmonics    as harm
+
 
 # =============================================================================
 # FUNCTIONS TO GENERATE ACCELERATION ARRAYS
@@ -63,7 +62,7 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
 
     return Acc_sim
 
-
+'''
 # =============================================================================
 # FUNCTIONS TO GENERATE DATA ARRAYs
 # =============================================================================
@@ -114,7 +113,7 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[])
                 
                 
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
-
+'''
 
 
 # =============================================================================

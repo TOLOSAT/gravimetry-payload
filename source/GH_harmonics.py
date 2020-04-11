@@ -5,10 +5,8 @@
 # =============================================================================
  Information:
 
-    The purpose of this script is to calculate the values from spherical 
+    The purpose of this script is to calculate the sums from spherical 
     harmonic coefficients
-
-    These arrays must be in spherical coordinates, in km.
 
 # =============================================================================
 """
@@ -29,52 +27,20 @@ import GH_solve        as solv
 import GH_terminal     as term
 import GH_basemap      as bmp
 #import GH_harmonics    as harm
-# =============================================================================
-# FUNCTIONS TO GENERATE ACCELERATION ARRAYS
-# =============================================================================
-def Gen_Sim_Acc (lmax, HC, HS, Pos):
-    """
-    Generates simulated acceleration values from known coefficients
-    and known positions
-
-    Input:
-        lmax: max order desired
-        HC: cosine coefficients array
-        HS: sine coefficients array
-        Pos: line
-    Output:
-        Acc_sim: simulated acceleration values in spherical coordinates
-
-    """
-    print("\nGenerating simulated acclerations, lmax =", lmax, "")
-
-    CS = conv.Make_Line_Coef(lmax, HC, HS)
-    print(f"Shape of the Coef array = {CS.shape}")
-
-    M_PotGrad = solv.Get_PotGradMatrix(lmax, Pos) # get M_PotGrad
-#    print("shape of M=", M_PotGrad.shape)
-
-    Acc_line = M_PotGrad.dot(CS)
-#    print("shape of Acc_line=", Acc_line.shape)
-
-    Acc_sim = conv.Make_Array(Acc_line, 3)
-#    print("shape of Acc_sim=", Acc_sim.shape)
-
-    return Acc_sim
 
 
 # =============================================================================
-# FUNCTIONS TO WORK ON TOPOLOGY
+# FUNCTIONS TO CALCULATE SPHERICAL HARMONIC SUMS
 # =============================================================================
-def Get_Topo_Height (lmax, Lat, Long, HC_topo, HS_topo):
+def Get_Topo_Height (lmax_topo, Lat, Long, HC_topo, HS_topo):
     """
     This function returns the height of Earth's estimated topology at Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
     """
     Sum1 = 0
-    P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat)) # I am allowed to write that.
+    P_lm, _ = imp.Pol_Legendre(lmax_topo, lmax_topo, cos(Lat)) # I am allowed to write that.
 
-    for l in range(0, lmax+1):
+    for l in range(0, lmax_topo+1):
         Sum2 = 0
 
         for m in range (0,l+1):
@@ -92,9 +58,7 @@ def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS):
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
     """
-    GM = 3986004.415E8 # m**3 s**-2 : Earth's standard gravitational parameter
-    # wiki says : gm = 6.673*10**-11 * 5.975*10**24 = 398711749999999.94 OR 3.986004418E14
-    a = 6378136.3 # m
+    GM, a, _ = imp.Get_Grav_constants()
 
     Sum1 = 0
     P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))

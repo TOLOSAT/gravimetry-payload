@@ -33,6 +33,7 @@ from time import gmtime, strftime
 #import GH_basemap      as bmp
 #import GH_harmonics    as harm
 
+
 from GH_convert import cart2sphA
 
 # =============================================================================
@@ -79,7 +80,21 @@ def Get_Radius(Lat):
 #    R = np.sqrt(numer/denom)
     return R
 
-
+def Get_Grav_constants():
+    """ 
+    Returns some constants for gravity 
+        GM: Gravitationnal constant * Earth Mass
+        a: Reference Radius
+        g: reference Earth acceleration at sea level
+    
+    """
+    GM = 3986004.415E8 # m**3 s**-2 : Earth's standard gravitational parameter
+    # wiki says : gm = 6.673*10**-11 * 5.975*10**24 = 398711749999999.94 OR 3.986004418E14
+    a = 6378136.3 # m
+    g = 9.80665 # m/s^2
+    return GM, a, g
+    
+    
 # =============================================================================
 # FUNCTIONS - MATHEMATICAL VALUES
 # =============================================================================

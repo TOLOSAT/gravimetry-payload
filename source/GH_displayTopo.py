@@ -20,7 +20,7 @@ os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
-from numpi import pi, sin, cos
+from numpy import pi, sin, cos
 
 
 import GH_import       as imp
@@ -33,12 +33,13 @@ import GH_export       as exp
 #import GH_displayTopo  as dtopo
 import GH_terminal     as term
 import GH_basemap      as bmp
-#import GH_harmonics    as harm
+import GH_harmonics    as harm
+
 
 # =============================================================================
 # Generate functions
 # =============================================================================
-def Gen_Topo (lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[]):
+def Gen_Topo (lmax_topo, HC_topo, HS_topo, tens):
     """
     This function generates an array containing Earth's topology at Lat/Long
     coordinates.
@@ -56,31 +57,17 @@ def Gen_Topo (lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[]):
     """
     
     G_Grid, G_Long, G_Lat, Line_long, Line_lat, size_long, size_lat, points = bmp.init_grid(tens)   
-    print(f"Generating Topology grid for lmax = {lmax}, {points} points")
+    print(f"Generating Topology grid for lmax = {lmax_topo}, {points} points")
 
-    
     for i in range(0, size_long):
         term.printProgressBar(i+1, size_long)
         Long = Line_long[i]
 
         for j in range(0, size_lat):
             Lat = Line_lat[j]
-            G_Grid[j,i] = harm.Get_Topo_Height(lmax, Lat, Long, HC, HS)
+            G_Grid[j,i] = harm.Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo)
               
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -95,7 +82,7 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
     print("Plotting The Topology")
 
     # Get height grid
-    G_Height, G_Long, G_Lat = gen.Gen_Grid ("topo", lmax, HC_topo, HS_topo, tens)
+    G_Height, G_Long, G_Lat = Gen_Topo (lmax, HC_topo, HS_topo, tens)
 
     print("Plotting Topology map")
     FIG = plt.figure(fignum)
@@ -138,7 +125,7 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
 
 def TEST_Plots():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 10
+    lmax = 20
     tens = 2
     levels = 35
     title = f"TEST map of topology"
