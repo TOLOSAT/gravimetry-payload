@@ -89,7 +89,7 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     Makes a map of given geoid coefficients
     """
     # Get geoid grid
-    G_Geoid, G_Long, G_Lat = gen.Gen_Grid ("geopot", lmax, HC, HS, tens, lmax_topo)
+    G_Geoid, G_Long, G_Lat = gen.Gen_Grid ("delta g", lmax, HC, HS, tens, lmax_topo)
 
     print("Plotting Geoid map\n")
     FIG = plt.figure(fignum)
@@ -156,12 +156,12 @@ def Plot_GeoPot_height(fignum, lmax, Lat, Long, HC, HS):
 # =============================================================================
 def TEST_plotGeoid():
     HC, HS = imp.Fetch_Coef()
-    lmax = 5
-    lmax_topo = 5
-    tens = 2
-    levels = 30
+    lmax = 10
+    lmax_topo = 1
+    tens = 3
+    levels = 35
     title = f"TEST map of geoid"
-    fig1 = Map_Geoid(1, lmax, HC, HS, tens, levels, title, lmax_topo)
+    fig1 = Map_Geoid(2, lmax, HC, HS, tens, levels, title, lmax_topo)
     
 
 
@@ -183,9 +183,9 @@ def Math_calc_geopot_basic(z):
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-#    TEST_plotGeoid()
+    TEST_plotGeoid()
 #    TEST_plotGeoPot_Height()
-
+"""
     HC, HS = imp.Fetch_Coef() 
     plt.figure(1)
     
@@ -231,4 +231,4 @@ if __name__ == '__main__':
     plt.show(block=False)
     
     print("\nGH_displayGeoid done")
-
+"""

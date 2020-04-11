@@ -58,7 +58,8 @@ def Get_Time(format_="%Y%m%d_%H%M%S"):
 def Get_Radius(Lat):
     """
     Returns the radius of the reference elipsoid in meters
-
+    https://gis.stackexchange.com/questions/20200/how-do-you-compute-the-earths-radius-at-a-given-geodetic-latitude
+    
     Input:
         Lat: latitude, inclination from the z axis in radians
     Output:
@@ -69,10 +70,12 @@ def Get_Radius(Lat):
     Radius_pol = Radius_eq * (1- Flat_factor) # m
     a = Radius_eq
     b = Radius_pol
+    deno = np.sqrt(a**2*sin(Lat)**2 + b**2*np.cos(Lat)**2)
+    R = a*b/deno
     
-    numer = (a**2*cos(Lat))**2 + (b**2*sin(Lat))**2
-    denom = (a   *cos(Lat))**2 + (b   *sin(Lat))**2
-    R = np.sqrt(numer/denom)
+#    numer = (a**2*cos(Lat))**2 + (b**2*sin(Lat))**2
+#    denom = (a   *cos(Lat))**2 + (b   *sin(Lat))**2
+#    R = np.sqrt(numer/denom)
     return R
 
 

@@ -72,13 +72,13 @@ def Get_Topo_Height (lmax, Lat, Long, HC_topo, HS_topo):
     The solution is calculated up to degree lmax in the HC HS model
     """
     Sum1 = 0
-    Pmn, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat)) # I am allowed to write that.
+    P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat)) # I am allowed to write that.
 
     for l in range(0, lmax+1):
         Sum2 = 0
 
         for m in range (0,l+1):
-            Sum2 += (HC_topo[l,m]*cos(m*Long) + HS_topo[l,m]*sin(m*Long)) * Pmn[m, l] * imp.Normalize(l, m)
+            Sum2 += (HC_topo[l,m]*cos(m*Long) + HS_topo[l,m]*sin(m*Long)) * P_lm[m, l] * imp.Normalize(l, m)
 
         Sum1 += Sum2
 
@@ -97,13 +97,13 @@ def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS):
     a = 6378136.3 # m
 
     Sum1 = 0
-    Pmn, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
+    P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
 
     for l in range (2, lmax+1):
         Sum2 = 0
 
         for m in range(0, l+1):
-            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * Pmn[m, l] * imp.Normalize(l, m)
+            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * imp.Normalize(l, m)
 
         Sum1 += (a/R)**l * Sum2 # OK, the "a" here is weird, idk what it's doing here
 
@@ -113,6 +113,61 @@ def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS):
 
 
 
+def Get_Geoid_Height (lmax, R, Lat, Long, HC, HS):
+    """
+    This function returns the potential at given height/Lat/Long coordinates
+    The solution is calculated up to degree lmax in the HC HS model
+    """
+    GM = 3986004.415E8 # m^3 s^-2 : Earth's standard gravitational parameter
+    # wiki says : GM = 6.673E-11 * 5.975E24 = 398711749999999.94 OR 3.9871175E14
+    a = 6378136.3 # m
+    g = 9.80665 # m/s^2
+#    R = a
+    
+    
+    Sum1 = 0
+    P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
+
+    for l in range (0, lmax+1):
+        Sum2 = 0
+
+        for m in range(0, l+1):
+            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * imp.Normalize(l, m)
+
+        Sum1 +=  (a/R)**l * Sum2 # OK, the "a" here is weird, idk what it's doing here
+
+    Geo_H = GM * Sum1 / (R*g)
+
+    return Geo_H
+
+
+
+def Get_delta_g (lmax, R, Lat, Long, HC, HS):
+    """
+    This function returns the potential at given height/Lat/Long coordinates
+    The solution is calculated up to degree lmax in the HC HS model
+    """
+    GM = 3986004.415E8 # m^3 s^-2 : Earth's standard gravitational parameter
+    # wiki says : GM = 6.673E-11 * 5.975E24 = 398711749999999.94 OR 3.9871175E14
+    a = 6378136.3 # m
+    g = 9.80665 # m/s^2
+#    R = a
+    
+    
+    Sum1 = 0
+    P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
+
+    for l in range (0, lmax+1):
+        Sum2 = 0
+
+        for m in range(0, l+1):
+            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * imp.Normalize(l, m)
+
+        Sum1 +=  (l-1) * (a/R)**l * Sum2 # OK, the "a" here is weird, idk what it's doing here
+
+    D_g = GM * Sum1 / R**2
+
+    return D_g
 
 
 # =============================================================================
@@ -147,7 +202,7 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[])
     print(f"Generating {measure} grid for lmax = {lmax}, {points} points")
 
     Line_long = np.linspace(0, 2*pi, size_long) # 0 to 360 ; must subtract 180
-    Line_lat = np.linspace(0, pi, size_lat) # 0 to 180 ; must do 90 - theta
+    Line_lat  = np.linspace(0, pi, size_lat) # 0 to 180 ; must do 90 - theta
     G_Long, G_Lat = np.meshgrid((Line_long - pi), (pi/2 - Line_lat))
 
     G_Grid = np.zeros((size_lat, size_long))
@@ -164,8 +219,17 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[])
             elif (measure == "geopot"):
                 R = imp.Get_Radius(Lat) + Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
                 G_Grid[j,i] = Get_Geo_Pot(lmax, R, Lat, Long, HC, HS)
-
-
+            elif (measure == "geoid"):
+                a = 6378136.3 # m
+                a = imp.Get_Radius(Lat)
+                G_Grid[j,i] = Get_Geoid_Height(lmax, a, Lat, Long, HC, HS)
+            elif (measure == "delta g"):
+                a = 6378136.3 # m
+                a = imp.Get_Radius(Lat)
+                G_Grid[j,i] = Get_delta_g(lmax, a, Lat, Long, HC, HS)                
+                
+                
+                
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
 
 
