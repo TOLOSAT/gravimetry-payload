@@ -11,10 +11,10 @@
 # LIBRARIES
 # =============================================================================
 # You might need to comment these two lines out
-import os
-os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
-
-from mpl_toolkits.basemap import Basemap
+#import os
+#os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
+#
+#from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,9 +27,9 @@ import GH_convert      as conv
 #import GH_displayGeoid as dgeo
 #import GH_displaySat   as dsat
 #import GH_export       as exp
-import GH_displayTopo  as dtopo
+#import GH_displayTopo  as dtopo
 #import GH_terminal     as term
-#import GH_basemap      as bmp
+import GH_basemap      as bmp
 #import GH_harmonics    as harm
 
 
@@ -55,7 +55,7 @@ def Plot2D_PosEarthfixed (fignum, Pos, Title="No given title"):
     FIG = plt.figure(fignum)
     plt.clf()
 
-    MAP = dtopo.Gen_Basemap(fignum)
+    MAP = bmp.Gen_Basemap(fignum)
 
     """MAP details"""
     MAP.drawcoastlines(linewidth = 0.4)
@@ -113,7 +113,7 @@ def Plot3D_Pos (fignum, Pos, Title):
     return FIG
 
 
-def Plot_Acc_Sim_Solv(fignum, Time, Acc_sim, Acc_solved, component, title):
+def Plot_Acc_Sim_Solv (fignum, Time, Acc_sim, Acc_solved, component, title):
     """
     Plot path acceleration of simuated and solved paths
     Input:

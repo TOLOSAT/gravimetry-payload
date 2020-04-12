@@ -6,7 +6,7 @@
  Information:
 
     The purpose of this script is to display various graphs and maps about
-    Topology coefficients
+    Topography coefficients
 
 # =============================================================================
 """
@@ -14,62 +14,26 @@
 # LIBRARIES
 # =============================================================================
 # You might need to comment these two lines out
-import os
-os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
+#import os
+#os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
 
-from mpl_toolkits.basemap import Basemap
+#from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
+
 import numpy as np
 from numpy import pi, sin, cos
 
-
 import GH_import       as imp
 #import GH_convert      as conv
-import GH_generate     as gen
+#import GH_generate     as gen
 #import GH_solve        as solv
 #import GH_displayGeoid as dgeo
 #import GH_displaySat   as dsat
 import GH_export       as exp
 #import GH_displayTopo  as dtopo
-import GH_terminal     as term
+#import GH_terminal     as term
 import GH_basemap      as bmp
 import GH_harmonics    as harm
-
-
-# =============================================================================
-# Generate functions
-# =============================================================================
-def Gen_Topo (lmax_topo, HC_topo, HS_topo, tens):
-    """
-    This function generates an array containing Earth's topology at Lat/Long
-    coordinates.
-    Input:
-        measure: "topo", "geopot" or "geoid", the measurement to be mapped on Earth
-        lmax: degree to which the topology should be calculated
-        HC_topo: Harmonic cosine coefficients to earth's topology
-        HS_topo: Harmonic sine coefficients to earth's topology
-        tens: how large the array should be
-    Output:
-        G_Height: array of grid height
-        G_long: grid of longitudes
-        G_lat: grid of latitudes
-
-    """
-    
-    G_Grid, G_Long, G_Lat, Line_long, Line_lat, size_long, size_lat, points = bmp.init_grid(tens)   
-    print(f"Generating Topology grid for lmax = {lmax_topo}, {points} points")
-
-    for i in range(0, size_long):
-        term.printProgressBar(i+1, size_long)
-        Long = Line_long[i]
-
-        for j in range(0, size_lat):
-            Lat = Line_lat[j]
-            G_Grid[j,i] = harm.Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo)
-              
-    return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
-
-
 
 
 # =============================================================================
@@ -79,12 +43,12 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
     """
     makes a map of the topological coefficients
     """
-    print("Plotting The Topology")
+    print("Plotting The Topography")
 
     # Get height grid
-    G_Height, G_Long, G_Lat = Gen_Topo (lmax, HC_topo, HS_topo, tens)
+    G_Height, G_Long, G_Lat = harm.Gen_Topo (lmax, HC_topo, HS_topo, tens)
 
-    print("Plotting Topology map")
+    print("Plotting Topography map")
     FIG = plt.figure(fignum)
     plt.clf()
     AX = FIG.add_subplot(111)
@@ -125,12 +89,12 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
 
 def TEST_Plots():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 20
-    tens = 2
-    levels = 35
-    title = f"TEST map of topology"
-    fig1 = Map_Topo(1, lmax, HC_topo, HS_topo, tens, levels, title)
-    exp.Store_Figure(fig1.number, "test")
+    lmax_topo = 20
+    tens = 4
+    levels = 50
+    title = f"TEST map of topography"
+    fig1 = Map_Topo(1, lmax_topo, HC_topo, HS_topo, tens, levels, title)
+#    exp.Store_Figure(fig1.number, "test")
 
 # =============================================================================
 # MAIN

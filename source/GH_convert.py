@@ -32,33 +32,36 @@ from numpy import pi, sin, cos
 # =============================================================================
 # FUNCTIONS FOR COORDINATES MANIPULATION
 # =============================================================================
-def cart2sph(x,y,z):
-    """
-    converts carthesian coordinates to spherical
-    """
+def cart2sph (x,y,z):
+    """ converts carthesian coordinates to spherical """
     X2_Y2 = x**2 + y**2
     r = np.sqrt(X2_Y2 + z**2)              # r
     elev = np.arctan2(z, np.sqrt(X2_Y2))   # theta
-    az = np.arctan2(y,x)                        # phi
+    az = np.arctan2(y,x)                   # phi
     return r, elev, az
 
-def cart2sphA(pts):
-    """
-    converts an array of carthesian coordinates to spherical
-    """
+def cart2sphA (pts):
+    """ converts an array of carthesian coordinates to spherical """
     Pos = np.array([cart2sph(x,y,z) for x,y,z in pts])
     return Pos
 
-def sph2cart(r,theta,phi):
-    """
-    converts spherical coordinates to carthesian
-    """
+def sph2cart (r,theta,phi):
+    """ converts spherical coordinates to carthesian """
     x=r*cos(theta)*cos(phi)
     y=r*cos(theta)*sin(phi)
     z=r*sin(theta)
     return x, y, z
 
-
+def geodes2geocen (Lat_gd):
+    """converts geodetic (or geographic) latitude into geocentric latitude """
+    a = 6378137 # m 
+    f = 1/298.257223563  # Some constants 
+    b = a * (1-f) # m
+    Lat_gc = np.arctan( (b/a)**2 * np.tan(Lat_gd))
+    return Lat_gc
+    
+    
+    
 # =============================================================================
 # FUNCTIONS FOR ARRAY MANAGEMENT
 # =============================================================================

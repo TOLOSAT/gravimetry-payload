@@ -93,7 +93,8 @@ def Gen_Basemap (fignum, style = "crude mill"):
 
 def Map_Earth (fignum):
     """
-    Makes a map of Earth
+    Creates a Matplotlib figure with a map of the Earth, colored continents 
+    and oceans, showing parallels and meridians
     """
     FIG = plt.figure(fignum)
     plt.clf()
@@ -118,22 +119,6 @@ def Map_Earth (fignum):
     plt.axis('off')
     plt.show(block=False)
 
-
-def init_grid(tens):
-    """
-    Initiates the grid variables based on the number of points wanted
-    """
-    size_long = 1 + 36*tens
-    size_lat  = 1 + 18*tens
-    points = size_long * size_lat
-
-    Line_long = np.linspace(0, 2*pi, size_long) # 0 to 360 ; must subtract 180
-    Line_lat  = np.linspace(0, pi, size_lat) # 0 to 180 ; must do 90 - theta
-    G_Long, G_Lat = np.meshgrid((Line_long - pi), (pi/2 - Line_lat))
-
-    G_Grid = np.zeros((size_lat, size_long))
-    
-    return G_Grid, G_Long, G_Lat, Line_long, Line_lat, size_long, size_lat, points
 
 # =============================================================================
 # DISPLAY FUNCTIONS

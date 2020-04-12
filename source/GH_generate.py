@@ -62,60 +62,6 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
 
     return Acc_sim
 
-'''
-# =============================================================================
-# FUNCTIONS TO GENERATE DATA ARRAYs
-# =============================================================================
-def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[]):
-    """
-    This function generates an array containing Earth's topology at Lat/Long
-    coordinates.
-    Input:
-        measure: "topo", "geopot" or "geoid", the measurement to be mapped on Earth
-        lmax: degree to which the topology should be calculated
-        HC_topo: Harmonic cosine coefficients to earth's topology
-        HS_topo: Harmonic sine coefficients to earth's topology
-        tens: how large the array should be
-    Output:
-        G_Height: array of grid height
-        G_long: grid of longitudes
-        G_lat: grid of latitudes
-
-    """
-    if (measure == "geopot"):
-        HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    
-    G_Grid, G_Long, G_Lat, Line_long, Line_lat, size_long, size_lat, points = bmp.init_grid(tens)   
-    print(f"Generating {measure} grid for lmax = {lmax}, {points} points")
-
-    
-    for i in range(0, size_long):
-        term.printProgressBar(i+1, size_long)
-        Long = Line_long[i]
-
-        for j in range(0, size_lat):
-            Lat = Line_lat[j]
-
-            if (measure == "topo"):
-                G_Grid[j,i] = Get_Topo_Height(lmax, Lat, Long, HC, HS)
-            elif (measure == "geopot"):
-                R = imp.Get_Radius(Lat) + Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
-                G_Grid[j,i] = Get_Geo_Pot(lmax, R, Lat, Long, HC, HS)
-            elif (measure == "geoid"):
-                a = 6378136.3 # m
-                a = imp.Get_Radius(Lat)
-                G_Grid[j,i] = Get_Geoid_Height(lmax, a, Lat, Long, HC, HS)
-            elif (measure == "delta g"):
-                a = 6378136.3 # m
-                a = imp.Get_Radius(Lat)
-                G_Grid[j,i] = Get_delta_g(lmax, a, Lat, Long, HC, HS)                
-                
-                
-                
-    return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
-'''
-
-
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
