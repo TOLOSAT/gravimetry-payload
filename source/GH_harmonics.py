@@ -51,7 +51,7 @@ def Get_Topo_Height (lmax_topo, Lat, Long, HC_topo, HS_topo):
 
 
 
-def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS):
+def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     """
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
@@ -72,7 +72,7 @@ def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS):
 
 
 
-def Get_Geoid_Height (lmax, Lat, Long, HC, HS):
+def Get_Geoid_Height (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     """
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
@@ -212,7 +212,7 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[])
                 G_Grid[j,i] = Get_Geo_Pot(lmax, R, Lat, Long, HC, HS)
             elif (measure == "geoid"):
 #                a = imp.Get_Radius(Lat)
-                G_Grid[j,i] = Get_Geoid_Height(lmax, Lat, Long, HC, HS)
+                G_Grid[j,i] = Get_Geoid_Height(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
             elif (measure == "geoid2"):
                 G_Grid[j,i] = Get_Geoid_Height2(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
             elif (measure == "delta g"):
@@ -302,26 +302,32 @@ def Math_calc_geopot_basic(z):
     P = G*M*(1/a + 1/(a+float(z)))
     return P
 
+def TEST_Geoid_Line():
+    """ plots the geoid height at the equator, around the world """
+    HC, HS = imp.Fetch_Coef()
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    lmax = 10
+    lmax_topo = 10
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    Lat = 0
+    Longs = np.linspace(0, 2*pi, 91)
+    
+    Geo_H = np.zeros(len(Longs))
+    
+    for i in range(len(Longs)):
+        Long = Longs[i]
+        Geo_H[i] = Get_Geoid_Height(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
+    Longs = (Longs -pi) * 180/pi
+    
+    plt.figure(1)
+    plt.clf()
+    plt.grid(True)
+    plt.suptitle("Geoid height at equator (m) vs Longitude")
+    plt.plot(Longs, Geo_H)
+    
+    
+    
 
     
 # =============================================================================
@@ -329,7 +335,11 @@ def Math_calc_geopot_basic(z):
 # =============================================================================
 if __name__ == '__main__':
     
-    TEST_plotGeoPot_Height()
+#    TEST_plotGeoPot_Height()
+    TEST_Geoid_Line()
+    
+    
+    
     
     """
     HC, HS = imp.Fetch_Coef() 
@@ -364,13 +374,6 @@ if __name__ == '__main__':
     plt.title("geopotential against lmax")
     plt.xlabel("lmax")
     plt.ylabel("local value of the geopotential (m^2/s^2)")   
-    
-    
-    
-    
-    
-    
-    
     
     
     plt.legend(fontsize = 8)

@@ -129,14 +129,14 @@ def Get_Grav_constants (): # TO BE REMOVED
 def Get_Normal_Gravity (Lat):
     """
     Returns the normal gravity, on the ellipsoid, at the given latitude
-    This equaion is BUUUUUSTED
+    This equaion is made up, to make sense. 
     """
     c = Constants()
     g_a=c.g_a; g_b=c.g_b
     
     f = (g_a - g_b)/g_a
     
-    g_0_lat = g_a*(1-f*sin(Lat)**2)
+    g_0_lat = g_a*(1-f*cos(Lat)**2)
     
     return g_0_lat
 
@@ -251,10 +251,7 @@ def Fetch_Topo_Coef ():
 # =============================================================================
 def TEST_Radius ():
     Lats = np.arange(-90, 91, 10)
-#    Rads = Get_Ellipsoid_Radius(Lats*pi/180)
-    Rads = Get_Normal_Gravity(Lats*pi/180)
-    
-#    plt.plot(Rads*sin(Lats*pi/180), Rads*cos(Lats*pi/180))
+    Rads = Get_Ellipsoid_Radius(Lats*pi/180)
     plt.plot(Lats, Rads)
 
 
@@ -265,14 +262,30 @@ def TEST_Constants():
     print(f"g_0 at Lat = 50 is {f}")
     
     
-    
-    
+def TEST_gravity ():
+    Lats = np.arange(-90, 91, 10)
+    Grav1 = Get_Normal_Gravity(Lats*pi/180)    
+    Grav2 = Get_Normal_Gravity2(Lats*pi/180)
+    plt.figure(1)
+    plt.clf()
+    plt.title("Gravity acceleration (m/s^2) vs lattitute")
+    plt.plot(Lats, Grav1)    
+    plt.plot(Lats, Grav2)
+
+
+
+
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-#    HC, HS = Fetch_Coef()
-    TEST_Radius()
+#    HC, HS = Fetch_Coef(); HC_topo, HS_topo = Fetch_Topo_Coef ()
+    
+#    TEST_Radius()
+    
 #    TEST_Constants()
+    
+    TEST_gravity()
+    
     print("\nGH_import done")
 

@@ -89,10 +89,10 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 
 def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     """
-    Makes a map of given geoid coefficients
+    Makes a map of given geopotential coefficients
     """
     # Get geoid grid
-    G_Geoid, G_Long, G_Lat = harm.Gen_Grid ("geoid2", lmax, HC, HS, tens, lmax_topo)
+    G_Geoid, G_Long, G_Lat = harm.Gen_Grid ("geoid", lmax, HC, HS, tens, lmax_topo)
 
     print("Plotting Geoid map")
     FIG = plt.figure(fignum)
