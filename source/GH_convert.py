@@ -57,10 +57,16 @@ def geodes2geocen (Lat_gd):
     a = 6378137 # m 
     f = 1/298.257223563  # Some constants 
     b = a * (1-f) # m
-    Lat_gc = np.arctan( (b/a)**2 * np.tan(Lat_gd))
+#    Lat_gc = np.arctan( (b/a)**2 * np.tan(Lat_gd))
+    Lat_gc = np.arctan(np.tan(Lat_gd) * (1-f)**2)
     return Lat_gc
     
-    
+def geocen2geodes (Lat_gd):
+    """converts geocentric latitude into geodetic (or geographic) latitude """
+    f = 1/298.257223563  # ellipsoid flattening
+
+    Lat_gc = np.arctan(np.tan(Lat_gd) / (1-f)**2)
+    return Lat_gc    
     
 # =============================================================================
 # FUNCTIONS FOR ARRAY MANAGEMENT

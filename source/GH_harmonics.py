@@ -82,9 +82,11 @@ def Get_Geoid_Height (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     cst = imp.Constants()    
     R = imp.Get_Ellipsoid_Radius(Lat)
     g_0 = imp.Get_Normal_Gravity(Lat)
-#    g_0 = cst.g 
     Lat_gc = conv.geodes2geocen(Lat)
-#    Lat_gc = Lat
+    
+    R = cst.a_g 
+    g_0 = cst.g 
+    Lat_gc = Lat
     
     
     Sum1 = 0
@@ -157,6 +159,67 @@ def Get_delta_g (lmax, R, Lat, Long, HC, HS):
     return D_g
 
 
+def Get_acceleration (lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
+    """
+    This function returns the acceleration at given height/Lat/Long coordinates
+    The solution is calculated up to degree lmax in the HC HS model
+    The acceleration is the gratient of the geopotential, and is calculated 
+    over a "d" distance 
+    """
+    c = imp.Constants()
+    a_g=c.a_g; GM_g=c.GM_g; 
+    
+    d = 1 # m
+    R_1 = R - d/2
+    R_2 = R + d/2
+    
+    Sum1 = 0
+    P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
+    for l in range (2, lmax+1):
+        Sum2 = 0
+        for m in range (0, l+1):
+            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * imp.Normalize(l, m)
+        Sum1 += (a_g/R)**l * Sum2
+
+    PG_1 = GM_g/R_1*(1 + Sum1)
+    PG_2 = GM_g/R_2*(1 + Sum1)
+    
+    local_acc = (PG_1 - PG_2) / d
+    
+    return local_acc
+
+
+
+def Get_isopot (lmax, W, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
+    """
+    This function returns the Height at given Lat/Long coordinates at which the 
+    geopotential is equal to the given W
+    The solution is calculated up to degree lmax in the HC HS model
+    The approach is a dichotomy within a width of "e" m error
+    """
+    c = imp.Constants()
+    a_g=c.a_g; GM_g=c.GM_g; W = c.W_0
+    
+
+    
+    Sum1 = 0
+    P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
+    for l in range (2, lmax+1):
+        Sum2 = 0
+        for m in range (0, l+1):
+            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * imp.Normalize(l, m)
+        Sum1 += (a_g/R)**l * Sum2
+
+    PG_1 = GM_g/R_1*(1 + Sum1)
+    PG_2 = GM_g/R_2*(1 + Sum1)
+    
+    local_acc = (PG_1 - PG_2) / d
+    
+    return local_acc
+
+
+
+
 # =============================================================================
 # FUNCTIONS TO GENERATE DATA ARRAYs
 # =============================================================================
@@ -210,11 +273,18 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[])
             if (measure == "geopot"):
                 R = imp.Get_Ellipsoid_Radius(Lat) + Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
                 G_Grid[j,i] = Get_Geo_Pot(lmax, R, Lat, Long, HC, HS)
+                
             elif (measure == "geoid"):
 #                a = imp.Get_Radius(Lat)
                 G_Grid[j,i] = Get_Geoid_Height(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
+                
             elif (measure == "geoid2"):
                 G_Grid[j,i] = Get_Geoid_Height2(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
+                
+            elif (measure == "acceleration"):
+                R = imp.Get_Ellipsoid_Radius(Lat)
+                G_Grid[j,i] = Get_acceleration(lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
+                
             elif (measure == "delta g"):
                 a = 6378136.3 # m
                 a = imp.Get_Radius(Lat)
@@ -304,27 +374,33 @@ def Math_calc_geopot_basic(z):
 
 def TEST_Geoid_Line():
     """ plots the geoid height at the equator, around the world """
-    HC, HS = imp.Fetch_Coef()
-    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 10
-    lmax_topo = 10
-
-    
-    Lat = 0
-    Longs = np.linspace(0, 2*pi, 91)
-    
-    Geo_H = np.zeros(len(Longs))
-    
-    for i in range(len(Longs)):
-        Long = Longs[i]
-        Geo_H[i] = Get_Geoid_Height(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
-    Longs = (Longs -pi) * 180/pi
-    
     plt.figure(1)
     plt.clf()
     plt.grid(True)
     plt.suptitle("Geoid height at equator (m) vs Longitude")
-    plt.plot(Longs, Geo_H)
+    
+    HC, HS = imp.Fetch_Coef()
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    
+    lmax_topo = 10
+
+    lmaxs = np.arange(3, 25, 2)
+
+    for lmax in lmaxs:
+        Lat = pi/180 * 40
+        R = imp.Get_Ellipsoid_Radius(Lat)
+        Longs = np.linspace(0, 2*pi, 91)
+        
+        Geo_H = np.zeros(len(Longs))
+        
+        for i in range(len(Longs)):
+            Long = Longs[i]
+            Geo_H[i] = Get_acceleration(lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
+        
+        Longs = (Longs-pi) * 180/pi
+        plt.plot(Longs, Geo_H, label=f"{lmax}")
+    
+    plt.legend()
     
     
     

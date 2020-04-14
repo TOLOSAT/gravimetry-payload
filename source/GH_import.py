@@ -63,6 +63,7 @@ class Constants:
     m = w**2 * a*2 * b / GM_g # just to simplify the code
     g_a = GM_g/(a*b) * (1 - 3/2*m - 3/14*e_2*m) # m/s^2 : gravity acc. at equator
     g_b = GM_g/(a**2) * (1 - m - 3/7*e_2*m) # m/s^2 : gravity acc. at poles
+    W_0 = 62636856.0 # m^2/s^2 : average geopotential (US value, must find better)
     
 cst = Constants() 
 
