@@ -195,18 +195,18 @@ def Get_acceleration (lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
 # =============================================================================
 def dichotomy_grad (f, in_first, z_e, in_after, w_0, de, grad):
     """
-    f :    function for f(*in_first,z,*in_after) = w
+    f : function for f(*in_first,z,*in_after) = w
     in_first, in_after : f function variables that come before and after z_e
-    z_e :   firstguess for the value to be tested
-    w_0:    target value for w
-    de :    delta error  
-    grad :  gradient
+    z_e : firstguess for the value to be tested
+    w_0: target value for w
+    de : delta error  
+    grad : gradient
     """
     w_i = f(*in_first, z_e, *in_after)
     di = w_0 - w_i
     z_i = z_e    
     c = 0
-    print(f"w_0={w_0}; z_i={z_i}; w_i={w_i}; di={di}; add={di/grad}; "); 
+    print(f"w_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; "); 
     
     while (abs(di) >= de):
         c+=1        
@@ -214,7 +214,7 @@ def dichotomy_grad (f, in_first, z_e, in_after, w_0, de, grad):
         w_i = f(*in_first, z_i, *in_after)
         di = w_0 - w_i        
 #        sleep(1); 
-        print(f"w_0={w_0}; z_i={z_i}; w_i={w_i}; di={di}; add={di/grad}; "); 
+        print(f"w_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; "); 
     print(f"dichotomy_grad: {c} steps")
     return z_i
 
@@ -229,7 +229,7 @@ def Get_isopot (lmax, R_, W, Lat, Long, HC, HS):
 #    c = imp.Constants()
 #    a_g=c.a_g; GM_g=c.GM_g; W = c.W_0
     
-    de = 50
+    de = 10
     grad = -10 # 9.81
     R_e = imp.Get_Ellipsoid_Radius(Lat) #+ Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
     
@@ -249,7 +249,6 @@ def init_grid (tens):
     """
     size_long = 1 + 36*tens
     size_lat  = 1 + 18*tens
-    points = size_long * size_lat
 
     Line_long = np.linspace(0, 2*pi, size_long) # 0 to 360 ; must subtract 180
     Line_lat  = np.linspace(0, pi, size_lat) # 0 to 180 ; must do 90 - theta
@@ -257,7 +256,7 @@ def init_grid (tens):
 
     G_Grid = np.zeros((size_lat, size_long))
     
-    return G_Grid, G_Long, G_Lat, Line_long, Line_lat, points
+    return G_Grid, G_Long, G_Lat
 
 
 def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
@@ -277,18 +276,18 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
 
     """
     GM, a, g = imp.Get_Grav_constants()
-    G_Grid, G_Long, G_Lat, Line_long, Line_lat, points = init_grid(tens)   
-    print(f"Generating {measure} grid for lmax = {lmax}, {points} points")
+    G_Grid, G_Long, G_Lat = init_grid(tens)   
+    print(f"Generating {measure} grid for lmax = {lmax}, {G_Grid.size} points")
 
 #    if (measure == "geopot"):
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
     
-    for i in range(0, len(Line_long)):
-        term.printProgressBar(i+1, len(Line_long))
-        Long = Line_long[i]
-
-        for j in range(0, len(Line_lat)):
-            Lat = Line_lat[j]
+    for j in range(0, G_Lat.shape[0]):
+        term.printProgressBar(j+1, G_Lat.shape[0])
+        Lat = pi/2 - G_Lat[j][0]
+    
+        for i in range(0, G_Long.shape[1]):
+            Long = G_Long[0][i] - pi
 
             if (measure == "geopot"):
                 R = imp.Get_Ellipsoid_Radius(Lat) + Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
@@ -330,15 +329,16 @@ def Gen_Topo (lmax_topo, HC_topo, HS_topo, tens):
         G_lat: grid of latitudes
 
     """    
-    G_Grid, G_Long, G_Lat, Line_long, Line_lat, points = init_grid(tens)   
-    print(f"Generating Topography grid for lmax = {lmax_topo}, {points} points")
+    G_Grid, G_Long, G_Lat = init_grid(tens)   
+    print(f"Generating Topography grid for lmax = {lmax_topo}, {G_Grid.size} points")
 
-    for i in range(0, len(Line_long)):
-        term.printProgressBar(i+1, len(Line_long))
-        Long = Line_long[i]
-
-        for j in range(0, len(Line_lat)):
-            Lat = Line_lat[j]
+    for j in range(0, G_Lat.shape[0]):
+        term.printProgressBar(j+1, G_Lat.shape[0])
+        Lat = pi/2 - G_Lat[j][0]
+    
+        for i in range(0, G_Long.shape[1]):
+            Long = G_Long[0][i] - pi
+            
             G_Grid[j,i] = Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo)
             
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
@@ -355,16 +355,16 @@ def Gen_isopot(lmax, tens, HC, HS, lmax_av=5, tens_av=1):
 #    mm=62551117.58580653; MM=62660433.92621861; Av=62609103.69878714
     
     
-    G_Grid, G_Long, G_Lat, Line_long, Line_lat, points = init_grid(tens)   
-    print(f"Generating isopotential grid for lmax = {lmax}, {points} points")
+    G_Grid, G_Long, G_Lat = init_grid(tens)   
+    print(f"Generating isopotential grid for lmax = {lmax}, {G_Grid.size} points")
     
-    for j in range(0, len(Line_lat)):
-        term.printProgressBar(j+1, len(Line_lat))
-        Lat = Line_lat[j]
+    for j in range(0, G_Lat.shape[0]):
+        term.printProgressBar(j+1, G_Lat.shape[0])
+        Lat = pi/2 - G_Lat[j][0]
         R_e = imp.Get_Ellipsoid_Radius(Lat)
-                
-        for i in range(0, len(Line_long)):
-            Long = Line_long[i]
+    
+        for i in range(0, G_Long.shape[1]):
+            Long = G_Long[0][i] - pi
             
             R_iso, Height = Get_isopot(lmax, R_e, W_0, pi/180*Lat, pi/180*Long, HC, HS)
             G_Grid[j,i] = Height
@@ -372,26 +372,6 @@ def Gen_isopot(lmax, tens, HC, HS, lmax_av=5, tens_av=1):
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
 
 
-
-
-
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
 # =============================================================================
@@ -499,7 +479,7 @@ def TEST_Get_isopot ():
     
     
     
-#G_Geoid, G_Long, G_Lat
+
     
 # =============================================================================
 # MAIN

@@ -39,47 +39,22 @@ import GH_harmonics    as harm
 # =============================================================================
 # DISPLAY FUNCTIONS
 # =============================================================================
-def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
+def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):    
     """
-    makes a map of the topological coefficients
+    Makes a Matplotlib figure with the map and labels for the topography
     """
-    print("Plotting The Topography")
-
-    # Get height grid
-    G_Height, G_Long, G_Lat = harm.Gen_Topo (lmax, HC_topo, HS_topo, tens)
-
-    print("Plotting Topography map")
-    FIG = plt.figure(fignum)
-    plt.clf()
-    AX = FIG.add_subplot(111)
-
-    """plot parameters"""
-    alpha = 1
+    G_Grid, G_Long, G_Lat = harm.Gen_Topo (lmax, HC_topo, HS_topo, tens)
     map_colors = "terrain"
 #    map_colors = "gist_earth"
-
-    # Make map
-    MAP = bmp.Gen_Basemap(FIG.number)
-    MAP.drawcoastlines(linewidth = 0.4)
-
-    # Display of Gm_Height, with coordinates G_phi and G_theta
-    MAP.contourf(G_Long, G_Lat, G_Height, latlon = True,
-                levels = levels, alpha = alpha,
-                cmap=plt.get_cmap(map_colors))
-
-    """plot apperance"""
-#    FIG.set_size_inches(8, 6) #(36, 24)
+    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels, map_colors)
+    
+    # Adapt labels
+    plt.figure(FIG.number)
     font_s = 10
     plt.suptitle(title) #, fontsize = font_s)
-    plot_specs = f"{1+36*tens}x{1+18*tens} points; lmax = {lmax} degrees; {levels} color levels"
+    plot_specs = f"{G_Grid.size} points; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize = font_s)
-
-    # add a colorbar
-    CBAR = MAP.colorbar(location='bottom',pad="5%")
-    CBAR.set_label("Height from sea level in meters")
-
-    plt.axis('off')
-    plt.show(block=False)
+    CBAR.set_label("Height from sea level in meters") # geopot
     return FIG
 
 
@@ -87,10 +62,10 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
 # TEST FUNCTIONS
 # =============================================================================
 
-def TEST_Plots():
+def TEST_Map_topo():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax_topo = 20
-    tens = 4
+    lmax_topo = 10
+    tens = 1
     levels = 50
     title = f"TEST map of topography"
     fig1 = Map_Topo(1, lmax_topo, HC_topo, HS_topo, tens, levels, title)
@@ -100,6 +75,6 @@ def TEST_Plots():
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    TEST_Plots();
+    TEST_Map_topo() 
     print("\nGH_displayCoef done")
 

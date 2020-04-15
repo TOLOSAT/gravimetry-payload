@@ -76,7 +76,7 @@ def init_basemap (style = "crude mill"):
 # =============================================================================
 def Gen_Basemap (fignum, style = "crude mill"):
     """
-    Generates a Basemap map in the figure numbered fignum
+    Generates a Basemap map *projection* in the figure numbered fignum
     """
     plt.figure(fignum)
 
@@ -90,6 +90,45 @@ def Gen_Basemap (fignum, style = "crude mill"):
                 lat_ts = TS,
                 resolution = Res)
     return MAP
+
+
+
+# =============================================================================
+# DISPLAY FUNCTIONS
+# =============================================================================
+def Make_Map (fignum, G_Grid, G_Long, G_Lat, levels=35, map_colors="jet"):
+    """ 
+    Generates a matplotlib figure, adds the G_grid as a contourf, 
+    """
+    FIG = plt.figure(fignum)
+    plt.clf()
+    AX = FIG.add_subplot(111)
+
+    """plot parameters"""
+    alpha = 1
+#    map_colors = "jet"
+#    map_colors = "terrain"
+#    map_colors = "gist_earth"
+    
+    # Make map
+    MAP = Gen_Basemap(FIG.number)
+    MAP.drawcoastlines(linewidth = 0.4)
+
+    # Display of Gm_Height, with coordinates G_phi and G_theta
+    MAP.contourf(G_Long, G_Lat, G_Grid, latlon = True,
+                levels = levels, alpha = alpha,
+                cmap=plt.get_cmap(map_colors))
+
+    # add a colorbar
+    CBAR = MAP.colorbar(location='bottom',pad="5%")
+
+    plt.axis('off')
+    plt.show(block=False)
+    
+    return FIG, AX, MAP, CBAR
+
+
+
 
 def Map_Earth (fignum):
     """
@@ -120,9 +159,6 @@ def Map_Earth (fignum):
     plt.show(block=False)
 
 
-# =============================================================================
-# DISPLAY FUNCTIONS
-# =============================================================================
 
 
 # =============================================================================

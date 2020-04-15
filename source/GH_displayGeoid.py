@@ -89,44 +89,27 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 
 def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     """
-    Makes a map of given geopotential coefficients
+    Makes a Matplotlib figure with the map, plotted spherical harmonic data, 
+    and labels
+    
     """
-    # Get geoid grid
-#    G_Geoid, G_Long, G_Lat = harm.Gen_Grid ("acceleration", lmax, HC, HS, tens, lmax_topo)
-    G_Geoid, G_Long, G_Lat = harm.Gen_isopot (lmax, tens, HC, HS, lmax_av=5, tens_av=1)
-
-    print("Plotting Geoid map")
-    FIG = plt.figure(fignum)
-    plt.clf()
-    AX = FIG.add_subplot(111)
-
-    """plot parameters"""
-    alpha = 1
-    map_colors = "jet"
-
-    # Make map
-    MAP = bmp.Gen_Basemap(FIG.number)
-    MAP.drawcoastlines(linewidth = 0.4)
-
-    # Display of Gm_Height, with coordinates G_phi and G_theta
-    MAP.contourf(G_Long, G_Lat, G_Geoid, latlon = True,
-                levels = levels, alpha = alpha,
-                cmap=plt.get_cmap(map_colors))
-
-    """plot apperance"""
+    # Get the data
+    measure = "geopot"
+#    print(f"Calculating the {measure}")
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo)
+    # Make a map
+    print(f"Making the {measure} map")
+    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels)
+    
+    # Adapt labels
+    plt.figure(FIG.number)
     plt.suptitle(title)
-    plot_specs = f"{1+36*tens}x{1+18*tens} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
-
-    # add a colorbar
-    CBAR = MAP.colorbar(location='bottom',pad="5%")
-#    CBAR.set_label("Gravitational potential in m^2/s^2") # geopot
-    CBAR.set_label("Geoid height in m")
-
-    plt.axis('off')
-    plt.show(block=False)
+    CBAR.set_label("Gravitational potential in m^2/s^2") # geopot
+#    CBAR.set_label("Geoid height in m")
+    
     return FIG
-
 
 
 # =============================================================================
@@ -138,7 +121,7 @@ def TEST_mapGeoid():
     lmax_topo = 10
     tens = 1
     levels = 50
-    title = f"TEST map of geoid"
+    title = f"TEST map of Geoid"
     _ = Map_Geoid(2, lmax, HC, HS, tens, levels, title, lmax_topo)
     
 
