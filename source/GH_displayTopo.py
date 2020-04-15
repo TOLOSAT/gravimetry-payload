@@ -39,20 +39,20 @@ import GH_harmonics    as harm
 # =============================================================================
 # DISPLAY FUNCTIONS
 # =============================================================================
-def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):    
+def Map_Topo (fignum, lmax_topo, HC_topo, HS_topo, tens, levels, title):    
+    """ 
+    Makes a Matplotlib figure with the map, topography and labels 
     """
-    Makes a Matplotlib figure with the map and labels for the topography
-    """
-    G_Grid, G_Long, G_Lat = harm.Gen_Topo (lmax, HC_topo, HS_topo, tens)
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Topo_Height, [lmax_topo, HC_topo, HS_topo])
     map_colors = "terrain"
 #    map_colors = "gist_earth"
-    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels, map_colors)
+    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels, map_colors)   
     
     # Adapt labels
     plt.figure(FIG.number)
     font_s = 10
     plt.suptitle(title) #, fontsize = font_s)
-    plot_specs = f"{G_Grid.size} points; lmax = {lmax} degrees; {levels} color levels"
+    plot_specs = f"{G_Grid.size} points; lmax = {lmax_topo} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize = font_s)
     CBAR.set_label("Height from sea level in meters") # geopot
     return FIG
@@ -62,19 +62,20 @@ def Map_Topo (fignum, lmax, HC_topo, HS_topo, tens, levels, title):
 # TEST FUNCTIONS
 # =============================================================================
 
-def TEST_Map_topo():
+def TEST_Map_Topo():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
     lmax_topo = 10
     tens = 1
     levels = 50
-    title = f"TEST map of topography"
-    fig1 = Map_Topo(1, lmax_topo, HC_topo, HS_topo, tens, levels, title)
-#    exp.Store_Figure(fig1.number, "test")
+    title = f"TEST map of topography"    
+    fig = plt.figure()
+    fig = Map_Topo(fig.number, lmax_topo, HC_topo, HS_topo, tens, levels, title)
+#    exp.Store_Figure(fig.number, "test")
 
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    TEST_Map_topo() 
+    TEST_Map_Topo() 
     print("\nGH_displayCoef done")
 

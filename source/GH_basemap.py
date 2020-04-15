@@ -21,7 +21,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy import pi, sin, cos
 
-
 #import GH_import       as imp
 #import GH_convert      as conv
 #import GH_generate     as gen
@@ -165,7 +164,8 @@ def Map_Earth (fignum):
 # TEST FUNCTIONS
 # =============================================================================
 def TEST_MAP():
-    Map_Earth(1)
+    fig = plt.figure()
+    Map_Earth(fig.number)
 
 # =============================================================================
 # MAIN

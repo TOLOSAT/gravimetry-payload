@@ -7,7 +7,6 @@ Created on Tue Apr 14 01:02:16 2020
 This script is an attempt to make a dichotomy approach to find the "z_e" input 
 to a "f" function xith " *[x,y], z" inputs
 """
-
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import pi, sin, cos

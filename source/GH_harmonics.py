@@ -6,8 +6,15 @@
  Information:
 
     The purpose of this script is to calculate the sums from spherical 
-    harmonic coefficients
+    harmonic coefficients, and generate grids of data mapped out over the 
+    surface of the Earth
+    
+    Generally used variables:
+        R, Lat, Long, lmax, HC, HS, lmax_topo, HC_topo, HS_topo
 
+todo:
+    make a geophysics.py scrip whth all the physics equations that dont have their place in the import script.
+    write in w_0 as an argument in get_isopot
 # =============================================================================
 """
 # =============================================================================
@@ -34,7 +41,7 @@ import GH_terminal     as term
 # =============================================================================
 # FUNCTIONS TO CALCULATE SPHERICAL HARMONIC SUMS
 # =============================================================================
-def Get_Topo_Height (lmax_topo, Lat, Long, HC_topo, HS_topo):
+def Get_Topo_Height (R, Lat, Long,    lmax_topo, HC_topo, HS_topo):
     """
     This function returns the height of Earth's estimated topography at Lat/Long 
     coordinates
@@ -52,13 +59,14 @@ def Get_Topo_Height (lmax_topo, Lat, Long, HC_topo, HS_topo):
 
 
 
-def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS):
+def Get_Geo_Pot (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     """
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
     """
     cst = imp.Constants()
-
+    
+    R+= Get_Topo_Height (R, Lat, Long,    lmax_topo, HC_topo, HS_topo)
     Sum1 = 0
     P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
     for l in range (2, lmax+1):
@@ -73,15 +81,14 @@ def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS):
 
 
 
-def Get_Geoid_Height (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
+def Get_Geoid_Height (R, Lat, Long,    lmax, HC, HS):
     """
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
     
-    Equations from geoid cook book
+    Equations from the geoid cook book
     """
     cst = imp.Constants()    
-    R = imp.Get_Ellipsoid_Radius(Lat)
     g_0 = imp.Get_Normal_Gravity(Lat)
     Lat_gc = conv.geodes2geocen(Lat)
     
@@ -103,12 +110,12 @@ def Get_Geoid_Height (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     return Geo_H
 
 
-def Get_Geoid_Height2 (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
+def Get_Geoid_Height2 (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     """
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
     
-    Equations from GHZ handbook
+    Equations from the GHZ handbook
     """
     c = imp.Constants() 
     a_g=c.a_g; GM_g=c.GM_g; # g_e=c.g 
@@ -143,29 +150,13 @@ def Get_Geoid_Height2 (lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     return Geo_H
 
 
-def Get_delta_g (lmax, R, Lat, Long, HC, HS):
-    """
-    This function returns delta_g, whatever that is, from the GFZ handbook
-    """
-    GM, a, g = imp.Get_Grav_constants()
-        
-    Sum1 = 0
-    P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
-    for l in range (0, lmax+1):
-        Sum2 = 0
-        for m in range(0, l+1):
-            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * imp.Normalize(l, m)
-        Sum1 +=  (l-1) * (a/R)**l * Sum2
-    D_g = GM * Sum1 / R**2
-    return D_g
 
-
-def Get_acceleration (lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
+def Get_acceleration (R, Lat, Long,    lmax, HC, HS):
     """
     This function returns the acceleration at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
     The acceleration is the gratient of the geopotential, and is calculated 
-    over a "d" distance 
+    over a distance "d" 
     """
     c = imp.Constants()
     a_g=c.a_g; GM_g=c.GM_g; 
@@ -206,7 +197,7 @@ def dichotomy_grad (f, in_first, z_e, in_after, w_0, de, grad):
     di = w_0 - w_i
     z_i = z_e    
     c = 0
-    print(f"w_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; "); 
+#    print(f"dicho start\nw_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; "); 
     
     while (abs(di) >= de):
         c+=1        
@@ -214,29 +205,25 @@ def dichotomy_grad (f, in_first, z_e, in_after, w_0, de, grad):
         w_i = f(*in_first, z_i, *in_after)
         di = w_0 - w_i        
 #        sleep(1); 
-        print(f"w_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; "); 
-    print(f"dichotomy_grad: {c} steps")
+#        print(f"w_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; "); 
+#    print(f"dichotomy_grad: {c} steps")
     return z_i
 
 
-def Get_isopot (lmax, R_, W, Lat, Long, HC, HS):
+def Get_isopot (lmax, R_, W, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo): #----------- SPECIAL
     """
     This function returns the Height at given Lat/Long coordinates at which the 
     geopotential is equal to the given W
     The solution is calculated up to degree lmax in the HC HS model
     The approach is a dichotomy within a width of "e" m error
-    """
-#    c = imp.Constants()
-#    a_g=c.a_g; GM_g=c.GM_g; W = c.W_0
-    
+    """    
     de = 10
     grad = -10 # 9.81
-    R_e = imp.Get_Ellipsoid_Radius(Lat) #+ Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
+    R_e = imp.Get_Ellipsoid_Radius(Lat) #+ Get_Topo_Height(R_, Lat, Long,    lmax_topo, HC_topo, HS_topo) # add Earth's radius !!
     
-    R_iso = dichotomy_grad (Get_Geo_Pot, [lmax], R_e, [Lat, Long, HC, HS], W, de, grad)
+    R_iso = dichotomy_grad (Get_Geo_Pot, [], R_e, [Lat, Long, lmax, HC, HS, lmax_topo, HC_topo, HS_topo], W, de, grad)
     Height = R_iso - R_e
     return R_iso, Height
-
 
 
 
@@ -259,25 +246,23 @@ def init_grid (tens):
     return G_Grid, G_Long, G_Lat
 
 
-def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
+def Gen_Grid (tens, Get_function, in_args): 
     """
     This function generates a grid of the desired spherical harmonic model
     at Lat/Long coordinates
-    Input:
-        measure: "geopot" or "geoid", the measurement to be mapped on Earth
-        lmax: degree to which the topography should be calculated
-        HC: Harmonic cosine coefficients 
-        HS: Harmonic sine coefficients 
+    Input: 
         tens: how large the array should be
+        Get_function: the callable function that must be used
+        *inargs: the arguments to the callable function besides R, Lat, Long
     Output:
-        G_Height: array of grid height
-        G_long: grid of longitudes
-        G_lat: grid of latitudes
+        G_Gridt: grid of Get_function(R,Lat,Long,*in_args)
+        G_Long: grid of longitudes
+        G_Lat: grid of lattitudes
 
     """
     GM, a, g = imp.Get_Grav_constants()
     G_Grid, G_Long, G_Lat = init_grid(tens)   
-    print(f"Generating {measure} grid for lmax = {lmax}, {G_Grid.size} points")
+    print(f"Making a grid with \"{Get_function.__name__}()\", with {G_Grid.size} points")
 
 #    if (measure == "geopot"):
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
@@ -285,69 +270,20 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
     for j in range(0, G_Lat.shape[0]):
         term.printProgressBar(j+1, G_Lat.shape[0])
         Lat = pi/2 - G_Lat[j][0]
-    
+        R = imp.Get_Ellipsoid_Radius(Lat)
+        
         for i in range(0, G_Long.shape[1]):
             Long = G_Long[0][i] - pi
 
-            if (measure == "geopot"):
-                R = imp.Get_Ellipsoid_Radius(Lat) + Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
-                G_Grid[j,i] = Get_Geo_Pot(lmax, R, Lat, Long, HC, HS)
-                
-            elif (measure == "geoid"):
-#                a = imp.Get_Radius(Lat)
-                G_Grid[j,i] = Get_Geoid_Height(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
-                
-            elif (measure == "geoid2"):
-                G_Grid[j,i] = Get_Geoid_Height2(lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
-                
-            elif (measure == "acceleration"):
-                R = imp.Get_Ellipsoid_Radius(Lat)
-                G_Grid[j,i] = Get_acceleration(lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
-                
-            elif (measure == "delta g"):
-                a = 6378136.3 # m
-                a = imp.Get_Radius(Lat)
-                G_Grid[j,i] = Get_delta_g(lmax, a, Lat, Long, HC, HS)   
-
-                
+            G_Grid[j,i] = Get_function(R, Lat, Long, *in_args)
+          
                 
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
 
 
-def Gen_Topo (lmax_topo, HC_topo, HS_topo, tens):
-    """
-    This function generates an array containing Earth's topography at Lat/Long
-    coordinates 
-    Input:
-        lmax: degree to which the topography should be calculated
-        HC_topo: Harmonic cosine coefficients to earth's topography
-        HS_topo: Harmonic sine coefficients to earth's topography
-        tens: token of the volume of data desired
-    Output:
-        G_Height: array of grid height
-        G_long: grid of longitudes
-        G_lat: grid of latitudes
-
-    """    
-    G_Grid, G_Long, G_Lat = init_grid(tens)   
-    print(f"Generating Topography grid for lmax = {lmax_topo}, {G_Grid.size} points")
-
-    for j in range(0, G_Lat.shape[0]):
-        term.printProgressBar(j+1, G_Lat.shape[0])
-        Lat = pi/2 - G_Lat[j][0]
-    
-        for i in range(0, G_Long.shape[1]):
-            Long = G_Long[0][i] - pi
-            
-            G_Grid[j,i] = Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo)
-            
-    return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
-
-
-def Gen_isopot(lmax, tens, HC, HS, lmax_av=5, tens_av=1):
+def Gen_isopot(lmax, tens, HC, HS, lmax_topo, HC_topo, HS_topo, lmax_av=5, tens_av=1):
     """ Generates the isopotential surface arround W_0 """
-    
-    Grid, _, _ = Gen_Grid ("geopot", lmax_av, HC, HS, tens_av)
+    Grid, _, _ = Gen_Grid (tens, Get_Geo_Pot, [lmax, HC, HS, lmax_topo, HC_topo, HS_topo])
     mm = np.amin(Grid)
     MM = np.amax(Grid)
     W_0 = np.average(Grid) # ------------------ the important one
@@ -366,18 +302,25 @@ def Gen_isopot(lmax, tens, HC, HS, lmax_av=5, tens_av=1):
         for i in range(0, G_Long.shape[1]):
             Long = G_Long[0][i] - pi
             
-            R_iso, Height = Get_isopot(lmax, R_e, W_0, pi/180*Lat, pi/180*Long, HC, HS)
+            R_iso, Height = Get_isopot(lmax, R_e, W_0, pi/180*Lat, pi/180*Long, HC, HS, lmax_topo, HC_topo, HS_topo)
             G_Grid[j,i] = Height
                 
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
 
 
-    
-    
+
 # =============================================================================
 # TEST FUNCTIONS
-# =============================================================================
-def Plot_GeoPot_height(fignum, lmax, Lat, Long, HC, HS):
+# =============================================================================    
+def Math_calc_geopot_basic(z):
+    """ some function needed in TEST_plot_radius """
+    G = 6.673E-11
+    M = 5.975E24
+    a = 6.378E6    
+    P = G*M*(1/a + 1/(a+float(z)))
+    return P
+
+def TEST_plot_radius(fignum, lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     """
     Plots the geopotential at given coordinates from Earth's center to the 
     surface, and beyond into space.
@@ -389,11 +332,10 @@ def Plot_GeoPot_height(fignum, lmax, Lat, Long, HC, HS):
     G_Pot_Basic = np.zeros(Rs.shape)
     
     for i in range (len(Rs)):
-        term.printProgressBar(i+1, len(Rs))
-        G_Pot[i] = Get_Geo_Pot (lmax, Rs[i]*R_earth, Lat*pi/180, Long*pi/180, HC, HS)
-        G_Pot_Basic[i] = Get_Geo_Pot (2, Rs[i]*R_earth, Lat*pi/180, Long*pi/180, HC, HS)
+        G_Pot[i] = Get_Geo_Pot (Rs[i]*R_earth, Lat*pi/180, Long*pi/180, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+        G_Pot_Basic[i] = Get_Geo_Pot (Rs[i]*R_earth, Lat*pi/180, Long*pi/180, 2, HC, HS, lmax_topo, HC_topo, HS_topo)
 #        G_Pot_Basic[i] = Math_calc_geopot_basic(Rs[i]*R_earth)
-        
+
         
     plt.figure(fignum)
     plt.plot(Rs*R_earth, G_Pot, label=f"{Lat}-{Long}; {lmax}")
@@ -404,39 +346,30 @@ def Plot_GeoPot_height(fignum, lmax, Lat, Long, HC, HS):
     plt.ylabel("local value of the geopotential (m^2/s^2)")
     plt.legend(fontsize = 8)
     plt.show(block=False)
-    
-    
- 
-def TEST_plotGeoPot_Height():
+
+
+
+def TEST_plotGeoPot_radius():
     HC, HS = imp.Fetch_Coef() 
-    plt.figure(1)
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    plt.figure()
     plt.clf()
     for i in range (2, 15):
-        Plot_GeoPot_height(1, i*2, 50, 50, HC, HS)
+        TEST_plot_radius(1, i*2, 50, 50, HC, HS, 10, HC_topo, HS_topo)
     
-    
-def Math_calc_geopot_basic(z):
-    G = 6.673E-11
-    M = 5.975E24
-    a = 6.378E6
-    
-    P = G*M*(1/a + 1/(a+float(z)))
-    return P
 
-def TEST_Geoid_Line():
+def TEST_lmax_loop_line():
     """ plots the geoid height at the equator, around the world """
-    plt.figure(1)
+    plt.figure()
     plt.clf()
     plt.grid(True)
     plt.suptitle("Geoid height at equator (m) vs Longitude")
     
     HC, HS = imp.Fetch_Coef()
-    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()    
     lmax_topo = 10
 
     lmaxs = np.arange(3, 25, 2)
-
     for lmax in lmaxs:
         Lat = pi/180 * 40
         R = imp.Get_Ellipsoid_Radius(Lat)
@@ -446,7 +379,11 @@ def TEST_Geoid_Line():
         
         for i in range(len(Longs)):
             Long = Longs[i]
-            Geo_H[i] = Get_acceleration(lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo)
+            Geo_H[i] = Get_acceleration(R, Lat, Long,    lmax, HC, HS)
+#            Geo_H[i] = Get_Topo_Height (R, Lat, Long,    lmax_topo, HC_topo, HS_topo)
+#            Geo_H[i] = Get_Geo_Pot (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+#            Geo_H[i] = Get_Geoid_Height (R, Lat, Long,    lmax, HC, HS)
+#            Geo_H[i] = Get_Geoid_Height2 (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
         
         Longs = (Longs-pi) * 180/pi
         plt.plot(Longs, Geo_H, label=f"{lmax}")
@@ -456,10 +393,12 @@ def TEST_Geoid_Line():
     
 def TEST_Get_isopot ():
     HC, HS = imp.Fetch_Coef()
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef() 
     
+    lmax_topo_av = 10    
     lmax_av = 5; 
     tens_av = 1;    
-    Grid, _, _ = Gen_Grid ("geopot", lmax_av, HC, HS, tens_av)
+    Grid, _, _ = Gen_Grid (tens_av, Get_Geo_Pot, [lmax_av, HC, HS, lmax_topo_av, HC_topo, HS_topo])
     mm = np.amin(Grid)
     MM = np.amax(Grid)
     Av = np.average(Grid) # ------------------ the important one
@@ -469,68 +408,23 @@ def TEST_Get_isopot ():
     Lat =  11
     Long =  10
     lmax = 5
+    lmax_topo = 10
     
     R_e = imp.Get_Ellipsoid_Radius(Lat)
-    R_iso, height = Get_isopot(lmax, R_e, Av, pi/180*Lat, pi/180*Long, HC, HS)
+    R_iso, height = Get_isopot(lmax, R_e, Av, pi/180*Lat, pi/180*Long, HC, HS, lmax_topo, HC_topo, HS_topo)
     
     print(f"Average potential at {Lat} {Long} is at R={R_iso}, H={height}")
     
-    
-    
-    
-    
 
-    
+
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
     
-#    TEST_plotGeoPot_Height()
-#    TEST_Geoid_Line()
+    TEST_plotGeoPot_radius()
+    TEST_lmax_loop_line()
     TEST_Get_isopot ()    
-    
-    
-    
-    """
-    HC, HS = imp.Fetch_Coef() 
-    plt.figure(1)
-    
-    Lat = 0
-    Long = 0
-    R_earth = imp.Get_Radius(Lat)
-
-    
-    
-#    Rs = np.linspace(95, 105, 100)
-#    G_Pot = np.zeros(Rs.shape)
-#    G_Pot_Basic = np.zeros(Rs.shape)    
-#    for i in range (len(Rs)):
-#        term.printProgressBar(i+1, len(Rs))
-#        G_Pot[i] = harm.Get_Geo_Pot (lmax, Rs[i]*R_earth, Lat, Long, HC, HS)
-#        G_Pot_Basic[i] = Math_calc_geopot_basic(Rs[i]*R_earth)
-#    plt.plot(Rs, G_Pot,       label=f"      {Lat}-{Long}; {lmax}")
-#    plt.plot(Rs, G_Pot_Basic, label=f"basic {Lat}-{Long}; {lmax}")
-#    plt.title("geopotential against the radius of the Earth")
-#    plt.xlabel("Distance from the center to the surface of the Earth (in %)")
-#    plt.ylabel("local value of the geopotential (m^2/s^2)")
-    
-    
-    lmax = np.arange(0, 20, 1)
-    G_Pot = np.zeros(lmax.shape)   
-    for i in range (len(lmax)):
-        term.printProgressBar(i+1, len(lmax))
-        G_Pot[i] = harm.Get_Geo_Pot (lmax[i], R_earth, Lat, Long, HC, HS)
-    plt.plot(lmax, G_Pot,       label=f"{Lat}-{Long}")
-    plt.title("geopotential against lmax")
-    plt.xlabel("lmax")
-    plt.ylabel("local value of the geopotential (m^2/s^2)")   
-    
-    
-    plt.legend(fontsize = 8)
-    plt.show(block=False)
-    """
-    
     
     print("\nGH_generate done")
 

@@ -267,7 +267,7 @@ def TEST_gravity ():
     Lats = np.arange(-90, 91, 10)
     Grav1 = Get_Normal_Gravity(Lats*pi/180)    
     Grav2 = Get_Normal_Gravity2(Lats*pi/180)
-    plt.figure(1)
+    plt.figure()
     plt.clf()
     plt.title("Gravity acceleration (m/s^2) vs lattitute")
     plt.plot(Lats, Grav1)    

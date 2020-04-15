@@ -86,51 +86,66 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
     plt.show()
 """
 
-
-def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
-    """
-    Makes a Matplotlib figure with the map, plotted spherical harmonic data, 
-    and labels
-    
-    """
+# =============================================================================
+# MAPPING FUNCTIONS
+# =============================================================================
+def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, HS_topo):
+    """ Makes a Matplotlib figure with the map, geoid and labels """
     # Get the data
-    measure = "geopot"
-#    print(f"Calculating the {measure}")
-    G_Grid, G_Long, G_Lat = harm.Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo)
-    # Make a map
-    print(f"Making the {measure} map")
-    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels)
-    
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, [lmax, HC, HS])
+    # Make a map    
+    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels)    
     # Adapt labels
     plt.figure(FIG.number)
     plt.suptitle(title)
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
-    CBAR.set_label("Gravitational potential in m^2/s^2") # geopot
-#    CBAR.set_label("Geoid height in m")
+    CBAR.set_label("Geoid height in m")
     
     return FIG
+
+
+def Map_GeoPot (fignum, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, HS_topo):
+    """ Makes a Matplotlib figure with the map, geopotential and labels """
+    # Get the data
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geo_Pot, [lmax, HC, HS, lmax_topo, HC_topo, HS_topo])
+    # Make a map    
+    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels)    
+    # Adapt labels
+    plt.figure(FIG.number)
+    plt.suptitle(title)
+    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plt.title(plot_specs, fontsize=10)
+    CBAR.set_label("Gravitational potential in m^2/s^2")
+    
+    return FIG
+
 
 
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
-def TEST_mapGeoid():
+def TEST_Map_Geoid():
     HC, HS = imp.Fetch_Coef()
-    lmax = 10
-    lmax_topo = 10
-    tens = 1
-    levels = 50
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    lmax = 10; lmax_topo = 10; tens = 1; levels = 50; fig = plt.figure()
     title = f"TEST map of Geoid"
-    _ = Map_Geoid(2, lmax, HC, HS, tens, levels, title, lmax_topo)
-    
+    _ = Map_Geoid(fig.number, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, HS_topo)
+
+
+def TEST_Map_GeoPot():
+    HC, HS = imp.Fetch_Coef()
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    lmax = 10; lmax_topo = 10; tens = 1; levels = 50; fig = plt.figure()
+    title = f"TEST map of GeoPotential"
+    _ = Map_GeoPot(fig.number, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, HS_topo)
 
 
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    TEST_mapGeoid()
+    TEST_Map_GeoPot()
     
     print("\nGH_displayGeoid done")
 
