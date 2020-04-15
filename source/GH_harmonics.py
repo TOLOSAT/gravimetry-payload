@@ -16,6 +16,7 @@
 import matplotlib.pyplot as plt 
 import numpy as np
 from numpy import pi, sin, cos
+from time import sleep
 
 import GH_import       as imp
 import GH_convert      as conv
@@ -51,7 +52,7 @@ def Get_Topo_Height (lmax_topo, Lat, Long, HC_topo, HS_topo):
 
 
 
-def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
+def Get_Geo_Pot (lmax, R, Lat, Long, HC, HS):
     """
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
@@ -189,33 +190,52 @@ def Get_acceleration (lmax, R, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
     return local_acc
 
 
+# =============================================================================
+# DICOTOMY POINT BY POINT
+# =============================================================================
+def dichotomy_grad (f, in_first, z_e, in_after, w_0, de, grad):
+    """
+    f :    function for f(*in_first,z,*in_after) = w
+    in_first, in_after : f function variables that come before and after z_e
+    z_e :   firstguess for the value to be tested
+    w_0:    target value for w
+    de :    delta error  
+    grad :  gradient
+    """
+    w_i = f(*in_first, z_e, *in_after)
+    di = w_0 - w_i
+    z_i = z_e    
+    c = 0
+    print(f"w_0={w_0}; z_i={z_i}; w_i={w_i}; di={di}; add={di/grad}; "); 
+    
+    while (abs(di) >= de):
+        c+=1        
+        z_i += di/grad
+        w_i = f(*in_first, z_i, *in_after)
+        di = w_0 - w_i        
+#        sleep(1); 
+        print(f"w_0={w_0}; z_i={z_i}; w_i={w_i}; di={di}; add={di/grad}; "); 
+    print(f"dichotomy_grad: {c} steps")
+    return z_i
 
-def Get_isopot (lmax, W, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_topo):
+
+def Get_isopot (lmax, R_, W, Lat, Long, HC, HS):
     """
     This function returns the Height at given Lat/Long coordinates at which the 
     geopotential is equal to the given W
     The solution is calculated up to degree lmax in the HC HS model
     The approach is a dichotomy within a width of "e" m error
     """
-    c = imp.Constants()
-    a_g=c.a_g; GM_g=c.GM_g; W = c.W_0
+#    c = imp.Constants()
+#    a_g=c.a_g; GM_g=c.GM_g; W = c.W_0
     
-
+    de = 50
+    grad = -10 # 9.81
+    R_e = imp.Get_Ellipsoid_Radius(Lat) #+ Get_Topo_Height(lmax_topo, Lat, Long, HC_topo, HS_topo) # add Earth's radius !!
     
-    Sum1 = 0
-    P_lm, _ = imp.Pol_Legendre(lmax, lmax, cos(Lat))
-    for l in range (2, lmax+1):
-        Sum2 = 0
-        for m in range (0, l+1):
-            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * imp.Normalize(l, m)
-        Sum1 += (a_g/R)**l * Sum2
-
-    PG_1 = GM_g/R_1*(1 + Sum1)
-    PG_2 = GM_g/R_2*(1 + Sum1)
-    
-    local_acc = (PG_1 - PG_2) / d
-    
-    return local_acc
+    R_iso = dichotomy_grad (Get_Geo_Pot, [lmax], R_e, [Lat, Long, HC, HS], W, de, grad)
+    Height = R_iso - R_e
+    return R_iso, Height
 
 
 
@@ -240,7 +260,7 @@ def init_grid (tens):
     return G_Grid, G_Long, G_Lat, Line_long, Line_lat, points
 
 
-def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[]):
+def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=0, HC_topo=[], HS_topo=[]):
     """
     This function generates a grid of the desired spherical harmonic model
     at Lat/Long coordinates
@@ -288,8 +308,10 @@ def Gen_Grid (measure, lmax, HC, HS, tens, lmax_topo=10, HC_topo=[], HS_topo=[])
             elif (measure == "delta g"):
                 a = 6378136.3 # m
                 a = imp.Get_Radius(Lat)
-                G_Grid[j,i] = Get_delta_g(lmax, a, Lat, Long, HC, HS)                
-    
+                G_Grid[j,i] = Get_delta_g(lmax, a, Lat, Long, HC, HS)   
+
+                
+                
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
 
 
@@ -322,7 +344,56 @@ def Gen_Topo (lmax_topo, HC_topo, HS_topo, tens):
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
 
 
+def Gen_isopot(lmax, tens, HC, HS, lmax_av=5, tens_av=1):
+    """ Generates the isopotential surface arround W_0 """
+    
+    Grid, _, _ = Gen_Grid ("geopot", lmax_av, HC, HS, tens_av)
+    mm = np.amin(Grid)
+    MM = np.amax(Grid)
+    W_0 = np.average(Grid) # ------------------ the important one
+    print(f"lmax_av = {lmax_av}; \n\tmin={mm}; \n\tMax={MM}; \n\tAvg={W_0}")
+#    mm=62551117.58580653; MM=62660433.92621861; Av=62609103.69878714
+    
+    
+    G_Grid, G_Long, G_Lat, Line_long, Line_lat, points = init_grid(tens)   
+    print(f"Generating isopotential grid for lmax = {lmax}, {points} points")
+    
+    for j in range(0, len(Line_lat)):
+        term.printProgressBar(j+1, len(Line_lat))
+        Lat = Line_lat[j]
+        R_e = imp.Get_Ellipsoid_Radius(Lat)
+                
+        for i in range(0, len(Line_long)):
+            Long = Line_long[i]
+            
+            R_iso, Height = Get_isopot(lmax, R_e, W_0, pi/180*Lat, pi/180*Long, HC, HS)
+            G_Grid[j,i] = Height
+                
+    return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
 
+
+
+
+
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
@@ -345,7 +416,7 @@ def Plot_GeoPot_height(fignum, lmax, Lat, Long, HC, HS):
         
         
     plt.figure(fignum)
-    plt.plot(Rs, G_Pot, label=f"{Lat}-{Long}; {lmax}")
+    plt.plot(Rs*R_earth, G_Pot, label=f"{Lat}-{Long}; {lmax}")
 #    plt.plot(Rs, G_Pot - G_Pot_Basic, label=f"{Lat}-{Long}; {lmax}")
 #    plt.plot(Rs, G_Pot_Basic, label=f"basic {Lat}-{Long}; {lmax}")
     plt.title("geopotential against the radius of the Earth")
@@ -403,8 +474,32 @@ def TEST_Geoid_Line():
     plt.legend()
     
     
+def TEST_Get_isopot ():
+    HC, HS = imp.Fetch_Coef()
     
-
+    lmax_av = 5; 
+    tens_av = 1;    
+    Grid, _, _ = Gen_Grid ("geopot", lmax_av, HC, HS, tens_av)
+    mm = np.amin(Grid)
+    MM = np.amax(Grid)
+    Av = np.average(Grid) # ------------------ the important one
+    print(f"lmax_av = {lmax_av}; \n\tmin={mm}; \n\tMax={MM}; \n\tAvg={Av}")
+#    mm=62551117.58580653; MM=62660433.92621861; Av=62609103.69878714
+    
+    Lat =  11
+    Long =  10
+    lmax = 5
+    
+    R_e = imp.Get_Ellipsoid_Radius(Lat)
+    R_iso, height = Get_isopot(lmax, R_e, Av, pi/180*Lat, pi/180*Long, HC, HS)
+    
+    print(f"Average potential at {Lat} {Long} is at R={R_iso}, H={height}")
+    
+    
+    
+    
+    
+#G_Geoid, G_Long, G_Lat
     
 # =============================================================================
 # MAIN
@@ -412,8 +507,8 @@ def TEST_Geoid_Line():
 if __name__ == '__main__':
     
 #    TEST_plotGeoPot_Height()
-    TEST_Geoid_Line()
-    
+#    TEST_Geoid_Line()
+    TEST_Get_isopot ()    
     
     
     

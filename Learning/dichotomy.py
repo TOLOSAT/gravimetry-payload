@@ -24,8 +24,8 @@ def G (x, y, z):
 
 def dichotomy_grad (f, in_first, z_e, in_after, w_0, de, g):
     """
-    f :    function for f(x,y,z) = w
-    x, y :  position
+    f :    function for f(*in_first,z,*in_after) = w
+    in_first, in_after : f function variables that come before and after z_e
     z_e :     value to be tested
     w_0:    target value for w
     de :    delta error  
@@ -40,24 +40,16 @@ def dichotomy_grad (f, in_first, z_e, in_after, w_0, de, g):
         c+=1
         
         z_i += di/g
-        w_i = f(*in_first, z_e, *in_after)
+        w_i = f(*in_first, z_i, *in_after)
         di = w_0 - w_i
         
-        print(f"w_0={w_0}; z_i={z_i}; w_i={w_i}; di={di}; add={di/g}; "); 
-    
-    print(f"dichotomy_grad: {c} steps")
+#        sleep(1); print(f"w_0={w_0}; z_i={z_i}; w_i={w_i}; di={di}; add={di/g}; "); 
+#    print(f"dichotomy_grad: {c} steps")
     return z_i
 
     
 def dichotomy_step (f, in_first, z_e, in_after, w_0, de, st):
-    """
-    f :    function for f(x,y,z) = w
-    x, y :  position
-    z_e :     initial value to be tested
-    w_0:    target value for w
-    de :    delta error  
-    st :    step size
-    """
+    """ see dichotomy_grad """
     w_i = f(*in_first, z_e, *in_after)
     di_1 = w_0 - w_i
     di_2 = w_0 - w_i
@@ -68,16 +60,16 @@ def dichotomy_step (f, in_first, z_e, in_after, w_0, de, st):
         c+=1
         
         di_1 = di_2
-        w_i = f(*in_first, z_e, *in_after)
+        w_i = f(*in_first, z_i, *in_after)
         di_2 = w_0 - w_i    
         
         if (di_1*di_2 < 0): 
             st = st/2
         
-        z_i += st * di_1/abs(di_1)    
-        print(f"w_0={w_0}; z_i={z_i}; w_i={w_i}; di_1={di_1}; di_2={di_2}; st={st}"); 
-
-    print(f"dichotomy_step: {c} steps")
+        z_i += st * di_1/abs(di_1)   
+        
+#        sleep(1); print(f"w_0={w_0}; z_i={z_i}; w_i={w_i}; di_1={di_1}; di_2={di_2}; st={st}"); 
+#    print(f"dichotomy_step: {c} steps")
     return z_i
 
    

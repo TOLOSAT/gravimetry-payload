@@ -92,7 +92,8 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo):
     Makes a map of given geopotential coefficients
     """
     # Get geoid grid
-    G_Geoid, G_Long, G_Lat = harm.Gen_Grid ("acceleration", lmax, HC, HS, tens, lmax_topo)
+#    G_Geoid, G_Long, G_Lat = harm.Gen_Grid ("acceleration", lmax, HC, HS, tens, lmax_topo)
+    G_Geoid, G_Long, G_Lat = harm.Gen_isopot (lmax, tens, HC, HS, lmax_av=5, tens_av=1)
 
     print("Plotting Geoid map")
     FIG = plt.figure(fignum)
@@ -135,7 +136,7 @@ def TEST_mapGeoid():
     HC, HS = imp.Fetch_Coef()
     lmax = 10
     lmax_topo = 10
-    tens = 3
+    tens = 1
     levels = 50
     title = f"TEST map of geoid"
     _ = Map_Geoid(2, lmax, HC, HS, tens, levels, title, lmax_topo)
