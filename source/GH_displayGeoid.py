@@ -34,6 +34,7 @@ import GH_import       as imp
 import GH_terminal     as term
 import GH_basemap      as bmp
 import GH_harmonics    as harm
+import GH_geoMath      as gmath
 
 
 """
@@ -89,7 +90,7 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 # =============================================================================
 # MAPPING FUNCTIONS
 # =============================================================================
-def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, HS_topo):
+def Map_Geoid (fignum, tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     """ Makes a Matplotlib figure with the map, geoid and labels """
     # Get the data
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, [lmax, HC, HS])
@@ -105,7 +106,7 @@ def Map_Geoid (fignum, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, HS
     return FIG
 
 
-def Map_GeoPot (fignum, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, HS_topo):
+def Map_GeoPot (fignum, tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     """ Makes a Matplotlib figure with the map, geopotential and labels """
     # Get the data
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geo_Pot, [lmax, HC, HS, lmax_topo, HC_topo, HS_topo])
@@ -121,6 +122,20 @@ def Map_GeoPot (fignum, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, H
     return FIG
 
 
+def Map_isoPot (fignum, tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
+    """ Makes a Matplotlib figure with the map, isopotential and labels """
+    # Get the data
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_isopot, [W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo])
+    # Make a map    
+    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels)    
+    # Adapt labels
+    plt.figure(FIG.number)
+    plt.suptitle(title)
+    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plt.title(plot_specs, fontsize=10)
+    CBAR.set_label("Height above reference ellipsoid where W(R)=W_0 (m)")
+    
+    return FIG
 
 # =============================================================================
 # TEST FUNCTIONS
@@ -130,22 +145,35 @@ def TEST_Map_Geoid():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
     lmax = 10; lmax_topo = 10; tens = 1; levels = 50; fig = plt.figure()
     title = f"TEST map of Geoid"
-    _ = Map_Geoid(fig.number, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, HS_topo)
+    _ = Map_Geoid(fig.number, tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
 
 
 def TEST_Map_GeoPot():
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 10; lmax_topo = 10; tens = 1; levels = 50; fig = plt.figure()
+    lmax = 15; lmax_topo = 15; tens = 2; levels = 50; fig = plt.figure()
     title = f"TEST map of GeoPotential"
-    _ = Map_GeoPot(fig.number, lmax, HC, HS, tens, levels, title, lmax_topo, HC_topo, HS_topo)
+    _ = Map_GeoPot(fig.number, tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
 
 
+def TEST_Map_isoPot():
+    W_0 = harm.Get_isopot_average() 
+    HC, HS = imp.Fetch_Coef()
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    lmax = 15; lmax_topo = 15; tens = 2; levels = 50; fig = plt.figure()
+    title = f"TEST map of isopotential W_0={W_0:.2f} m^2/s^2"
+    _ = Map_isoPot(fig.number, tens, levels, title, W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+    
+    
+    
+    
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
     TEST_Map_GeoPot()
+    
+    TEST_Map_isoPot()
     
     print("\nGH_displayGeoid done")
 

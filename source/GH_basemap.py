@@ -32,6 +32,7 @@ from numpy import pi, sin, cos
 #import GH_terminal     as term
 #import GH_basemap      as bmp
 #import GH_harmonics    as harm
+#import GH_geoMath      as gmath
 
 
 # =============================================================================
@@ -129,7 +130,7 @@ def Make_Map (fignum, G_Grid, G_Long, G_Lat, levels=35, map_colors="jet"):
 
 
 
-def Map_Earth (fignum):
+def Map_Earth (fignum, style="low mill"):
     """
     Creates a Matplotlib figure with a map of the Earth, colored continents 
     and oceans, showing parallels and meridians
@@ -137,7 +138,7 @@ def Map_Earth (fignum):
     FIG = plt.figure(fignum)
     plt.clf()
     AX = FIG.add_subplot(111)
-    MAP = Gen_Basemap(FIG.number, "low mill")
+    MAP = Gen_Basemap(FIG.number, style)
     MAP.drawcoastlines(linewidth = 0.4)
 
     """map parameters"""

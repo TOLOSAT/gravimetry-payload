@@ -46,6 +46,7 @@ import GH_export       as exp
 #import GH_terminal     as term
 #import GH_basemap      as bmp
 #import GH_harmonics    as harm
+#import GH_geoMath      as gmath
 
 
 from GH_import import data_path #= "../data"

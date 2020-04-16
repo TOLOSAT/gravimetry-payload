@@ -27,6 +27,7 @@ from numpy import pi, sin, cos
 #import GH_terminal     as term
 #import GH_basemap      as bmp
 #import GH_harmonics    as harm
+#import GH_geoMath      as gmath
 
 
 # =============================================================================

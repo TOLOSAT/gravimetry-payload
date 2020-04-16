@@ -29,6 +29,7 @@ import GH_convert      as conv
 import GH_terminal     as term
 #import GH_basemap      as bmp
 #import GH_harmonics    as harm
+import GH_geoMath      as gmath
 
 
 # =============================================================================
@@ -71,7 +72,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
         term.printProgressBar(i+1, N_points)
 
         r, theta, phi = Pos[i] #spherical coordinates at the first point
-        Plm_z, Plm_dz = imp.Pol_Legendre(lmax, lmax, sin(phi))
+        Plm_z, Plm_dz = gmath.Pol_Legendre(lmax, lmax, sin(phi))
 
         j = 0
         k = Cos_len
