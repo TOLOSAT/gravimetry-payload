@@ -13,8 +13,8 @@ If you cannot access this google drive folder, you arent supposed to anyway. Or,
 # =============================================================================
 Main Information: 
 
-     This tool has been developped to strengthen our claims, here at the 
-     TOLOSAT Gravimetry Payload. I have late-night-baptized this tool:
+    This tool has been developped to strengthen our claims, here at the 
+    TOLOSAT Gravimetry Payload. I have late-night-baptized this tool:
          
                                      "Grav Harm 3"
                             "Gravitational Harmonics 3"
@@ -23,7 +23,7 @@ Main Information:
     Any other name ideas are gladly welcome, X.
     
     
-    Change your variables, do your maths, and do your science. 
+    Change your variables, do your maths, and do your Science. 
     Let's go to space, y'all    
     
     Process : 
@@ -37,36 +37,45 @@ Main Information:
             using GH_displayCoef
     5.  Plot Satellite positions and accelerations in space
             using GH_displaySat
-
+    6.  Pilot everything from GH_user
 
 
 # =============================================================================
- Additionnal information:
+Additionnal information:
      
-     This tool was originally developped in Spyder 3, for python3. 
+    This tool was originally developped in Spyder 3, for python3. 
           
-     This python tool uses the spherical coordinates system : 
-         r = radius in km ; [0, np.inf()]
-         theta = inclination from the z axis in radians; [0, pi]
-         phi = rotation around the z axis in radians; [0, 2*pi]
+    This python tool uses the spherical coordinates system : 
+        r = radius in km ; [0, np.inf()]
+        theta = inclination from the z axis in radians; [0, pi]
+        phi = rotation around the z axis in radians; [0, 2*pi]
      
-         They must be adapted to lat/lon coordinates by adding : 
-             -pi/2 to theta
-             -pi to phi
+        They must be adapted to lat/lon coordinates by adding : 
+            -pi/2 to theta
+            -pi to phi
      
-         Their equivalent in the cartesian coordinates is : sph2cart(r,theta,phi):
-             x=r*np.sin(theta)*np.cos(phi)
-             y=r*np.sin(theta)*np.sin(phi)
-             z=r*np.cos(theta)
+        Their equivalent in the cartesian coordinates is : sph2cart(r,theta,phi):
+            x=r*np.sin(theta)*np.cos(phi)
+            y=r*np.sin(theta)*np.sin(phi)
+            z=r*np.cos(theta)
 
-    The main source for the mathematics involved in this code is : 
+    The main sources for the mathematics involved in this code are : 
         "Definition of Functionals of the Geopotential 
         and Their Calculation from Spherical Harmonic Models"
         by Franz Barthelmes
         for ICGEM
         Revision: jan. 2013
-        Will be refered to as "GFZ" in al scripts in this tool.
-    
+        Will be refered to as "GFZ" in all scripts in this tool.
+        
+        "How to Compute Geoid Undulations (Geoid Height Relative to a Given Reference Ellipsoid) 
+        from Spherical Harmonic Coefficients for Satellite Altimetry Applications"
+        by Martin Losch and Verena Seufer
+        dates back to 2003
+        Heavily relies on textbooks Heiskanen & Moritz (1967) or Torge (1991)
+        Will be refered to as "The Geoid Cook Book"
+
+
+
     The original coordinates used so far are rendered sing NASA's free open
         source GMAT software. Ask folks from the mission analysis payload to
         show you how it works.    
