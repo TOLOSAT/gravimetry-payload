@@ -86,7 +86,7 @@ def Fetch_Pos (file_name, days=0.7, data_path="../data"):
 
 def Fetch_Coef ():
     """
-    Returns the spherical harmonic coefficients for Earth's Geoid
+    Returns the spherical harmonic coefficients for Earth's Geopotential
     Data originally extracted from : EGM2008_to2190_ZeroTide.txt
     These coef are already normalized
     These files exist with a degree up to lmax = 2190

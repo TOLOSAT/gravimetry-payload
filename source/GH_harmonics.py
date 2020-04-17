@@ -112,7 +112,7 @@ def Get_Geoid_Height2 (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_top
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
     
-    Equations from the GHZ handbook
+    Equations from the GFZ handbook, eq.116
     """
     c = gmath.Constants() 
     a_g=c.a_g; GM_g=c.GM_g; # g_e=c.g 
@@ -327,14 +327,14 @@ def Get_isopot_average ():
     """ Returns the geopotential average at the surface of the ellipsoid """
 #    HC, HS = imp.Fetch_Coef()
 #    HC_topo, HS_topo = imp.Fetch_Topo_Coef() 
-    
+#    
 #    lmax_av = 29; lmax_topo_av = 48; tens_av = 10
 #    Grid, _, _ = Gen_Grid (tens_av, Get_Geo_Pot, [lmax_av, HC, HS, lmax_topo_av, HC_topo, HS_topo])
 #    mm = np.amin(Grid)
 #    MM = np.amax(Grid)
 #    W_0 = np.average(Grid)   
 #    print(f"lmax_av = {lmax_av}; lmax_topo_av={lmax_topo_av}; tens={tens_av}; \n\tmm={mm}; \n\tMM={MM}; \n\tW_0={W_0}")   
-  
+#  
 #    mm=62499132.77072437
 #    MM=62680791.364166744 
     W_0=62601662.83663869

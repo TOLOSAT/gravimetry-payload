@@ -5,6 +5,7 @@
     The purpose of this script is to display various graphs and maps about
     Satellite trajectories
 
+topo: implement earth rotation. precession ? 
 # =============================================================================
 """
 # =============================================================================
@@ -101,7 +102,7 @@ def Plot3D_Pos (fignum, Pos, Title):
     ax1 = FIG.add_subplot(111, projection = '3d')
 
     ax1.plot3D( X_1, Y_1, Z_1,
-               'ro', markersize=0.5, alpha=0.5)
+               'ro-', markersize=0.5, alpha=1)
 
     ax1.plot3D(zero, zero, zero, 'b*')
     ax1.set_xlabel('x')
@@ -146,10 +147,11 @@ def Plot_Acc_Sim_Solv (fignum, Time, Acc_sim, Acc_solved, component, title):
 # TEST FUNCTIONS
 # =============================================================================
 def TEST_Plots ():
-    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
-    days = 0.9
+#    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
+    file_name = "ISS_EarthMJ2000Eq_15jours_60sec.e"
+    days = 15
     Pos, Time = imp.Fetch_Pos(file_name, days)
-    Title = f"Test_Plots: Earthfixed polar 400km orbit for {days} days"
+    Title = f"Test_Plots: {file_name} for {days} days"
     fig1 = Plot3D_Pos(1, Pos, Title)
     fig2 = Plot2D_PosEarthfixed(2, Pos, Title)
     return

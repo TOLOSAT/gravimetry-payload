@@ -8,6 +8,7 @@
     The functions in this script are used to solve to the spherical harmonic
     Stokes coefficients.
 
+todo: write acc_matrix generation AND geopot_matrix generation
 # =============================================================================
 """
 

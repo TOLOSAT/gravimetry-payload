@@ -7,6 +7,7 @@
 
     The functions in this script all regard matters related to mpl Basemap
 
+todo: replace basemap with cartopy
 # =============================================================================
 """
 # =============================================================================
