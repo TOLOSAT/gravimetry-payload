@@ -137,6 +137,8 @@ def Map_isoPot (fignum, tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, H
     
     return FIG
 
+
+
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
@@ -163,7 +165,6 @@ def TEST_Map_isoPot():
     lmax = 15; lmax_topo = 15; tens = 2; levels = 50; fig = plt.figure()
     title = f"TEST map of isopotential W_0={W_0:.2f} m^2/s^2"
     _ = Map_isoPot(fig.number, tens, levels, title, W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
-    
     
     
     

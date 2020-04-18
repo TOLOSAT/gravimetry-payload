@@ -55,14 +55,12 @@ import GH_export       as exp
 
 from GH_import import data_path #= "../data"
 
-
+#%%
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
 
-# =============================================================================
-# # ===========================================================================
 # =============================================================================
     """ THE THINGS YOU CAN CHANGE AS A USER """
 
@@ -72,7 +70,7 @@ if __name__ == '__main__':
 #    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     #file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
     file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
-    days = 0.5
+    days = 0.1
 
     """ data solving """
     lmax_gen = 5 # when generating the data
@@ -80,7 +78,7 @@ if __name__ == '__main__':
     lmax_solve = 5  # when solving for coefficients
 
     """ plotting maps of geoids """
-    lmax_topo = 6
+    lmax_topo = 15
     tens = 1
     levels = 35
 
@@ -90,16 +88,18 @@ if __name__ == '__main__':
     save_co_path = "../Rendered/coefficients"
 
 # =============================================================================
-# # ===========================================================================
-# =============================================================================
-
+#%%
     time_str = imp.Get_Time()
 
     HC, HS = imp.Fetch_Coef()
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
     Pos_sim, Time = imp.Fetch_Pos(file_name, days)
 
     Acc_sim = gen.Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
 
+
+
+#%%
     Solved_coef_sim, Acc_solved_sim = solv.Solve_Coef(lmax_solve, Pos_sim, Acc_sim)
     HC_sim, HS_sim = conv.Make_Array_Coef(lmax_solve, Solved_coef_sim)
 
@@ -111,17 +111,18 @@ if __name__ == '__main__':
     FIG_ACC = dsat.Plot_Acc_Sim_Solv(1, Time, Acc_sim, Acc_solved_sim, component, title1)
 
     # Mapping the coefficients
-    title2 = f"Map of original geoid"
-    MAP_GEN = dgeo.Map_Geoid(2, lmax_gen,   HC,     HS,     tens, levels, title2, lmax_topo)
+    title2 = f"Map of original geopotential"
+    MAP_GEN = dgeo.Map_GeoPot(2, tens, levels, title2, lmax_gen,   HC,     HS,     lmax_topo, HC_topo, HS_topo)
+    title3 = f"Map of solved geopotential"
+    MAP_SIM = dgeo.Map_GeoPot(3, tens, levels, title3, lmax_solve, HC_sim, HS_sim, lmax_topo, HC_topo, HS_topo)
 
-    title3 = f"Map of simulated geoid"
-    MAP_SIM = dgeo.Map_Geoid(3, lmax_solve, HC_sim, HS_sim, tens, levels, title3, lmax_topo)
 
-
+#%%
     if save:
         print("Saving plots and coefficients")
-#        exp.Store_Array(HC_sim, f"HC_sim {lmax_gen} to {lmax_solve} degrees.txt", save_co_path)
-#        exp.Store_Array(HS_sim, f"HS_sim {lmax_gen} to {lmax_solve} degrees.txt", save_co_path)
+        array_specs = f"{lmax_gen} to {lmax_solve}"
+        exp.Store_Array(HC_sim, f"HC_sim {array_specs} degrees.txt", save_co_path)
+        exp.Store_Array(HS_sim, f"HS_sim {array_specs} degrees.txt", save_co_path)
 
         exp.Store_Figure(FIG_ACC.number, title1, time_str, save_im_path, 500)
         exp.Store_Figure(MAP_GEN.number, title2, time_str, save_im_path, 500)
@@ -130,6 +131,7 @@ if __name__ == '__main__':
 
 print("\nUser instructions done")
 
+#%%
 """
 # =============================================================================
 # =============================================================================
@@ -143,11 +145,9 @@ Here's whats going wrong:
     The data diverges as the time samples get longer
 
 Also the solve functions generate completey different coefficients
-than the originals, and it seems to diverge when the orders go above 8
+than the originals, and it seems to diverge when the degrees go above 8. No, 5...
 
 Also I have a huge doubt: am I confusing Acceleration with gravity potential?
-
-https://stackoverflow.com/questions/32428193/saving-matplotlib-graphs-to-image-as-full-screen
 
 # =============================================================================
 # =============================================================================
