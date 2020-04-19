@@ -135,24 +135,44 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
     Creates a Matplotlib figure with a map of the Earth, colored continents 
     and oceans, showing parallels and meridians
     """
-    FIG = plt.figure()
+    import matplotlib.ticker as mticker
+    from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+    FIG = plt.figure(figsize=(11,4))
     plt.clf()
     
-    AX1 = FIG.add_subplot(211, projection = ccrs.Mollweide())
+    # =========================================================================
+    AX1 = FIG.add_subplot(121, projection = ccrs.Mollweide())
     AX1.set_global()    
-    AX1.coastlines(linewidth = 0.4)
+    AX1.coastlines(linewidth = 1.5)
     AX1.stock_img()
-    plt.title("Mollweide projection, stock image")
+    plt.title("Mollweide projection, stock_img", fontsize=10)
 
-    AX2 = FIG.add_subplot(212, projection = ccrs.PlateCarree())
-    AX2.set_global()
-    AX2.gridlines()    
+    # =========================================================================
+    AX2 = FIG.add_subplot(122, projection = ccrs.PlateCarree())
+    AX2.set_extent([-7, 4, 47, 54])
+    AX2.gridlines()
+    
+    high_res_coastline = cfeature.NaturalEarthFeature(
+            category = "physical", 
+            name = "coastline",
+            scale='50m')
+    
     water_color = "lightcyan"
     land_color = "peachpuff"
     AX2.add_feature(cfeature.LAND, facecolor = land_color)
-    AX2.add_feature(cfeature.COASTLINE, edgecolor = "black", linewidth = 1.5)
+    AX2.add_feature(high_res_coastline, edgecolor = "black", linewidth = 0.6)
     AX2.add_feature(cfeature.OCEAN, facecolor = water_color)
-    plt.title("PlateCarree projection, LAND COASTLINE OCEAN features")
+    gl = AX2.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                  linewidth=2, color='gray', alpha=0.5, linestyle='--')
+    gl.xlabels_top = False
+    gl.ylabels_left = False
+    gl.xlines = False
+    gl.xlocator = mticker.FixedLocator([-5, -1, 0, 3])
+    gl.xformatter = LONGITUDE_FORMATTER
+    gl.yformatter = LATITUDE_FORMATTER
+    gl.xlabel_style = {'size': 15, 'color': 'gray'}
+    gl.xlabel_style = {'color': 'red', 'weight': 'bold'}
+    plt.title("PlateCarree projection, LAND COASTLINE OCEAN features", fontsize=10)
 
 
     plt.suptitle("Maps of the Earth")
