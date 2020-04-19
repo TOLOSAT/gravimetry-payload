@@ -5,7 +5,9 @@
 # =============================================================================
  Information:
 
-    The functions in this script all regard matters related to mpl Basemap
+    The functions in this script all regard matters related to matplotlib 
+    figures and cartopy maps. This script replaces previous works done with the 
+    discontinued Basemap library.
 
 todo: replace basemap with cartopy
 # =============================================================================
@@ -15,9 +17,10 @@ todo: replace basemap with cartopy
 # =============================================================================
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
-
-#from mpl_toolkits.basemap import Basemap
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import matplotlib.pyplot as plt
+from matplotlib.offsetbox import AnchoredText
+import matplotlib.ticker as mticker
 import numpy as np
 from numpy import pi, sin, cos
 
@@ -33,6 +36,8 @@ from numpy import pi, sin, cos
 #import GH_basemap      as bmp
 #import GH_harmonics    as harm
 #import GH_geoMath      as gmath
+#import GH_earthMap     as emap
+
 
 '''
 # =============================================================================
@@ -92,106 +97,113 @@ def Gen_Basemap (fignum, style = "crude mill"):
     return MAP
 '''
 
+# =============================================================================
+# FIGURE EDITING FUNCTIONS
+# =============================================================================
+def Add_Credits(AX):
+    TOOL = "Grav Harm 3"
+    CREDIT = "TOLOSAT"
+    TEXT_BOX = AnchoredText(f"{TOOL} by {CREDIT}",
+                            loc=4, prop={'size': 8}, 
+                            frameon=True)
+    AX.add_artist(TEXT_BOX)
+
+
+def Add_Gridlines(AX, cr_sys=ccrs.PlateCarree):
+    GL = AX.gridlines(crs=cr_sys(), draw_labels=True, linewidth=1, 
+                      color='gray', alpha=0.5, linestyle='--')
+    GL.xlabels_top = False
+    GL.ylabels_left = False
+#    GL.xlocator = mticker.FixedLocator([-5, -1, 0, 3])
+    GL.xformatter = LONGITUDE_FORMATTER
+    GL.yformatter = LATITUDE_FORMATTER
+    GL.xlabel_style = {'size': 8}
+    GL.ylabel_style = {'size': 8}
+#    GL.xlabel_style = {'color': 'red', 'weight': 'bold'}
+
+
 
 # =============================================================================
 # DISPLAY FUNCTIONS
 # =============================================================================
-def Make_Map (fignum, G_Grid, G_Long, G_Lat, levels=35, map_colors="jet"):
-    """ 
-    Generates a matplotlib figure, adds the G_grid as a contourf 
+def Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels=35, proj=ccrs.PlateCarree, map_color="jet"):
     """
-    FIG = plt.figure(fignum)
-    plt.clf()
-    AX = FIG.add_subplot(111)
-
-    """plot parameters"""
+    Display of G_Grid, with coordinates G_Long and G_Lat 
+    map_colors = ["jet", "terrain", "gist_earth"]
+    """
     alpha = 1
-#    map_colors = "jet"
-#    map_colors = "terrain"
-#    map_colors = "gist_earth"
-    
-    # Make map
-    MAP = Gen_Basemap(FIG.number)
-    MAP.drawcoastlines(linewidth = 0.4)
+    plt.axes(AX)
+    data = AX.contourf(G_Long, G_Lat, G_Grid,
+                       levels = levels, alpha = alpha,
+                       transform = proj(), cmap=plt.get_cmap(map_color))
+    CBAR = plt.colorbar(mappable=data, ax=AX, cmap=plt.get_cmap(map_color), 
+                        orientation='horizontal', pad=0.10)    
+    return CBAR
 
-    # Display of Gm_Height, with coordinates G_phi and G_theta
-    MAP.contourf(G_Long, G_Lat, G_Grid, latlon = True,
-                levels = levels, alpha = alpha,
-                cmap=plt.get_cmap(map_colors))
 
-    # add a colorbar
-    CBAR = MAP.colorbar(location='bottom',pad="5%")
-
-    plt.axis('off')
+def Make_Map_Fig (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
+    """ Generates a mpl figure with the wanted coordiates system projection """
+    FIG = plt.figure(*fignum, figsize=shape)
+    AX = FIG.add_subplot(ax_pos, projection=proj() )
     plt.show(block=False)
-    
-    return FIG, AX, MAP, CBAR
+    return FIG, AX
 
 
+def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
+    """ Adds gridlines, credits and coastlines to a mpl figure """
+    FIG, AX = Make_Map_Fig(proj, fignum, ax_pos, shape)
+    Add_Gridlines(AX)    
+    Add_Credits(AX)
+    AX.coastlines(linewidth = 0.6)
+    return FIG, AX
 
-
+# =============================================================================
+# TEST FUNCTIONS
+# =============================================================================
 def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
     """
     Creates a Matplotlib figure with a map of the Earth, colored continents 
     and oceans, showing parallels and meridians
     """
-    import matplotlib.ticker as mticker
-    from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
     FIG = plt.figure(figsize=(11,4))
     plt.clf()
+    FIG, AX1 = Make_Map_Fig(ccrs.Mollweide,   [FIG.number], 121, (11,4) )
+    FIG, AX2 = Make_Map_Fig(ccrs.PlateCarree, [FIG.number], 122, (11,4) )
+ 
+    plt.suptitle("Maps of the Earth")        
+    plt.show(block=False)
     
     # =========================================================================
-    AX1 = FIG.add_subplot(121, projection = ccrs.Mollweide())
-    AX1.set_global()    
+    plt.axes(AX1)
+    plt.title("Mollweide projection, stock_img", fontsize=10)
+    AX1.set_global() 
+    AX1.gridlines()
     AX1.coastlines(linewidth = 1.5)
     AX1.stock_img()
-    plt.title("Mollweide projection, stock_img", fontsize=10)
 
     # =========================================================================
-    AX2 = FIG.add_subplot(122, projection = ccrs.PlateCarree())
+    plt.axes(AX2)
+    plt.title("PlateCarree projection, LAND & OCEAN(110m) COASTLINE(50m) features", fontsize=10)
     AX2.set_extent([-7, 4, 47, 54])
-    AX2.gridlines()
-    
-    high_res_coastline = cfeature.NaturalEarthFeature(
-            category = "physical", 
-            name = "coastline",
-            scale='50m')
+    Add_Gridlines(AX2)    
+    Add_Credits(AX1)
     
     water_color = "lightcyan"
     land_color = "peachpuff"
     AX2.add_feature(cfeature.LAND, facecolor = land_color)
-    AX2.add_feature(high_res_coastline, edgecolor = "black", linewidth = 0.6)
     AX2.add_feature(cfeature.OCEAN, facecolor = water_color)
-    gl = AX2.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
-                  linewidth=2, color='gray', alpha=0.5, linestyle='--')
-    gl.xlabels_top = False
-    gl.ylabels_left = False
-    gl.xlines = False
-    gl.xlocator = mticker.FixedLocator([-5, -1, 0, 3])
-    gl.xformatter = LONGITUDE_FORMATTER
-    gl.yformatter = LATITUDE_FORMATTER
-    gl.xlabel_style = {'size': 15, 'color': 'gray'}
-    gl.xlabel_style = {'color': 'red', 'weight': 'bold'}
-    plt.title("PlateCarree projection, LAND COASTLINE OCEAN features", fontsize=10)
+    
+    high_res_coastline = cfeature.NaturalEarthFeature(
+            category = "physical", name = "coastline", scale='50m')
+    AX2.add_feature(high_res_coastline, edgecolor = "black", facecolor = "None", linewidth = 0.6)
 
-
-    plt.suptitle("Maps of the Earth")
-    plt.show(block=False)
-
-
-
-
-# =============================================================================
-# TEST FUNCTIONS
-# =============================================================================
-def TEST_MAP():
-    Map_Earth()
+    
 
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    TEST_MAP()
-
+#    Map_Earth()
+#    Make_Map()
     print("\nGH_displayCoef done")
 
