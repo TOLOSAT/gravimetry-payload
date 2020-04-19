@@ -13,10 +13,8 @@ todo: replace basemap with cartopy
 # =============================================================================
 # LIBRARIES
 # =============================================================================
-# You might need to comment these two lines out
-#import os
-#os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
 import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 
 #from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
@@ -36,7 +34,7 @@ from numpy import pi, sin, cos
 #import GH_harmonics    as harm
 #import GH_geoMath      as gmath
 
-
+'''
 # =============================================================================
 # FUNCTIONS - BASEMAP PARAMETERS
 # =============================================================================
@@ -72,7 +70,7 @@ def init_basemap (style = "crude mill"):
     # Bm_Param = [proj, LatS, LatN, LongW, LongE, TS, Res]
     return proj, LatS, LatN, LongW, LongE, TS, Res
 
-'''
+
 # =============================================================================
 # FUNCTIONS TO MAKE MAPS
 # =============================================================================
@@ -132,32 +130,32 @@ def Make_Map (fignum, G_Grid, G_Long, G_Lat, levels=35, map_colors="jet"):
 
 
 
-def Map_Earth (fignum, style="low mill"):
+def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
     """
     Creates a Matplotlib figure with a map of the Earth, colored continents 
     and oceans, showing parallels and meridians
     """
-    FIG = plt.figure(fignum)
+    FIG = plt.figure()
     plt.clf()
-    AX = FIG.add_subplot(111)
-    MAP = Gen_Basemap(FIG.number, style)
-    MAP.drawcoastlines(linewidth = 0.4)
+    
+    AX1 = FIG.add_subplot(211, projection = ccrs.Mollweide())
+    AX1.set_global()    
+    AX1.coastlines(linewidth = 0.4)
+    AX1.stock_img()
+    plt.title("Mollweide projection, stock image")
 
-    """map parameters"""
-    water_color = 'lightcyan'
-    land_color = 'peachpuff'
-    MAP.fillcontinents(color=land_color,lake_color=water_color)
-    MAP.drawmapboundary(fill_color=water_color)
+    AX2 = FIG.add_subplot(212, projection = ccrs.PlateCarree())
+    AX2.set_global()
+    AX2.gridlines()    
+    water_color = "lightcyan"
+    land_color = "peachpuff"
+    AX2.add_feature(cfeature.LAND, facecolor = land_color)
+    AX2.add_feature(cfeature.COASTLINE, edgecolor = "black", linewidth = 1.5)
+    AX2.add_feature(cfeature.OCEAN, facecolor = water_color)
+    plt.title("PlateCarree projection, LAND COASTLINE OCEAN features")
 
-    parallels = np.arange(-60.,61,30.)
-    meridians = np.arange(0.,351.,30.)
-    MAP.drawparallels(parallels)
-    MAP.drawmeridians(meridians)
 
-    """plot apperance"""
-    plt.title("Map of the Earth")
-
-    plt.axis('off')
+    plt.suptitle("Maps of the Earth")
     plt.show(block=False)
 
 
@@ -167,8 +165,7 @@ def Map_Earth (fignum, style="low mill"):
 # TEST FUNCTIONS
 # =============================================================================
 def TEST_MAP():
-    fig = plt.figure()
-    Map_Earth(fig.number)
+    Map_Earth()
 
 # =============================================================================
 # MAIN
