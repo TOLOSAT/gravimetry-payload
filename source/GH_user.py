@@ -48,9 +48,9 @@ import GH_displaySat   as dsat
 import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
-#import GH_basemap      as bmp
 #import GH_harmonics    as harm
 #import GH_geoMath      as gmath
+#import GH_earthMap     as emap
 
 
 from GH_import import data_path #= "../data"
@@ -61,6 +61,7 @@ from GH_import import data_path #= "../data"
 # =============================================================================
 if __name__ == '__main__':
 
+# =============================================================================
 # =============================================================================
     """ THE THINGS YOU CAN CHANGE AS A USER """
 
@@ -88,6 +89,7 @@ if __name__ == '__main__':
     save_co_path = "../Rendered/coefficients"
 
 # =============================================================================
+# =============================================================================
 #%%
     time_str = imp.Get_Time()
 
@@ -98,26 +100,26 @@ if __name__ == '__main__':
     Acc_sim = gen.Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
 
 
-
-#%%
+#%% # Do math...
     Solved_coef_sim, Acc_solved_sim = solv.Solve_Coef(lmax_solve, Pos_sim, Acc_sim)
     HC_sim, HS_sim = conv.Make_Array_Coef(lmax_solve, Solved_coef_sim)
 
     Acc_solved_sim = conv.Make_Array(Acc_solved_sim[:-2]) # this "-2" must be replaced with a modulo function to get the highest number thats a multiple of 3, AND smaller than the length of the array
 
-    # plotting path simulation
-    title1 = "Simulated and solved acceleration"
+
+#%% # plotting path simulation
+    title1 = f"Simulated and solved acceleration"
     component = 0 #0, 1, 2 : r, theta, phi
-    FIG_ACC = dsat.Plot_Acc_Sim_Solv(1, Time, Acc_sim, Acc_solved_sim, component, title1)
+    FIG_ACC = dsat.Plot_Acc_Sim_Solv(Time, Acc_sim, Acc_solved_sim, component, title1)
 
-    # Mapping the coefficients
+#     Mapping the coefficients
     title2 = f"Map of original geopotential"
-    MAP_GEN = dgeo.Map_GeoPot(2, tens, levels, title2, lmax_gen,   HC,     HS,     lmax_topo, HC_topo, HS_topo)
+    MAP_GEN = dgeo.Map_GeoPot(tens, levels, title2, lmax_gen,   HC,     HS,     lmax_topo, HC_topo, HS_topo)
     title3 = f"Map of solved geopotential"
-    MAP_SIM = dgeo.Map_GeoPot(3, tens, levels, title3, lmax_solve, HC_sim, HS_sim, lmax_topo, HC_topo, HS_topo)
+    MAP_SIM = dgeo.Map_GeoPot(tens, levels, title3, lmax_solve, HC_sim, HS_sim, lmax_topo, HC_topo, HS_topo)
 
 
-#%%
+#%% save plots and coefficients
     if save:
         print("Saving plots and coefficients")
         array_specs = f"{lmax_gen} to {lmax_solve}"

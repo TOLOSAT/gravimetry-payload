@@ -9,7 +9,6 @@
     figures and cartopy maps. This script replaces previous works done with the 
     discontinued Basemap library.
 
-todo: replace basemap with cartopy
 # =============================================================================
 """
 # =============================================================================
@@ -34,7 +33,6 @@ from numpy import pi, sin, cos
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
-#import GH_basemap      as bmp
 #import GH_harmonics    as harm
 #import GH_geoMath      as gmath
 #import GH_earthMap     as emap
@@ -110,17 +108,20 @@ def Add_Credits(AX):
     AX.add_artist(TEXT_BOX)
 
 
-def Add_Gridlines(AX, cr_sys=ccrs.PlateCarree):
-    GL = AX.gridlines(crs=cr_sys(), draw_labels=True, linewidth=1, 
-                      color='gray', alpha=0.5, linestyle='--')
-    GL.xlabels_top = False
-    GL.ylabels_left = False
-#    GL.xlocator = mticker.FixedLocator([-5, -1, 0, 3])
-    GL.xformatter = LONGITUDE_FORMATTER
-    GL.yformatter = LATITUDE_FORMATTER
-    GL.xlabel_style = {'size': 8}
-    GL.ylabel_style = {'size': 8}
-#    GL.xlabel_style = {'color': 'red', 'weight': 'bold'}
+def Add_Gridlines(AX, proj=ccrs.PlateCarree):
+    if (proj != ccrs.PlateCarree):
+        AX.gridlines(color="gray", alpha=0.4)
+    else:
+        GL = AX.gridlines(crs=proj(), draw_labels=True, linewidth=1, 
+                          color='gray', alpha=0.4, linestyle='--')
+        GL.xlabels_top = False
+        GL.ylabels_left = False
+#        GL.xlocator = mticker.FixedLocator([-5, -1, 0, 3])
+        GL.xformatter = LONGITUDE_FORMATTER
+        GL.yformatter = LATITUDE_FORMATTER
+        GL.xlabel_style = {'size': 8}
+        GL.ylabel_style = {'size': 8}
+#        GL.xlabel_style = {'color': 'red', 'weight': 'bold'}
 
 
 
@@ -146,6 +147,7 @@ def Make_Map_Fig (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
     """ Generates a mpl figure with the wanted coordiates system projection """
     FIG = plt.figure(*fignum, figsize=shape)
     AX = FIG.add_subplot(ax_pos, projection=proj() )
+    AX.set_global() 
     plt.show(block=False)
     return FIG, AX
 
@@ -153,10 +155,7 @@ def Make_Map_Fig (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
 def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
     """ Adds gridlines, credits and coastlines to a mpl figure """
     FIG, AX = Make_Map_Fig(proj, fignum, ax_pos, shape)
-    if (proj == ccrs.PlateCarree) : 
-        Add_Gridlines(AX)    
-    else:
-        AX.gridlines()
+    Add_Gridlines(AX, proj)
     Add_Credits(AX)
     AX.coastlines(linewidth = 0.6)
     return FIG, AX

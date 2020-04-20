@@ -1,4 +1,7 @@
 """
+
+@authors:
+
 # =============================================================================
  Information:
 
@@ -11,13 +14,10 @@ topo: implement earth rotation. precession ?
 # =============================================================================
 # LIBRARIES
 # =============================================================================
-# You might need to comment these two lines out
-#import os
-#os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
-#
-#from mpl_toolkits.basemap import Basemap
+import cartopy.crs as ccrs
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
+
 import numpy as np
 from numpy import cos, sin, pi
 
@@ -30,15 +30,15 @@ import GH_convert      as conv
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
-import GH_basemap      as bmp
 #import GH_harmonics    as harm
 #import GH_geoMath      as gmath
+import GH_earthMap     as emap
 
 
 # =============================================================================
 # DISPLAY FUNCTIONS
 # =============================================================================
-def Plot2D_PosEarthfixed (fignum, Pos, Title="No given title"):
+def Plot2D_PosEarthfixed (Pos, Title="No given title"):
     """
     This function plots spherical coordinates on a basemp plot in a mpl figure
     Input:
@@ -54,16 +54,9 @@ def Plot2D_PosEarthfixed (fignum, Pos, Title="No given title"):
     Lat = Pos[:,1] * 180/pi
     Long = Pos[:,2] * 180/pi
 
-    FIG = plt.figure(fignum)
-    plt.clf()
-
-    MAP = bmp.Gen_Basemap(fignum)
-
-    """MAP details"""
-    MAP.drawcoastlines(linewidth = 0.4)
-
-
-    MAP.scatter(Long, Lat, s=0.1, c='r', latlon=True, alpha=1)
+    FIG, AX = emap.Make_Map()
+    AX.plot(Long, Lat, '.', markersize=0.5, transform=ccrs.PlateCarree())
+#    AX.scatter(Long, Lat, s=0.1, c='r', latlon=True, alpha=1)
     plt.suptitle("Position projected on Earth")
     plt.title(Title)
 
@@ -115,7 +108,7 @@ def Plot3D_Pos (fignum, Pos, Title):
     return FIG
 
 
-def Plot_Acc_Sim_Solv (fignum, Time, Acc_sim, Acc_solved, component, title):
+def Plot_Acc_Sim_Solv (Time, Acc_sim, Acc_solved, component, title):
     """
     Plot path acceleration of simuated and solved paths
     Input:
@@ -126,7 +119,7 @@ def Plot_Acc_Sim_Solv (fignum, Time, Acc_sim, Acc_solved, component, title):
         component = 0, 1, 2 : r, theta, phi
         title: plot title
     """
-    FIG = plt.figure(fignum)
+    FIG = plt.figure()
     plt.clf()
 
     plt.title(title)
@@ -152,8 +145,8 @@ def TEST_Plots ():
     days = 15
     Pos, Time = imp.Fetch_Pos(file_name, days)
     Title = f"Test_Plots: {file_name} for {days} days"
-    fig1 = Plot3D_Pos(1, Pos, Title)
-    fig2 = Plot2D_PosEarthfixed(2, Pos, Title)
+#    fig1 = Plot3D_Pos(1, Pos, Title)
+    fig2 = Plot2D_PosEarthfixed(Pos, Title)
     return
 
 

@@ -98,8 +98,7 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
     plt.suptitle(title)
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
-    CBAR.set_label("Geoid height in m")
-    
+    CBAR.set_label("Geoid height in m")    
     return FIG
 
 
@@ -108,15 +107,14 @@ def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_top
     # Get the data
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geo_Pot, [lmax, HC, HS, lmax_topo, HC_topo, HS_topo])
     # Make a map
-    FIG, AX = emap.Make_Map(proj = ccrs.Mollweide)
+    FIG, AX = emap.Make_Map()#proj = ccrs.Mollweide)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)    
     # Adapt labels        
     plt.figure(FIG.number)
     plt.suptitle(title)
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
-    CBAR.set_label("Gravitational potential in m^2/s^2")
-    
+    CBAR.set_label("Gravitational potential in m^2/s^2")    
     return FIG
 
 
@@ -132,8 +130,7 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
     plt.suptitle(title)
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
-    CBAR.set_label("Height above reference ellipsoid where W(R)=W_0 (m)")
-    
+    CBAR.set_label("Height above reference ellipsoid where W(R)=W_0 (m)")    
     return FIG
 
 
@@ -172,11 +169,11 @@ def TEST_Map_isoPot():
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-#    TEST_Map_GeoPot()
+    TEST_Map_GeoPot()
     
 #    TEST_Map_isoPot()
     
-    TEST_Map_Geoid()
+#    TEST_Map_Geoid()
     
     print("\nGH_displayGeoid done")
 

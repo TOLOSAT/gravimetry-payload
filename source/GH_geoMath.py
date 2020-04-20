@@ -30,9 +30,9 @@ from time import gmtime, strftime
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
-#import GH_basemap      as bmp
 #import GH_harmonics    as harm
 #import GH_geoMath      as gmath
+#import GH_earthMap     as emap
 
 
 from GH_convert import cart2sphA

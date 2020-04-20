@@ -12,8 +12,6 @@
     Generally used variables:
         R, Lat, Long, lmax, HC, HS, lmax_topo, HC_topo, HS_topo
 
-todo:
-    write in w_0 as an argument in get_isopot
 # =============================================================================
 """
 # =============================================================================
@@ -33,9 +31,9 @@ import GH_convert      as conv
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
 import GH_terminal     as term
-#import GH_basemap      as bmp
 #import GH_harmonics    as harm
 import GH_geoMath      as gmath
+#import GH_earthMap     as emap
 
 
 # =============================================================================
