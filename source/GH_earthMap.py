@@ -21,6 +21,7 @@ from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import AnchoredText
 import matplotlib.ticker as mticker
+
 import numpy as np
 from numpy import pi, sin, cos
 
@@ -152,7 +153,10 @@ def Make_Map_Fig (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
 def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
     """ Adds gridlines, credits and coastlines to a mpl figure """
     FIG, AX = Make_Map_Fig(proj, fignum, ax_pos, shape)
-    Add_Gridlines(AX)    
+    if (proj == ccrs.PlateCarree) : 
+        Add_Gridlines(AX)    
+    else:
+        AX.gridlines()
     Add_Credits(AX)
     AX.coastlines(linewidth = 0.6)
     return FIG, AX
@@ -203,7 +207,7 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-#    Map_Earth()
-#    Make_Map()
+    Map_Earth()
+    Make_Map()
     print("\nGH_displayCoef done")
 

@@ -13,14 +13,9 @@
 # =============================================================================
 # LIBRARIES
 # =============================================================================
-# You might need to comment these two lines out
-#import os
-#os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
-
-#from mpl_toolkits.basemap import Basemap
-#from mpl_toolkits.mplot3d import axes3d
-
+import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
+
 import numpy as np
 
 import GH_import       as imp
@@ -31,10 +26,9 @@ import GH_import       as imp
 #import GH_displaySat   as dsat
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
-import GH_terminal     as term
-import GH_basemap      as bmp
+#import GH_terminal     as term
 import GH_harmonics    as harm
-import GH_geoMath      as gmath
+#import GH_geoMath      as gmath
 import GH_earthMap     as emap
 
 
@@ -91,13 +85,14 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 # =============================================================================
 # MAPPING FUNCTIONS
 # =============================================================================
-'''
-def Map_Geoid (fignum, tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
+
+def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     """ Makes a Matplotlib figure with the map, geoid and labels """
     # Get the data
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, [lmax, HC, HS])
     # Make a map    
-    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels)    
+    FIG, AX = emap.Make_Map(proj = ccrs.Mollweide)
+    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)     
     # Adapt labels
     plt.figure(FIG.number)
     plt.suptitle(title)
@@ -106,14 +101,14 @@ def Map_Geoid (fignum, tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo,
     CBAR.set_label("Geoid height in m")
     
     return FIG
-'''
+
 
 def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     """ Makes a Matplotlib figure with the map, geopotential and labels """
     # Get the data
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geo_Pot, [lmax, HC, HS, lmax_topo, HC_topo, HS_topo])
     # Make a map
-    FIG, AX = emap.Make_Map()
+    FIG, AX = emap.Make_Map(proj = ccrs.Mollweide)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)    
     # Adapt labels        
     plt.figure(FIG.number)
@@ -146,14 +141,14 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
-'''
+
 def TEST_Map_Geoid():
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 10; lmax_topo = 10; tens = 1; levels = 50; fig = plt.figure()
+    lmax = 5; lmax_topo = 5; tens = 1; levels = 50; 
     title = f"TEST map of Geoid"
-    _ = Map_Geoid(fig.number, tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
-'''
+    _ = Map_Geoid(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+
 
 def TEST_Map_GeoPot():
     HC, HS = imp.Fetch_Coef()
@@ -167,7 +162,7 @@ def TEST_Map_isoPot():
     W_0 = harm.Get_isopot_average() 
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 15; lmax_topo = 15; tens = 2; levels = 50
+    lmax = 5; lmax_topo = 5; tens = 1; levels = 50
     title = f"TEST map of isopotential W_0={W_0:.2f} m^2/s^2"
     _ = Map_isoPot(tens, levels, title, W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
    
@@ -179,7 +174,9 @@ def TEST_Map_isoPot():
 if __name__ == '__main__':
 #    TEST_Map_GeoPot()
     
-    TEST_Map_isoPot()
+#    TEST_Map_isoPot()
+    
+    TEST_Map_Geoid()
     
     print("\nGH_displayGeoid done")
 

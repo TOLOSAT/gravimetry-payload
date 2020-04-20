@@ -13,11 +13,7 @@
 # =============================================================================
 # LIBRARIES
 # =============================================================================
-# You might need to comment these two lines out
-#import os
-#os.environ['PROJ_LIB'] = r'C:\Users\Xavier\Anaconda3\pkgs\proj4-5.2.0-ha925a31_1\Library\share'
-
-#from mpl_toolkits.basemap import Basemap
+import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -32,25 +28,25 @@ import GH_import       as imp
 import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
-import GH_basemap      as bmp
 import GH_harmonics    as harm
 #import GH_geoMath      as gmath
+import GH_earthMap     as emap
 
 
 # =============================================================================
 # DISPLAY FUNCTIONS
 # =============================================================================
-def Map_Topo (fignum, lmax_topo, HC_topo, HS_topo, tens, levels, title):    
+def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title):    
     """ 
     Makes a Matplotlib figure with the map, topography and labels 
     """
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Topo_Height, [lmax_topo, HC_topo, HS_topo])
-    map_colors = "terrain"
+    map_color = "terrain"
 #    map_colors = "gist_earth"
-    FIG, AX, MAP, CBAR = bmp.Make_Map (fignum, G_Grid, G_Long, G_Lat, levels, map_colors)   
+    FIG, AX = emap.Make_Map()# proj = ccrs.Mollweide)
+    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels, map_color=map_color )    
     
     # Adapt labels
-    plt.figure(FIG.number)
     font_s = 10
     plt.suptitle(title) #, fontsize = font_s)
     plot_specs = f"{G_Grid.size} points; lmax = {lmax_topo} degrees; {levels} color levels"
@@ -69,8 +65,7 @@ def TEST_Map_Topo():
     tens = 1
     levels = 50
     title = f"TEST map of topography"    
-    fig = plt.figure()
-    fig = Map_Topo(fig.number, lmax_topo, HC_topo, HS_topo, tens, levels, title)
+    fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title)
 #    exp.Store_Figure(fig.number, "test")
 
 # =============================================================================
