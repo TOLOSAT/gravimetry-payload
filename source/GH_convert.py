@@ -41,10 +41,12 @@ def cart2sph (x,y,z):
     az = np.arctan2(y,x)                   # phi
     return r, elev, az
 
+
 def cart2sphA (pts):
     """ converts an array of carthesian coordinates to spherical """
     Pos = np.array([cart2sph(x,y,z) for x,y,z in pts])
     return Pos
+
 
 def sph2cart (r,theta,phi):
     """ converts spherical coordinates to carthesian """
@@ -52,6 +54,7 @@ def sph2cart (r,theta,phi):
     y=r*cos(theta)*sin(phi)
     z=r*sin(theta)
     return x, y, z
+
 
 def geodes2geocen (Lat_gd):
     """converts geodetic (or geographic) latitude into geocentric latitude """
@@ -61,6 +64,7 @@ def geodes2geocen (Lat_gd):
 #    Lat_gc = np.arctan( (b/a)**2 * np.tan(Lat_gd))
     Lat_gc = np.arctan(np.tan(Lat_gd) * (1-f)**2)
     return Lat_gc
+
     
 def geocen2geodes (Lat_gd):
     """converts geocentric latitude into geodetic (or geographic) latitude """
@@ -68,7 +72,9 @@ def geocen2geodes (Lat_gd):
 
     Lat_gc = np.arctan(np.tan(Lat_gd) / (1-f)**2)
     return Lat_gc    
-    
+
+
+
 # =============================================================================
 # FUNCTIONS FOR ARRAY MANAGEMENT
 # =============================================================================
@@ -117,14 +123,11 @@ def Make_Array_Coef (lmax, CS):
         for m in range (0, l+1):
             HC_coef[l, m] = CS[j] # Get the Cosine coefs out first
             j += 1
-    # end loops
     # Normally, at this point, j == Cos_len
-
     for l in range (2, lmax+1):
         for m in range (1, l+1):
             HS_coef[l, m] = CS[j] # Get the Sine coefs out next
             j += 1
-    # end loops
 
     return HC_coef, HS_coef
 
@@ -151,14 +154,11 @@ def Make_Line_Coef (lmax, HC, HS):
         for m in range (0, l +1):
             CS[j] = HC[l, m] # Write in the Cosine coefs
             j += 1
-    # end  loops
     # Normally, at this point, j == Cos_len
-
     for l in range (2, lmax +1):
         for m in range (1, l +1):
             CS[j] = HS[l, m] # Write in the Sine coefs
             j += 1
-    # end loops
 
     return CS
 
