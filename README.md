@@ -11,10 +11,10 @@ For more information on TOLOSAT, follow us on twitter at: https://twitter.com/to
 This tool has been developped to strengthen our claims, here at the TOLOSAT Gravimetry Payload, for phases A and B of this CubeSat mission. I have late-night-baptized this tool:
 	"Grav Harm 3.0" 
 for "Gravitational Harmonics 3.0". 
-It is the third attemp at writing this tool from the ground up. 
+It is my third attempt at writing this tool from the ground up. 
 Any other name ideas are gladly welcome.
 
-This tool was written in python 3.6, since 2019, by Xavier de Lariolle, [add your names if you've contributed, folks]. 
+This tool was written in python 3.6, since 2019, by Xavier C. de Lariolle, [add your names if you've contributed, folks]. 
 
 
 # ==== What does it do? ====
@@ -53,12 +53,19 @@ set the plotting parameters, set the saving parameters.
 The user must have some knowledge of python to write scripts, but many basic functions hae aleady been written and can be called from other scripts.
 
 
+# ==== Geopotential models ====
+This tool was mainly built around the "EGM2008" Earth Gravity Model, and the "WGS84" earthixed terestrial reference system. 
+The data in this model can be found at: https://earth-info.nga.mil/GandG///wgs84/gravitymod/egm2008/egm08_wgs84.html
+The original tool was made by  the U.S. National Geospatial-Intelligence Agency (NGA) EGM Development Team. The code and coefficients were designed for Fortran. A quick script to re-write the coefficients into numpy arrays has been written. 
+
+
 # ==== Just the Geoid please ====
-IF ALL YOU WANT TO DO IS CALCULATE THE GEOID ELEVATION AT LAT/LONG COORDINATES, I'M NOT DONE CODING IT AND THE FUNCTIONS DO NOT MAKE SENSE YET. GIVE ME SOME TIME, THANKS. 
+IF ALL YOU WANT TO DO IS CALCULATE THE GEOID ELEVATION AT LAT/LONG COORDINATES, I'M NOT DONE CODING THAT YET. 
+THE FUNCTIONS DO NOT MAKE SENSE,SEND ME THE RIGHT ONES IF YOU KNOW THEM. GIVE ME SOME TIME, THANKS. 
 
 
 # ==== Sources and material ====
-It is important to understand the concepts behing the geopotential, the geoid, the refference ellipsoid, spherical harmonics, Stokes coefficients. 
+It is important to understand the concepts behing the geopotential, the geoid, the reference ellipsoid, spherical harmonics, Stokes coefficients. 
 
 The main sources for the mathematics involved in this code are:
 
@@ -76,7 +83,7 @@ The main sources for the mathematics involved in this code are:
 
 
 # ==== Some information for coders and nerds ====  
-To calculate geopotential values and to describe satellite trajectories, this python tool uses the spherical coordinates system :
+To calculate geopotential values and to describe satellite trajectories, this python tool uses the spherical coordinates system:
  
 	r = radius in km ; [0, inf()]
 	theta = inclination from the z axis in radians; [0, pi]

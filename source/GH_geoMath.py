@@ -44,24 +44,28 @@ class Constants:
     """
     A variable with all the constants inside it
     Many equations come from the geoid cook book pdf found in documentation, 
-    also at:http://mitgcm.org/~mlosch/geoidcookbook.pdf
+    also at: http://mitgcm.org/~mlosch/geoidcookbook.pdf
+    More about WGS84 at: https://earth-info.nga.mil/GandG///wgs84/gravitymod/egm2008/egm08_wgs84.html
     """   
+    # WGS84 model
+    GM_g = 3986004.418E8 # m^3/s^2 : standard gravitational parameter
+    wo = 7292115E-11 # rad/s : angular velocity of Earth
+    a = 6378137.00 # m : equatorial radius
+    f = 1/298.257223563 # flat parameter
+    b = a * (1-f) # m : polar radius
+    
     G = 6.673E-11 # m^3/s^2/kg : Gravitational constant
-    GM_g = 3986004.415E8 # m^3/s^2 : standard gravitational parameter for the EGM2008 model
     a_g = 6378136.3 # m : Reference radius
     g = 9.80665 # m/s^2 : average surface acceleration
     ro = 5515 # kg/m^3 : earth average density 
-    w = 0 # rad/s : angular velocity of Earth
-    a = 6378137 # m : equatorial radius
-    f = 1/298.257223563 # flat parameter
-    b = a * (1-f) # m : polar radius
     E = np.sqrt(a**2-b**2) # linear _eccentricity
     e_1 = E/a
     e_2 = E/b
-    m = w**2 * a*2 * b / GM_g # just to simplify the code
+    m = wo**2 * a*2 * b / GM_g # just to simplify the code
     g_a = GM_g/(a*b) * (1 - 3/2*m - 3/14*e_2*m) # m/s^2 : gravity acc. at equator
     g_b = GM_g/(a**2) * (1 - m - 3/7*e_2*m) # m/s^2 : gravity acc. at poles
     W_0 = 62636856.0 # m^2/s^2 : average geopotential (US value, must find better)
+    W_GH = 62601662.83663869 # m^2/s^2 : average geopotential calculated using GH3 (in GH_harmonics)
     
 cst = Constants() 
 
