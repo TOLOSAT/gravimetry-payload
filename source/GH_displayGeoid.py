@@ -91,7 +91,7 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
     # Get the data
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, [lmax, HC, HS])
     # Make a map    
-    FIG, AX = emap.Make_Map(proj = ccrs.Mollweide)
+    FIG, AX = emap.Make_Map()#proj = ccrs.Mollweide)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)     
     # Adapt labels
     plt.figure(FIG.number)
@@ -169,11 +169,11 @@ def TEST_Map_isoPot():
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    TEST_Map_GeoPot()
+#    TEST_Map_GeoPot()
     
 #    TEST_Map_isoPot()
     
-#    TEST_Map_Geoid()
+    TEST_Map_Geoid()
     
     print("\nGH_displayGeoid done")
 

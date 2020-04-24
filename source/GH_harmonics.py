@@ -10,7 +10,7 @@
     surface of the Earth
     
     Generally used variables:
-        R, Lat, Long, lmax, HC, HS, lmax_topo, HC_topo, HS_topo
+        R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
 
 # =============================================================================
 """
@@ -34,6 +34,60 @@ import GH_terminal     as term
 #import GH_harmonics    as harm
 import GH_geoMath      as gmath
 #import GH_earthMap     as emap
+
+
+
+# =============================================================================
+# FUNCTIONS TO GENERATE DATA ARRAYs
+# =============================================================================
+def init_grid (tens):
+    """
+    Initiates the grid variables based on the number of points wanted
+    """
+    size_long = 1 + 36*tens
+    size_lat  = 1 + 18*tens
+
+    Line_long = np.linspace(0, 2*pi, size_long) # 0 to 360 ; must subtract 180
+    Line_lat  = np.linspace(0, pi, size_lat) # 0 to 180 ; must do 90 - theta
+    G_Long, G_Lat = np.meshgrid((Line_long - pi), (pi/2 - Line_lat))
+
+    G_Grid = np.zeros((size_lat, size_long))
+    
+    return G_Grid, G_Long, G_Lat
+
+
+def Gen_Grid (tens, Get_FUNCTION, in_args): 
+    """
+    This function generates a grid of the desired spherical harmonic model
+    at Lat/Long coordinates
+    Input: 
+        tens: how large the array should be
+        Get_FUNCTION: the callable function that must be used
+        *inargs: the arguments to the callable function besides R, Lat, Long
+    Output:
+        G_Gridt: grid of Get_FUNCTION(R,Lat,Long,*in_args)
+        G_Long: grid of longitudes
+        G_Lat: grid of lattitudes
+
+    """
+    G_Grid, G_Long, G_Lat = init_grid(tens)   
+    print(f"Making a grid with \"{Get_FUNCTION.__name__}()\", with {G_Grid.size} points")
+
+#    if (measure == "geopot"):
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    
+    for j in range(0, G_Lat.shape[0]):
+        term.printProgressBar(j+1, G_Lat.shape[0])
+        Lat = pi/2 - G_Lat[j][0]
+        R = gmath.Get_Ellipsoid_Radius(Lat)
+        
+        for i in range(0, G_Long.shape[1]):
+            Long = G_Long[0][i] - pi
+
+            G_Grid[j,i] = Get_FUNCTION(R, Lat, Long, *in_args)
+          
+    return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
+
 
 
 # =============================================================================
@@ -96,8 +150,10 @@ def Get_Geoid_Height (R, Lat, Long,    lmax, HC, HS):
     P_lm, _ = gmath.Pol_Legendre(lmax, lmax, sin(Lat_gc) )
     for l in range (2, lmax+1):
         Sum2 = 0
-        for m in range (0, l+1):
-            Sum2 += (HC[l,m]*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * gmath.Normalize(l, m)
+        for m in range (0, l+1):            
+            HC_lm = CorrCos_lm(l, m, HC[l,m])            
+            Sum2 += (HC_lm*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * gmath.Normalize(l, m)
+            
         Sum1 +=  (cst.a_g/R)**l * Sum2 
 
     Geo_H = cst.GM_g * Sum1 / (R*g_0)
@@ -190,57 +246,61 @@ def Get_isopot (R, Lat, Long,    W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
 
 
 # =============================================================================
-# FUNCTIONS TO GENERATE DATA ARRAYs
+# SUB FUNCTIONS BUT STILL HARMONICS
 # =============================================================================
-def init_grid (tens):
-    """
-    Initiates the grid variables based on the number of points wanted
-    """
-    size_long = 1 + 36*tens
-    size_lat  = 1 + 18*tens
+def CorrCos_lm (l, m, HC_lm):
+    """ correct the HC_lm coef if the conditions are correct - GCB """
+    lmax_corr=10
+    if ( (m==0) and (l<=lmax_corr) and (l%2 == 0) ):
+        HC_lm += Cosine_Correction(l)
+    return HC_lm
 
-    Line_long = np.linspace(0, 2*pi, size_long) # 0 to 360 ; must subtract 180
-    Line_lat  = np.linspace(0, pi, size_lat) # 0 to 180 ; must do 90 - theta
-    G_Long, G_Lat = np.meshgrid((Line_long - pi), (pi/2 - Line_lat))
-
-    G_Grid = np.zeros((size_lat, size_long))
+def Cosine_Correction (N): 
+    """ 
+    Returns the corrected Cosine coefficient 
+    The maths in this book cmes from the Geoid cook book and the fortran code 
+    I dissasembled
+    """    
+    n = N/2
     
-    return G_Grid, G_Long, G_Lat
-
-
-def Gen_Grid (tens, Get_FUNCTION, in_args): 
-    """
-    This function generates a grid of the desired spherical harmonic model
-    at Lat/Long coordinates
-    Input: 
-        tens: how large the array should be
-        Get_FUNCTION: the callable function that must be used
-        *inargs: the arguments to the callable function besides R, Lat, Long
-    Output:
-        G_Gridt: grid of Get_FUNCTION(R,Lat,Long,*in_args)
-        G_Long: grid of longitudes
-        G_Lat: grid of lattitudes
-
-    """
-    G_Grid, G_Long, G_Lat = init_grid(tens)   
-    print(f"Making a grid with \"{Get_FUNCTION.__name__}()\", with {G_Grid.size} points")
-
-#    if (measure == "geopot"):
-    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    c=gmath.Constants()    
+    GM = c.GM_g
+    GM_g = c.GM_g
+    a = c.a_g
+    a_g = c.a_g
+    E = c.E 
+    m = c.m
+    e_1 = c.e_1
     
-    for j in range(0, G_Lat.shape[0]):
-        term.printProgressBar(j+1, G_Lat.shape[0])
-        Lat = pi/2 - G_Lat[j][0]
-        R = gmath.Get_Ellipsoid_Radius(Lat)
-        
-        for i in range(0, G_Long.shape[1]):
-            Long = G_Long[0][i] - pi
+    q0 = 1/2*((1+3/e_1**2) * np.arctan(e_1) - 3/e_1)    
+    
+    CA_ME2 = 1/3*(1 - 2/15*m*e_1/q0)
+    
+    J_2n = (-1)**(n+1) * 3*(E/a)**(2*n) / ((2*n+1)*(2*n+3))
+    J_2n = J_2n * (1- n + 5*n*CA_ME2)
+    
+    Corr = J_2n / np.sqrt(4*n + 1) * GM/GM_g * (a/a_g)**n
 
-            G_Grid[j,i] = Get_FUNCTION(R, Lat, Long, *in_args)
-          
-    return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
+    return Corr /2 
 
 
+def Cosine_Correction2 (N):
+    """ raw data from the hsynth fortran code """    
+    C = np.zeros(21)
+    C[ 2] =  -0.484166774985E-03                            
+    C[ 4] =   0.790303733524E-06                            
+    C[ 6] =  -0.168724961164E-08                            
+    C[ 8] =   0.346052468485E-11                            
+    C[10] =  -0.265002226377E-14                            
+    C[12] =  -0.410790140988E-16                            
+    C[14] =   0.447177356743E-18                            
+    C[16] =  -0.346362564558E-20                            
+    C[18] =   0.241145603096E-22                            
+    C[20] =  -0.160243292770E-24 
+    return C[N]
+    
+    
+    
 
 # =============================================================================
 # TEST FUNCTIONS
@@ -288,7 +348,7 @@ def TEST_plotGeoPot_radius():
         TEST_plot_radius(1, i*2, 50, 50, HC, HS, 10, HC_topo, HS_topo)
     
 
-def TEST_lmax_loop_line():
+def TEST_lmax_loop_long_line():
     """ plots the geoid height at the equator, around the world """
     plt.figure()
     plt.clf()
@@ -308,16 +368,50 @@ def TEST_lmax_loop_line():
         
         for i in range(len(Longs)):
             Long = Longs[i]
-            Geo_H[i] = Get_acceleration   (R, Lat, Long,    lmax, HC, HS); title_spec="Acceleration"
+#            Geo_H[i] = Get_acceleration   (R, Lat, Long,    lmax, HC, HS); title_spec="Acceleration"
 #            Geo_H[i] = Get_Topo_Height   (R, Lat, Long,    lmax_topo, HC_topo, HS_topo); title_spec="Topography height"
 #            Geo_H[i] = Get_Geo_Pot       (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="GeoPot"
-#            Geo_H[i] = Get_Geoid_Height  (R, Lat, Long,    lmax, HC, HS); title_spec="Geoid height"
+            Geo_H[i] = Get_Geoid_Height  (R, Lat, Long,    lmax, HC, HS); title_spec="Geoid height"
 #            Geo_H[i] = Get_Geoid_Height2 (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="Geoid height"
         
         Longs = (Longs-pi) * 180/pi
-        plt.plot(Longs, Geo_H, label=f"{lmax}")
+        plt.plot(Longs, Geo_H, label=f"lx={lmax}")
     
     plt.suptitle(f"{title_spec} at equator (m) vs Longitude; loop lmax")
+    plt.legend()
+
+    
+def TEST_lmax_loop_lat_line():
+    """ plots the geoid height at the equator, around the world """
+    plt.figure()
+    plt.clf()
+    plt.grid(True)
+    
+    HC, HS = imp.Fetch_Coef()
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()    
+    lmax_topo = 10
+
+    lmaxs = np.arange(3, 25, 2)
+    for lmax in lmaxs:
+        Long = pi/180 * 80
+        Lats = np.linspace(0, pi, 91)
+        
+        Geo_H = np.zeros(len(Lats))
+        
+        for i in range(len(Lats)):
+            Lat = Lats[i]
+            R = gmath.Get_Ellipsoid_Radius(Lat)
+            
+#            Geo_H[i] = Get_acceleration   (R, Lat, Long,    lmax, HC, HS); title_spec="Acceleration"
+#            Geo_H[i] = Get_Topo_Height   (R, Lat, Long,    lmax_topo, HC_topo, HS_topo); title_spec="Topography height"
+#            Geo_H[i] = Get_Geo_Pot       (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="GeoPot"
+            Geo_H[i] = Get_Geoid_Height  (R, pi/2 - Lat, Long,    lmax, HC, HS); title_spec="Geoid height"
+#            Geo_H[i] = Get_Geoid_Height2 (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="Geoid height"
+        
+        Lats = (pi/2-Lats)
+        plt.plot(Lats*180/pi, Geo_H, label=f"lx={lmax}")
+    
+    plt.suptitle(f"{title_spec} at equator (m) vs Latitude; loop lmax")
     plt.legend()
     
  
@@ -354,15 +448,30 @@ def TEST_Get_isopot ():
     print(f"Average potential at {Lat} {Long} is at R={R_iso}, H={height}")
 
 
-
+def TEST_Cosine_corr():
+    HC, HS = imp.Fetch_Coef()
+    lmax = 10
+    CCos_2n0 = np.zeros(lmax)
+    
+    print("Ref. Gravity Potential Even Zonal Terms (C-form)")
+    print("Subtracted From the Input Coefficients:")
+    
+    for l in range(1,lmax+1):
+        CCos_2n0[l-1] = Cosine_Correction(2*l, HC[2*l, 0])
+        print(f"C({2*l},0) =\t{CCos_2n0[l-1]}")
+    
+    
+    
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
     
 #    TEST_plotGeoPot_radius()
-#    TEST_lmax_loop_line()
-    TEST_Get_isopot ()    
+    TEST_lmax_loop_lat_line()
+#    TEST_lmax_loop_long_line()
+#    TEST_Get_isopot () 
+#    TEST_Cosine_corr()
     
     print("\nGH_generate done")
 
