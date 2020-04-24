@@ -23,7 +23,7 @@ The calculation process is as follows:
 1. Derivate the position to find the acceleration
 1. Solve for the coefficients, by various methods, of the geopotential
 1. Calculate the height of the Geoid undulation over the surface of the Earth
-1. Compare the calculated model with previous works in scientiic litterature
+1. Compare the calculated model with previous works in scientific litterature
 1. Generate specific satellite ephemeris to answer the mission questions and confirm the mission requirements	
 
 ## How to use Grav Harm 3
