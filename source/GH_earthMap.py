@@ -20,12 +20,13 @@ from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import AnchoredText
 import matplotlib.ticker as mticker
+from mpl_toolkits.mplot3d import Axes3D
 
 import numpy as np
 from numpy import pi, sin, cos
 
 #import GH_import       as imp
-#import GH_convert      as conv
+import GH_convert      as conv
 #import GH_generate     as gen
 #import GH_solve        as solv
 #import GH_displayGeoid as dgeo
@@ -38,63 +39,6 @@ from numpy import pi, sin, cos
 #import GH_earthMap     as emap
 
 
-'''
-# =============================================================================
-# FUNCTIONS - BASEMAP PARAMETERS
-# =============================================================================
-def init_basemap (style = "crude mill"):
-
-    if (style == "crude mill"):
-        proj = "mill" # projection
-        LatS = -90 # llcrnrlat
-        LatN = 90 # urcrnrlat
-        LongW = -180 # llcrnrlon
-        LongE = 180 # urcrnrlon
-        TS = 20 # lat_ts -- I don't know what this is but everyone online uses it so yeah
-        Res = "c" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions
-
-    elif (style == "low mill"):
-        proj = "mill" # projection
-        LatS = -90 # llcrnrlat
-        LatN = 90 # urcrnrlat
-        LongW = -180 # llcrnrlon
-        LongE = 180 # urcrnrlon
-        TS = 20 # lat_ts -- I don't know what this is but everyone online uses it so yeah
-        Res = "l" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions
-
-    else:
-        proj = "mill" # projection
-        LatS = -90 # llcrnrlat
-        LatN = 90 # urcrnrlat
-        LongW = -180 # llcrnrlon
-        LongE = 180 # urcrnrlon
-        TS = 20 # lat_ts -- I don't know what this is but everyone online uses it so yeah
-        Res = "c" # resolution, Crude, Low, [Intermediate, High, Full] > download extensions
-
-    # Bm_Param = [proj, LatS, LatN, LongW, LongE, TS, Res]
-    return proj, LatS, LatN, LongW, LongE, TS, Res
-
-
-# =============================================================================
-# FUNCTIONS TO MAKE MAPS
-# =============================================================================
-def Gen_Basemap (fignum, style = "crude mill"):
-    """
-    Generates a Basemap map *projection* in the figure numbered fignum
-    """
-    plt.figure(fignum)
-
-    proj, LatS, LatN, LongW, LongE, TS, Res = init_basemap(style)
-
-    MAP = Basemap(projection = proj,
-                llcrnrlat = LatS,
-                urcrnrlat = LatN,
-                llcrnrlon = LongW,
-                urcrnrlon = LongE,
-                lat_ts = TS,
-                resolution = Res)
-    return MAP
-'''
 
 # =============================================================================
 # FIGURE EDITING FUNCTIONS
@@ -126,7 +70,7 @@ def Add_Gridlines(AX, proj=ccrs.PlateCarree):
 
 
 # =============================================================================
-# DISPLAY FUNCTIONS
+# PLOT FUNCTIONS
 # =============================================================================
 def Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels=35, proj=ccrs.PlateCarree, map_color="jet"):
     """
@@ -143,10 +87,47 @@ def Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels=35, proj=ccrs.PlateCarree, m
     return CBAR
 
 
+def Plot_surface (G_Grid, G_Long, G_Lat, AX, map_color="jet"):
+    """
+    3D Display of G_Gridsurface, with coordinates G_Long and G_Lat 
+    map_colors = ["jet", "terrain", "gist_earth"]
+    """
+    alpha = 1
+    plt.axes(AX)
+    data = AX.plot_surface(G_Long, G_Lat, G_Grid, 
+                           alpha = alpha, antialiased=False,
+                           cmap=plt.get_cmap(map_color))
+    AX.set_xlabel("Longitude",rotation=90)
+    AX.set_ylabel("Latitude",rotation=90)
+    CBAR = plt.colorbar(mappable=data, ax=AX, cmap=plt.get_cmap(map_color), 
+                        orientation='horizontal', pad=0.10)    
+    return CBAR
+
+
+def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX, radius=6378137.00, map_color="jet"):
+    """
+    Ball representation of G_Grid + radius, with coordinates G_Long and G_Lat 
+    map_colors = ["jet", "terrain", "gist_earth"]
+    """
+    X, Y, Z = conv.sph2cartA(radius, G_Grid, G_Long*pi/180, G_Lat*pi/180)
+    
+    alpha = 1
+    plt.axes(AX)
+    data = AX.plot_surface(X, Y, Z, 
+                           alpha = alpha, antialiased=False,
+                           cmap=plt.get_cmap(map_color))
+    CBAR = plt.colorbar(mappable=data, ax=AX, cmap=plt.get_cmap(map_color), 
+                        orientation='horizontal', pad=0.10)    
+    return CBAR
+
+
+# =============================================================================
+# FIGURE FUNCTIONS
+# =============================================================================
 def Make_Map_Fig (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
     """ Generates a mpl figure with the wanted coordiates system projection """
     FIG = plt.figure(*fignum, figsize=shape)
-    AX = FIG.add_subplot(ax_pos, projection=proj() )
+    AX = FIG.add_subplot(ax_pos, projection=proj())
     AX.set_global() 
     plt.show(block=False)
     return FIG, AX
@@ -159,6 +140,15 @@ def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
     Add_Credits(AX)
     AX.coastlines(linewidth = 0.6)
     return FIG, AX
+
+
+def Make_Map_3D (fignum=[], ax_pos=111, shape=(7,5) ):
+    """ Generates a mpl figure with the wanted coordiates system projection """
+    FIG = plt.figure(*fignum, figsize=shape)
+    AX = FIG.add_subplot(ax_pos, projection='3d')
+    plt.show(block=False)
+    return FIG, AX
+
 
 # =============================================================================
 # TEST FUNCTIONS
@@ -206,7 +196,8 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    Map_Earth()
-    Make_Map()
+#    Map_Earth()
+#    Make_Map()
+    Make_Map_3D()
     print("\nGH_displayCoef done")
 

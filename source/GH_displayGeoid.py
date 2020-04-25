@@ -169,11 +169,11 @@ def TEST_Map_isoPot():
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-#    TEST_Map_GeoPot()
+    TEST_Map_GeoPot()
     
 #    TEST_Map_isoPot()
     
-    TEST_Map_Geoid()
+#    TEST_Map_Geoid()
     
     print("\nGH_displayGeoid done")
 
