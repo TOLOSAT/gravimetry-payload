@@ -91,8 +91,12 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
     # Get the data
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, [lmax, HC, HS])
     # Make a map    
-    FIG, AX = emap.Make_Map()#proj = ccrs.Mollweide)
-    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)     
+#    FIG, AX = emap.Make_Map()#proj = ccrs.Mollweide)
+#    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)  
+    FIG, AX = emap.Make_Map_3D()
+    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX)  
+    AX.set_zlabel("Geoid Height (m)",rotation=90)
+    
     # Adapt labels
     plt.figure(FIG.number)
     plt.suptitle(title)
@@ -107,8 +111,11 @@ def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_top
     # Get the data
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geo_Pot, [lmax, HC, HS, lmax_topo, HC_topo, HS_topo])
     # Make a map
-    FIG, AX = emap.Make_Map()#proj = ccrs.Mollweide)
-    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)    
+#    FIG, AX = emap.Make_Map()#proj = ccrs.Mollweide)
+#    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)   
+    FIG, AX = emap.Make_Map_3D()
+    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX)  
+    AX.set_zlabel("Geopotential (m)",rotation=90)
     # Adapt labels        
     plt.figure(FIG.number)
     plt.suptitle(title)
@@ -142,7 +149,7 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
 def TEST_Map_Geoid():
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 5; lmax_topo = 5; tens = 1; levels = 50; 
+    lmax = 10; lmax_topo = 10; tens = 1; levels = 50; 
     title = f"TEST map of Geoid"
     _ = Map_Geoid(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
 
@@ -169,11 +176,11 @@ def TEST_Map_isoPot():
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    TEST_Map_GeoPot()
+#    TEST_Map_GeoPot()
     
 #    TEST_Map_isoPot()
     
-#    TEST_Map_Geoid()
+    TEST_Map_Geoid()
     
     print("\nGH_displayGeoid done")
 

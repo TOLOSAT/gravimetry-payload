@@ -44,14 +44,14 @@ def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title):
     map_color = "terrain"
 #    map_colors = "gist_earth"
 #    FIG, AX = emap.Make_Map()# proj = ccrs.Mollweide)
-#    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels, map_color=map_color ) 
-    
-#    FIG, AX = emap.Make_Map_3D()
-#    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX, map_color=map_color )  
-#    AX.set_zlabel("Height (m)",rotation=90)
+#    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels, map_color=map_color) 
     
     FIG, AX = emap.Make_Map_3D()
-    CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX, map_color=map_color )  
+    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX, map_color=map_color)  
+    AX.set_zlabel("Height (m)",rotation=90)
+    
+#    FIG, AX = emap.Make_Map_3D()
+#    CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX, map_color=map_color)  
     
     # Adapt labels
     font_s = 10
@@ -68,7 +68,7 @@ def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title):
 
 def TEST_Map_Topo():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax_topo = 5
+    lmax_topo = 10
     tens = 1
     levels = 50
     title = f"TEST map of topography"    

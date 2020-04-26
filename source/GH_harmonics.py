@@ -144,7 +144,7 @@ def Get_Geoid_Height (R, Lat, Long,    lmax, HC, HS):
     g_0 = gmath.Get_Normal_Gravity(Lat)
     Lat_gc = conv.geodes2geocen(Lat)
     
-    R = cst.a_g 
+#    R = cst.a_g 
     g_0 = cst.g 
     Lat_gc = Lat
     
@@ -152,7 +152,7 @@ def Get_Geoid_Height (R, Lat, Long,    lmax, HC, HS):
     P_lm, _ = gmath.Pol_Legendre(lmax, lmax, sin(Lat_gc) )
     for l in range (2, lmax+1):
         Sum2 = 0
-        for m in range (0, l+1):            
+        for m in range (0, 1):#═l+1):            
             HC_lm = CorrCos_lm(l, m, HC[l,m])            
             Sum2 += (HC_lm*cos(m*Long) + HS[l,m]*sin(m*Long)) * P_lm[m, l] * gmath.Normalize(l, m)
             
@@ -266,24 +266,24 @@ def Cosine_Correction (N):
     n = N/2
     
     c=gmath.Constants()    
-    GM = c.GM_g
-    GM_g = c.GM_g
+    GM = c.GM_e
+    GM_g = c.GM_e
     a = c.a_g
     a_g = c.a_g
     E = c.E 
     m = c.m
-    e_1 = c.e_1
+    e_2 = c.e_2
     
-    q0 = 1/2*((1+3/e_1**2) * np.arctan(e_1) - 3/e_1)    
+    q0 = 1/2*((1+3/e_2**2) * np.arctan(e_2) - 3/e_2)    
     
-    CA_ME2 = 1/3*(1 - 2/15*m*e_1/q0)
+    CA_ME2 = 1/3*(1 - 2/15*m*e_2/q0)
     
     J_2n = (-1)**(n+1) * 3*(E/a)**(2*n) / ((2*n+1)*(2*n+3))
     J_2n = J_2n * (1- n + 5*n*CA_ME2)
     
     Corr = J_2n / np.sqrt(4*n + 1) * GM/GM_g * (a/a_g)**n
 
-    return Corr /2 
+    return Corr 
 
 
 def Cosine_Correction2 (N):

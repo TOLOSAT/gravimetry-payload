@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 from matplotlib.offsetbox import AnchoredText
 import matplotlib.ticker as mticker
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm, colors
 
 import numpy as np
 from numpy import pi, sin, cos
@@ -46,13 +47,12 @@ import GH_convert      as conv
 def Add_Credits(AX):
     TOOL = "Grav Harm 3"
     CREDIT = "TOLOSAT"
-    TEXT_BOX = AnchoredText(f"{TOOL} by {CREDIT}",
-                            loc=4, prop={'size': 8}, 
-                            frameon=True)
+    TEXT_BOX = AnchoredText(f"{TOOL} by {CREDIT}", loc=4, prop={'size': 8}, frameon=True)
     AX.add_artist(TEXT_BOX)
 
 
 def Add_Gridlines(AX, proj=ccrs.PlateCarree):
+#        http://balbuceosastropy.blogspot.com/2015/06/spherical-harmonics-in-python.html
     if (proj != ccrs.PlateCarree):
         AX.gridlines(color="gray", alpha=0.4)
     else:
@@ -109,17 +109,43 @@ def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX, radius=6378137.00, map_color="je
     Ball representation of G_Grid + radius, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
     """
-    X, Y, Z = conv.sph2cartA(radius, G_Grid, G_Long*pi/180, G_Lat*pi/180)
+    THETA = pi/2 - G_Lat*pi/180
+    PHI = G_Long*pi/180 + pi
+    R = G_Grid + 50000
+
+    X = R * np.sin(THETA) * np.cos(PHI)
+    Y = R * np.sin(THETA) * np.sin(PHI)
+    Z = R * np.cos(THETA)
     
+    norm = colors.Normalize()
+    fig, ax = plt.subplots(subplot_kw=dict(projection='3d'), figsize=(7,5))
+    m = cm.ScalarMappable(cmap=cm.jet)
+    data = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, facecolors=cm.terrain(norm(R)))
+    m.set_array(R)
+    '''
+    X, Y, Z = conv.sph2cart2(G_Grid - G_Grid.min(), G_Long*pi/180 + pi, pi/2 - G_Lat*pi/180)
+
+    N = G_Grid/G_Grid.max() 
     alpha = 1
     plt.axes(AX)
-    data = AX.plot_surface(X, Y, Z, 
-                           alpha = alpha, antialiased=False,
-                           cmap=plt.get_cmap(map_color))
+    data = AX.plot_surface(X, Y, Z, # rstride=1, cstride=1,
+                           alpha = alpha, antialiased=False, 
+                           facecolors=cm.jet(N))
+    m = cm.ScalarMappable(cmap=cm.jet)
+    m.set_array(G_Grid)
+    '''
     CBAR = plt.colorbar(mappable=data, ax=AX, cmap=plt.get_cmap(map_color), 
-                        orientation='horizontal', pad=0.10)    
+                        orientation='horizontal', pad=0.10) 
+    
+    AX.set_axis_off()
+#    axes.xaxis.set_visible(False)
+    AX.axes.yaxis.set_visible(False)
+    AX.axes.zaxis.set_visible(False)
     return CBAR
 
+
+def Rotating_map_gif():
+    pass # https://tex.stackexchange.com/questions/268830/drawing-spherical-harmonic-density-plots-on-the-surface-of-a-sphere-in-tikz-pgfp
 
 # =============================================================================
 # FIGURE FUNCTIONS
@@ -163,7 +189,7 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
     FIG, AX1 = Make_Map_Fig(ccrs.Mollweide,   [FIG.number], 121, (11,4) )
     FIG, AX2 = Make_Map_Fig(ccrs.PlateCarree, [FIG.number], 122, (11,4) )
  
-    plt.suptitle("Maps of the Earth")        
+    plt.suptitle("Maps of the Earth - The endless possibilities of Cartopy")        
     plt.show(block=False)
     
     # =========================================================================
@@ -196,8 +222,11 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-#    Map_Earth()
-#    Make_Map()
+    Map_Earth()
+    
+    Make_Map()
+    
     Make_Map_3D()
+    
     print("\nGH_displayCoef done")
 

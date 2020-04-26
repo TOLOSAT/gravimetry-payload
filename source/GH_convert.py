@@ -55,17 +55,29 @@ def sph2cart (r,theta,phi):
     z=r*sin(theta)
     return x, y, z
 
-def sph2cartA(radius, G_grid, G_theta, G_phi):
+def sph2cart2 (r,theta,phi):
+    """ converts spherical coordinates to carthesian """
+    x=r*sin(theta)*sin(phi)
+    y=r*sin(theta)*cos(phi)
+    z=r*cos(theta)
+    return x, y, z
+'''
+#Makes no sense to use this like this
+def sph2cartA(radius, G_Grid, G_theta, G_phi):
     """ returns the grid in a 3D x,y,z plottable format """
-    X = np.zeros(G_grid.shape)
-    Y = np.zeros(G_grid.shape)
-    Z = np.zeros(G_grid.shape)
-    for i in range(0, len(G_phi)):
-        for j in range (0,len(G_theta)):
-            x, y, z = sph2cart(radius + G_grid[i,j], G_theta[i,j], G_phi[i,j]) 
-            X[i, j], Y[i, j], Z[i, j] = x, y, z
+    theta = Make_Line(G_theta)
+    phi = Make_Line(G_phi)
+    R = Make_Line(G_Grid)
+    
+    X = np.zeros((1,phi.size))
+    Y = np.zeros((1,phi.size))
+    Z = np.zeros((1,phi.size))
+    
+    for i in range(0, len(phi)):
+        x, y, z = sph2cart(radius + R[i], theta[i], phi[i])
+        X[i], Y[i], Z[i] = x, y, z
     return X, Y, Z
-            
+'''           
 
 def geodes2geocen (Lat_gd):
     """converts geodetic (or geographic) latitude into geocentric latitude """
@@ -93,10 +105,7 @@ def Make_Line (arr):
     """
     Returns the array with all rows appended
     """
-    col = len(arr)
-    length = col * len(arr[0]) # size(arr)
-    line = np.reshape(arr, (1, length))
-    return line
+    return np.reshape(arr, (1, arr.size))
 
 
 def Make_Array (line, col = 3):

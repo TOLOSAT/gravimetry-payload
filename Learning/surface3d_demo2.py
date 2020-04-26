@@ -14,14 +14,21 @@ from numpy import pi, sin, cos
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 R = 10
+size = 100
 # Make data
-u = np.linspace(0, 1.5* pi, 100)
-v = np.linspace(0, pi, 100)
+u = np.linspace(0, 1.5* pi, size)
+v = np.linspace(0, pi, size)
 x = R * np.outer(cos(u), sin(v))
 y = R * np.outer(sin(u), sin(v))
 z = R * np.outer(np.ones(u.size), cos(v))
 
 # Plot the surface
-ax.plot_surface(x, y, z, color='b')
+cbar = np.zeros((3,size))
+cbar[0,:] = np.linspace(0, 1, size)
+cbar[1,:] = np.linspace(0, 1, size)
+cbar[2,:] = np.linspace(0, 1, size)
+
+
+ax.plot_surface(x, y, z, color=cbar)
 
 plt.show()
