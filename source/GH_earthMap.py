@@ -66,9 +66,9 @@ def Add_Gridlines(AX, proj=ccrs.PlateCarree):
         GL.xlabel_style = {'size': 8}
         GL.ylabel_style = {'size': 8}
 #        GL.xlabel_style = {'color': 'red', 'weight': 'bold'}
-
-
-
+   
+   
+   
 # =============================================================================
 # PLOT FUNCTIONS
 # =============================================================================
@@ -89,7 +89,7 @@ def Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels=35, proj=ccrs.PlateCarree, m
 
 def Plot_surface (G_Grid, G_Long, G_Lat, AX, map_color="jet"):
     """
-    3D Display of G_Gridsurface, with coordinates G_Long and G_Lat 
+    3D Display of G_Grid surface, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
     """
     alpha = 1
@@ -104,43 +104,25 @@ def Plot_surface (G_Grid, G_Long, G_Lat, AX, map_color="jet"):
     return CBAR
 
 
-def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX, radius=6378137.00, map_color="jet"):
+def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX, radius=80000, map_color="jet"):
     """
     Ball representation of G_Grid + radius, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
     """
-    THETA = pi/2 - G_Lat*pi/180
-    PHI = G_Long*pi/180 + pi
-    R = G_Grid + 50000
-
-    X = R * np.sin(THETA) * np.cos(PHI)
-    Y = R * np.sin(THETA) * np.sin(PHI)
-    Z = R * np.cos(THETA)
-    
+    X, Y, Z = conv.sph2cart_Grid(G_Grid + radius, G_Long, G_Lat)
+    cmap = cm.get_cmap(map_color)
     norm = colors.Normalize()
-    fig, ax = plt.subplots(subplot_kw=dict(projection='3d'), figsize=(7,5))
-    m = cm.ScalarMappable(cmap=cm.jet)
-    data = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, facecolors=cm.terrain(norm(R)))
-    m.set_array(R)
-    '''
-    X, Y, Z = conv.sph2cart2(G_Grid - G_Grid.min(), G_Long*pi/180 + pi, pi/2 - G_Lat*pi/180)
-
-    N = G_Grid/G_Grid.max() 
-    alpha = 1
-    plt.axes(AX)
-    data = AX.plot_surface(X, Y, Z, # rstride=1, cstride=1,
-                           alpha = alpha, antialiased=False, 
-                           facecolors=cm.jet(N))
-    m = cm.ScalarMappable(cmap=cm.jet)
+    m = cm.ScalarMappable(cmap=cmap)
+    data = AX.plot_surface(X, Y, Z, rstride=1, cstride=1, facecolors=cmap(norm(G_Grid)))
     m.set_array(G_Grid)
-    '''
-    CBAR = plt.colorbar(mappable=data, ax=AX, cmap=plt.get_cmap(map_color), 
-                        orientation='horizontal', pad=0.10) 
     
-    AX.set_axis_off()
-#    axes.xaxis.set_visible(False)
+#    AX.set_axis_off()
+    AX.axes.xaxis.set_visible(False)
     AX.axes.yaxis.set_visible(False)
     AX.axes.zaxis.set_visible(False)
+    CBAR = plt.colorbar(ax=AX, cmap=cmap, 
+                        orientation='horizontal', pad=0.10) 
+    
     return CBAR
 
 
@@ -168,11 +150,11 @@ def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
     return FIG, AX
 
 
-def Make_Map_3D (fignum=[], ax_pos=111, shape=(7,5) ):
-    """ Generates a mpl figure with the wanted coordiates system projection """
+def Make_Map_3D (fignum=[], ax_pos=111, shape=(6,6) ):
+    """ Generates a 3d mpl figure """
     FIG = plt.figure(*fignum, figsize=shape)
     AX = FIG.add_subplot(ax_pos, projection='3d')
-    plt.show(block=False)
+#    AX.set_aspect('equal')
     return FIG, AX
 
 

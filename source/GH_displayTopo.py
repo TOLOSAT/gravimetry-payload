@@ -46,12 +46,12 @@ def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title):
 #    FIG, AX = emap.Make_Map()# proj = ccrs.Mollweide)
 #    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels, map_color=map_color) 
     
-    FIG, AX = emap.Make_Map_3D()
-    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX, map_color=map_color)  
-    AX.set_zlabel("Height (m)",rotation=90)
-    
 #    FIG, AX = emap.Make_Map_3D()
-#    CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX, map_color=map_color)  
+#    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX, map_color=map_color)  
+#    AX.set_zlabel("Height (m)",rotation=90)
+#    
+    FIG, AX = emap.Make_Map_3D()
+    CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX, map_color=map_color)  
     
     # Adapt labels
     font_s = 10

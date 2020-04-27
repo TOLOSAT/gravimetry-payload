@@ -46,7 +46,7 @@ fig.colorbar(m, shrink=0.8);
 
 
 
-'''
+
 #%% ===========================================================================
 l = 4    # degree
 m = 2    # order
@@ -73,7 +73,7 @@ fig.colorbar(m, shrink=0.8);
 #%% ===========================================================================
 l = 4    # degree
 m = 2    # order
-PHI, THETA = np.mgrid[0:2*np.pi:30j, 0:np.pi:15j]
+PHI, THETA = np.mgrid[0:2*np.pi:300j, 0:np.pi:150j]
 R = sp.sph_harm(m, l, PHI, THETA).real
 
 s = 1
@@ -84,7 +84,7 @@ Z = (s*R+1) * np.cos(THETA)
 norm = colors.Normalize()
 fig, ax = plt.subplots(subplot_kw=dict(projection='3d'), figsize=(7,5))
 m = cm.ScalarMappable(cmap=cm.jet)
-ax.plot_surface(X, Y, Z, rstride=1, cstride=1, facecolors=cm.jet(norm(R)))
+ax.plot_surface(X, Y, Z, rstride=1, cstride=1, facecolors=cm.terrain(norm(R)))
 ax.set_title('1 + real$(Y^2_ 4)$', fontsize=20)
 m.set_array(R)
 fig.colorbar(m, shrink=0.8);
@@ -93,4 +93,4 @@ fig.colorbar(m, shrink=0.8);
 #%%
 
 
-'''
+

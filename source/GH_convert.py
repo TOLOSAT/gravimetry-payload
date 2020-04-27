@@ -61,23 +61,17 @@ def sph2cart2 (r,theta,phi):
     y=r*sin(theta)*cos(phi)
     z=r*cos(theta)
     return x, y, z
-'''
-#Makes no sense to use this like this
-def sph2cartA(radius, G_Grid, G_theta, G_phi):
+
+def sph2cart_Grid(G_Grid, G_Long, G_Lat):
     """ returns the grid in a 3D x,y,z plottable format """
-    theta = Make_Line(G_theta)
-    phi = Make_Line(G_phi)
-    R = Make_Line(G_Grid)
-    
-    X = np.zeros((1,phi.size))
-    Y = np.zeros((1,phi.size))
-    Z = np.zeros((1,phi.size))
-    
-    for i in range(0, len(phi)):
-        x, y, z = sph2cart(radius + R[i], theta[i], phi[i])
-        X[i], Y[i], Z[i] = x, y, z
+    THETA = pi/2 - G_Lat*pi/180
+    PHI = G_Long*pi/180 + pi
+    R = G_Grid
+    X = R * np.sin(THETA) * np.cos(PHI)
+    Y = R * np.sin(THETA) * np.sin(PHI)
+    Z = R * np.cos(THETA)
     return X, Y, Z
-'''           
+          
 
 def geodes2geocen (Lat_gd):
     """converts geodetic (or geographic) latitude into geocentric latitude """
