@@ -44,10 +44,10 @@ import GH_convert      as conv
 # =============================================================================
 # FIGURE EDITING FUNCTIONS
 # =============================================================================
-def Add_Credits(AX):
+def Add_Credits(AX, loc=4):
     TOOL = "Grav Harm 3"
     CREDIT = "TOLOSAT"
-    TEXT_BOX = AnchoredText(f"{TOOL} by {CREDIT}", loc=4, prop={'size': 8}, frameon=True)
+    TEXT_BOX = AnchoredText(f"{TOOL} by {CREDIT}", loc=loc, prop={'size': 8}, frameon=True)
     AX.add_artist(TEXT_BOX)
 
 
@@ -67,7 +67,14 @@ def Add_Gridlines(AX, proj=ccrs.PlateCarree):
         GL.ylabel_style = {'size': 8}
 #        GL.xlabel_style = {'color': 'red', 'weight': 'bold'}
    
-   
+def Add_white_box(AX, X, Y, Z):
+    max_range = np.array([X.max()-X.min(), Y.max()-Y.min(), Z.max()-Z.min()]).max()
+    Xb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][0].flatten() + 0.5*(X.max()+X.min())
+    Yb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][1].flatten() + 0.5*(Y.max()+Y.min())
+    Zb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][2].flatten() + 0.5*(Z.max()+Z.min())
+    # Comment or uncomment following both lines to test the fake bounding box:
+    for xb, yb, zb in zip(Xb, Yb, Zb):
+       AX.plot([xb], [yb], [zb], 'w')
    
 # =============================================================================
 # PLOT FUNCTIONS
@@ -104,25 +111,29 @@ def Plot_surface (G_Grid, G_Long, G_Lat, AX, map_color="jet"):
     return CBAR
 
 
-def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX, radius=80000, map_color="jet"):
+def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX, ratio=0.15, map_color="jet"):
     """
     Ball representation of G_Grid + radius, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
+    ratio=0: sphere earth. ratio = 1: chaos earth
     """
-    X, Y, Z = conv.sph2cart_Grid(G_Grid + radius, G_Long, G_Lat)
-    cmap = cm.get_cmap(map_color)
+    AX.figure.set_size_inches((6,6))
+    
+    ranges = abs(G_Grid.max() - G_Grid.min())
+    R = (G_Grid - G_Grid.min())*ratio + ranges*(1-ratio)
+    X, Y, Z = conv.sph2cart_Grid(R, G_Long, G_Lat) #G_Grid + 
     norm = colors.Normalize()
+    cmap = cm.get_cmap(map_color)
     m = cm.ScalarMappable(cmap=cmap)
-    data = AX.plot_surface(X, Y, Z, rstride=1, cstride=1, facecolors=cmap(norm(G_Grid)))
+    AX.plot_surface(X, Y, Z, rstride=1, cstride=1, facecolors=cmap(norm(G_Grid)) )
     m.set_array(G_Grid)
     
-#    AX.set_axis_off()
-    AX.axes.xaxis.set_visible(False)
-    AX.axes.yaxis.set_visible(False)
-    AX.axes.zaxis.set_visible(False)
-    CBAR = plt.colorbar(ax=AX, cmap=cmap, 
-                        orientation='horizontal', pad=0.10) 
-    
+    Add_white_box(AX, X, Y, Z)
+    AX.set_xticklabels('')
+    AX.set_yticklabels('')
+    AX.set_zticklabels('')
+    CBAR = plt.colorbar(mappable=m, ax=AX, cmap=cmap, 
+                        orientation='horizontal', pad=-0.10)
     return CBAR
 
 
@@ -150,11 +161,10 @@ def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
     return FIG, AX
 
 
-def Make_Map_3D (fignum=[], ax_pos=111, shape=(6,6) ):
+def Make_Map_3D (fignum=[], ax_pos=111, shape=(7,5) ):
     """ Generates a 3d mpl figure """
     FIG = plt.figure(*fignum, figsize=shape)
     AX = FIG.add_subplot(ax_pos, projection='3d')
-#    AX.set_aspect('equal')
     return FIG, AX
 
 
@@ -206,9 +216,9 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
 if __name__ == '__main__':
     Map_Earth()
     
-    Make_Map()
+#    Make_Map()
     
-    Make_Map_3D()
+#    Make_Map_3D()
     
     print("\nGH_displayCoef done")
 

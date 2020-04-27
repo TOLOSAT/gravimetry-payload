@@ -114,7 +114,7 @@ def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_top
 #    FIG, AX = emap.Make_Map()#proj = ccrs.Mollweide)
 #    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)   
     FIG, AX = emap.Make_Map_3D()
-    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX)  
+    CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX)  
     AX.set_zlabel("Geopotential (m)",rotation=90)
     # Adapt labels        
     plt.figure(FIG.number)
@@ -176,11 +176,11 @@ def TEST_Map_isoPot():
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-#    TEST_Map_GeoPot()
+    TEST_Map_GeoPot()
     
 #    TEST_Map_isoPot()
     
-    TEST_Map_Geoid()
+#    TEST_Map_Geoid()
     
     print("\nGH_displayGeoid done")
 
