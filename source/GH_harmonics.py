@@ -11,6 +11,8 @@
     
     Generally used variables:
         R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
+        
+        limits = [Western_long, Southern_lat, Eastern_long, Northern_lat]
 
 # =============================================================================
 """
@@ -40,37 +42,39 @@ import GH_geoMath      as gmath
 # =============================================================================
 # FUNCTIONS TO GENERATE DATA ARRAYs
 # =============================================================================
-def init_grid (tens):
+def init_grid (tens, limits):
     """
     Initiates the grid variables based on the number of points wanted
+    within the given limits
     """
     size_long = 1 + 36*tens
     size_lat  = 1 + 18*tens
-
-    Line_long = np.linspace(0, 2*pi, size_long) # 0 to 360 ; must subtract 180
-    Line_lat  = np.linspace(0, pi, size_lat) # 0 to 180 ; must do 90 - theta
-    G_Long, G_Lat = np.meshgrid((Line_long - pi), (pi/2 - Line_lat))
-
+    dim = limits * pi/180
+    
+    Line_theta = np.linspace(dim[0], dim[2], size_long)
+    Line_phi  = np.linspace(dim[1], dim[3], size_lat)
+    
+    G_theta, G_phi = np.meshgrid(Line_theta, Line_phi)
     G_Grid = np.zeros((size_lat, size_long))
     
-    return G_Grid, G_Long, G_Lat
+    return G_Grid, G_theta, G_phi
 
 
-def Gen_Grid (tens, Get_FUNCTION, in_args): 
+def Gen_Grid (tens, Get_FUNCTION, in_args, limits=np.array([-180,-90,180,90])):
     """
     This function generates a grid of the desired spherical harmonic model
     at Lat/Long coordinates
     Input: 
         tens: how large the array should be
         Get_FUNCTION: the callable function that must be used
-        *inargs: the arguments to the callable function besides R, Lat, Long
+        *in_args: the arguments to the callable function besides R, Lat, Long
     Output:
-        G_Gridt: grid of Get_FUNCTION(R,Lat,Long,*in_args)
+        G_Grid: grid of Get_FUNCTION(R,Lat,Long,*in_args)
         G_Long: grid of longitudes
-        G_Lat: grid of lattitudes
+        G_Lat:  grid of latitudes
 
     """
-    G_Grid, G_Long, G_Lat = init_grid(tens)   
+    G_Grid, G_Long, G_Lat = init_grid(tens, limits)   
     print(f"Making a grid with \"{Get_FUNCTION.__name__}()\", with {G_Grid.size} points")
 
 #    if (measure == "geopot"):
