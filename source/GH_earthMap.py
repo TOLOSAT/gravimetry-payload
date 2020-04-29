@@ -42,39 +42,33 @@ import GH_convert      as conv
 
 
 # =============================================================================
-# FIGURE EDITING FUNCTIONS
+# FIGURE FUNCTIONS
 # =============================================================================
-def Add_Credits(AX, loc=4):
-    TOOL = "Grav Harm 3"
-    CREDIT = "TOLOSAT"
-    TEXT_BOX = AnchoredText(f"{TOOL} by {CREDIT}", loc=loc, prop={'size': 8}, frameon=True)
-    AX.add_artist(TEXT_BOX)
+def Make_Map_Fig (proj, fignum, ax_pos, shape, limits):
+    """ Generates a mpl figure with the wanted coordiates system projection """
+    FIG = plt.figure(*fignum, figsize=shape)
+    AX = FIG.add_subplot(ax_pos, projection=proj())
+    AX.set_extent(limits) 
+    plt.show(block=False)
+    return FIG, AX
 
 
-def Add_Gridlines(AX, proj=ccrs.PlateCarree):
-#        http://balbuceosastropy.blogspot.com/2015/06/spherical-harmonics-in-python.html
-    if (proj != ccrs.PlateCarree):
-        AX.gridlines(color="gray", alpha=0.4)
-    else:
-        GL = AX.gridlines(crs=proj(), draw_labels=True, linewidth=1, 
-                          color='gray', alpha=0.4, linestyle='--')
-        GL.xlabels_top = False
-        GL.ylabels_left = False
-#        GL.xlocator = mticker.FixedLocator([-5, -1, 0, 3])
-        GL.xformatter = LONGITUDE_FORMATTER
-        GL.yformatter = LATITUDE_FORMATTER
-        GL.xlabel_style = {'size': 8}
-        GL.ylabel_style = {'size': 8}
-#        GL.xlabel_style = {'color': 'red', 'weight': 'bold'}
-   
-def Add_white_box(AX, X, Y, Z):
-    max_range = np.array([X.max()-X.min(), Y.max()-Y.min(), Z.max()-Z.min()]).max()
-    Xb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][0].flatten() + 0.5*(X.max()+X.min())
-    Yb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][1].flatten() + 0.5*(Y.max()+Y.min())
-    Zb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][2].flatten() + 0.5*(Z.max()+Z.min())
-    # Comment or uncomment following both lines to test the fake bounding box:
-    for xb, yb, zb in zip(Xb, Yb, Zb):
-       AX.plot([xb], [yb], [zb], 'w')
+def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5), limits=np.array([0,180,0,90])):
+    """ Adds gridlines, credits and coastlines to a mpl figure """
+    FIG, AX = Make_Map_Fig(proj, fignum, ax_pos, shape, limits)
+    Add_Gridlines(AX, proj)
+    Add_Credits(AX)
+    AX.coastlines(linewidth = 0.6)
+    return FIG, AX
+
+
+def Make_Map_3D (fignum=[], ax_pos=111, shape=(7,5) ):
+    """ Generates a 3d mpl figure """
+    FIG = plt.figure(*fignum, figsize=shape)
+    AX = FIG.add_subplot(ax_pos, projection='3d')
+    return FIG, AX
+
+
    
 # =============================================================================
 # PLOT FUNCTIONS
@@ -140,32 +134,46 @@ def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX, ratio=0.15, map_color="jet"):
 def Rotating_map_gif():
     pass # https://tex.stackexchange.com/questions/268830/drawing-spherical-harmonic-density-plots-on-the-surface-of-a-sphere-in-tikz-pgfp
 
+
+
 # =============================================================================
-# FIGURE FUNCTIONS
+# FIGURE EDITING FUNCTIONS
 # =============================================================================
-def Make_Map_Fig (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
-    """ Generates a mpl figure with the wanted coordiates system projection """
-    FIG = plt.figure(*fignum, figsize=shape)
-    AX = FIG.add_subplot(ax_pos, projection=proj())
-    AX.set_global() 
-    plt.show(block=False)
-    return FIG, AX
+def Add_Credits(AX, loc=4):
+    """ Adds a textbox with Grav Harm 3 credits """
+    TOOL = "Grav Harm 3"
+    CREDIT = "TOLOSAT"
+    TEXT_BOX = AnchoredText(f"{TOOL} by {CREDIT}", loc=loc, prop={'size': 8}, frameon=True)
+    AX.add_artist(TEXT_BOX)
 
 
-def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5) ):
-    """ Adds gridlines, credits and coastlines to a mpl figure """
-    FIG, AX = Make_Map_Fig(proj, fignum, ax_pos, shape)
-    Add_Gridlines(AX, proj)
-    Add_Credits(AX)
-    AX.coastlines(linewidth = 0.6)
-    return FIG, AX
+def Add_Gridlines(AX, proj=ccrs.PlateCarree):
+    """ writes the gridlines and labens on the cartopy map """
+#        http://balbuceosastropy.blogspot.com/2015/06/spherical-harmonics-in-python.html
+    if (proj != ccrs.PlateCarree):
+        AX.gridlines(color="gray", alpha=0.4)
+    else:
+        GL = AX.gridlines(crs=proj(), draw_labels=True, linewidth=1, 
+                          color='gray', alpha=0.4, linestyle='--')
+        GL.xlabels_top = False
+        GL.ylabels_left = False
+#        GL.xlocator = mticker.FixedLocator([-5, -1, 0, 3])
+        GL.xformatter = LONGITUDE_FORMATTER
+        GL.yformatter = LATITUDE_FORMATTER
+        GL.xlabel_style = {'size': 8}
+        GL.ylabel_style = {'size': 8}
+#        GL.xlabel_style = {'color': 'red', 'weight': 'bold'}
 
 
-def Make_Map_3D (fignum=[], ax_pos=111, shape=(7,5) ):
-    """ Generates a 3d mpl figure """
-    FIG = plt.figure(*fignum, figsize=shape)
-    AX = FIG.add_subplot(ax_pos, projection='3d')
-    return FIG, AX
+def Add_white_box(AX, X, Y, Z):
+    """ function that might help get equal axes in a 3D plot (stackoverflow) """
+    max_range = np.array([X.max()-X.min(), Y.max()-Y.min(), Z.max()-Z.min()]).max()
+    Xb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][0].flatten() + 0.5*(X.max()+X.min())
+    Yb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][1].flatten() + 0.5*(Y.max()+Y.min())
+    Zb = 0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][2].flatten() + 0.5*(Z.max()+Z.min())
+    for xb, yb, zb in zip(Xb, Yb, Zb):
+       AX.plot([xb], [yb], [zb], 'w')
+
 
 
 # =============================================================================
@@ -178,8 +186,9 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
     """
     FIG = plt.figure(figsize=(11,4))
     plt.clf()
-    FIG, AX1 = Make_Map_Fig(ccrs.Mollweide,   [FIG.number], 121, (11,4) )
-    FIG, AX2 = Make_Map_Fig(ccrs.PlateCarree, [FIG.number], 122, (11,4) )
+    limits=np.array([0,180,0,90])
+    FIG, AX1 = Make_Map_Fig(ccrs.Mollweide,   [FIG.number], 121, (11,4), limits)
+    FIG, AX2 = Make_Map_Fig(ccrs.PlateCarree, [FIG.number], 122, (11,4), limits)
  
     plt.suptitle("Maps of the Earth - The endless possibilities of Cartopy")        
     plt.show(block=False)

@@ -10,10 +10,14 @@
     surface of the Earth
     
     Generally used variables:
-        R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
+        R, Lat, Long = coordinates in the geocentric CRS
+        lmax = maximum degree to calculate to for the geopotantial
+        HC, HS = Geopotential stokes coefficients
+        lmax_topo, HC_topo, HS_topo = same, but for topography. 
         
-        limits = [Western_long, Southern_lat, Eastern_long, Northern_lat]
-
+        limits = [Western_long, Eastern_long, Southern_lat, Northern_lat]
+        tens = how large the grid should be - look at init_grid() to understand
+        
 # =============================================================================
 """
 # =============================================================================
@@ -51,8 +55,8 @@ def init_grid (tens, limits):
     size_lat  = 1 + 18*tens
     dim = limits * pi/180
     
-    Line_theta = np.linspace(dim[0], dim[2], size_long)
-    Line_phi  = np.linspace(dim[1], dim[3], size_lat)
+    Line_theta = np.linspace(dim[0], dim[1], size_long)
+    Line_phi  = np.linspace(dim[2], dim[3], size_lat)
     
     G_theta, G_phi = np.meshgrid(Line_theta, Line_phi)
     G_Grid = np.zeros((size_lat, size_long))
@@ -60,7 +64,7 @@ def init_grid (tens, limits):
     return G_Grid, G_theta, G_phi
 
 
-def Gen_Grid (tens, Get_FUNCTION, in_args, limits=np.array([-180,-90,180,90])):
+def Gen_Grid (tens, Get_FUNCTION, in_args, limits):
     """
     This function generates a grid of the desired spherical harmonic model
     at Lat/Long coordinates
@@ -72,7 +76,6 @@ def Gen_Grid (tens, Get_FUNCTION, in_args, limits=np.array([-180,-90,180,90])):
         G_Grid: grid of Get_FUNCTION(R,Lat,Long,*in_args)
         G_Long: grid of longitudes
         G_Lat:  grid of latitudes
-
     """
     G_Grid, G_Long, G_Lat = init_grid(tens, limits)   
     print(f"Making a grid with \"{Get_FUNCTION.__name__}()\", with {G_Grid.size} points")

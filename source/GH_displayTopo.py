@@ -36,11 +36,11 @@ import GH_earthMap     as emap
 # =============================================================================
 # DISPLAY FUNCTIONS
 # =============================================================================
-def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title, style="map"):    
+def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title, style="map", limits=np.array([0,180,0,90])):    
     """ 
     Makes a Matplotlib figure with the map, topography and labels 
     """
-    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Topo_Height, [lmax_topo, HC_topo, HS_topo])
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Topo_Height, [lmax_topo, HC_topo, HS_topo], limits)
     map_color = "terrain"
 #    map_colors = "gist_earth"
     
@@ -52,7 +52,7 @@ def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title, style="map"):
         CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX, map_color=map_color)  
         AX.set_zlabel("Height (m)",rotation=90) 
     else:        
-        FIG, AX = emap.Make_Map()# proj = ccrs.Mollweide)
+        FIG, AX = emap.Make_Map(limits = limits)#, proj = ccrs.Mollweide)
         CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels, map_color=map_color) 
     
     
@@ -105,11 +105,14 @@ def Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title):
 
 def TEST_Map_Topo():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax_topo = 10
+    lmax_topo = 15
     tens = 1
     levels = 50
-    title = f"TEST map of topography"    
-    fig = Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title)
+    title = f"TEST map of topography"
+    limits= np.array([-180, 180, -90, 90])
+#    limits= np.array([-7, 4, 47, 54])
+#    fig = Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title)
+    fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, "map", limits)
 #    exp.Store_Figure(fig.number, "test")
 
 # =============================================================================
