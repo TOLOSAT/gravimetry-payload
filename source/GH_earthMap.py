@@ -126,6 +126,7 @@ def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX, ratio=0.15, map_color="jet"):
     AX.set_xticklabels('')
     AX.set_yticklabels('')
     AX.set_zticklabels('')
+#    AX.axis('off')
     CBAR = plt.colorbar(mappable=m, ax=AX, cmap=cmap, 
                         orientation='horizontal', pad=-0.10)
     return CBAR

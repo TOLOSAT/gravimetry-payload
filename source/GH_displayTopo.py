@@ -68,11 +68,11 @@ def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title, style="map", lim
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
-def Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title):    
+def Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, limits):    
     """ 
     Makes a Matplotlib figure with the map, topography and labels 
     """
-    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Topo_Height, [lmax_topo, HC_topo, HS_topo])
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Topo_Height, [lmax_topo, HC_topo, HS_topo], limits)
     map_color = "terrain"
 #    map_colors = "gist_earth"
 
@@ -93,7 +93,7 @@ def Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title):
     plt.title(plot_specs, fontsize = font_s)
     CBAR.set_label("Height from sea level in meters")
     
-    FIG, AX = emap.Make_Map()# proj = ccrs.Mollweide)
+    FIG, AX = emap.Make_Map(limits = limits)# proj = ccrs.Mollweide)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels, map_color=map_color) 
     font_s = 10
     plt.suptitle(title) #, fontsize = font_s)
@@ -110,15 +110,19 @@ def TEST_Map_Topo():
     levels = 50
     title = f"TEST map of topography"
     limits= np.array([-180, 180, -90, 90])
-#    limits= np.array([-7, 4, 47, 54])
-#    fig = Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title)
-    fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, "map", limits)
+#    limits= np.array([-7, 15, 40, 54])
+#    limits= np.array([-25, 30, 15, 65])
+#    limits= np.array([-180, 180, -90, -40])
+    fig = Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, limits)
+#    fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, "ball", limits)
 #    exp.Store_Figure(fig.number, "test")
 
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
+    
     TEST_Map_Topo() 
+    
     print("\nGH_displayCoef done")
 
