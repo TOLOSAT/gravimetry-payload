@@ -44,26 +44,33 @@ def Store_Array(data, title, path="../Rendered"):
         title: a string, of the desired title for the file.
                 Must incluse ".txt"
         path: path in which to store the array
-
     To import use:
         data = np.loadtxt(title)
-
     """
-    print(f"Writing \"{title}\" in \"{path}\"")
-    length = len(data)
+#    print(f"Writing \"{title}\" in \"{path}\"")
+
     file = open(f"{path}/{title}", "w+")
-    for n in range (len(data)):
-        print("Writing", n, "\tof", length-1)
-        for m in range(len(data[0])):
+    for n in range (data.shape[0]):
+#        print("Writing", n, "\tof", length-1)
+        for m in range(data.shape[1]):
             file.write(str(data[n, m]))
             file.write("\t")
         file.write("\n")
     file.close()
-    print(f"\n\tDone writing {title}")
+#    print(f"\r\tDone writing {title}")
+
+
+def Store_temp_GLl(G_Grid, G_Long, G_Lat, time=""):
+    """ to be used with imp.Load_temp_GLl() """
+    temp_GLl_path = "../Rendered/temp"
+    Store_Array(G_Grid, f"{time} G_Grid", temp_GLl_path)
+    Store_Array(G_Long, f"{time} G_Long", temp_GLl_path)
+    Store_Array(G_Lat,  f"{time} G_Lat",  temp_GLl_path)
+
 
 
 # =============================================================================
-# TEST FUNCTIONS
+# FUNCTIONS FOR FIGURES
 # =============================================================================
 def Store_Figure(fignum, title, time="", path="../Rendered/images", dpi=500):
     """
@@ -81,12 +88,23 @@ def Store_Figure(fignum, title, time="", path="../Rendered/images", dpi=500):
     file_name = f"{path}/{time} {title}.png"
     plt.savefig(file_name, dpi=dpi)
 
-
+# =============================================================================
+# TEST FUNCTIONS
+# =============================================================================
+def TEST_store_temp():
+    A = np.ones((1,5))
+    B = np.ones((2,5))*2
+    C = np.ones((5,2))*3
+    Store_temp_GLl(A, B, C)
+    
+    
 
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-
+    
+    TEST_store_temp()
+    
     print("\nGH_export done")
 

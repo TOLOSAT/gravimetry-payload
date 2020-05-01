@@ -78,7 +78,7 @@ def Gen_Grid (tens, Get_FUNCTION, in_args, limits):
         G_Lat:  grid of latitudes
     """
     G_Grid, G_Long, G_Lat = init_grid(tens, limits)   
-    print(f"Making a grid with \"{Get_FUNCTION.__name__}()\", with {G_Grid.size} points")
+    print(f"Making a grid with \"{Get_FUNCTION.__name__}()\", with {G_Grid.size} points\n",end="\r")
 
 #    if (measure == "geopot"):
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
@@ -90,7 +90,7 @@ def Gen_Grid (tens, Get_FUNCTION, in_args, limits):
         
         for i in range(0, G_Long.shape[1]):
             Long = G_Long[0][i] - pi
-
+            print(f"\rLong =  {Long} ;Lat {Lat}",end="\r")
             G_Grid[j,i] = Get_FUNCTION(R, Lat, Long, *in_args)
           
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
@@ -111,6 +111,7 @@ def Get_Topo_Height (R, Lat, Long,    lmax_topo, HC_topo, HS_topo):
     for l in range (0, lmax_topo+1):
         Sum2 = 0
         for m in range (0, l+1):
+#            print(f"\rl={l} ; m={m}",end="\r")
             Sum2 += (HC_topo[l,m]*cos(m*Long) + HS_topo[l,m]*sin(m*Long)) * P_lm[m, l] * gmath.Normalize(l, m)
         Sum1 += Sum2
 

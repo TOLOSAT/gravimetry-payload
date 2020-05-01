@@ -84,22 +84,24 @@ Will be refered to as "The Geoid Cook Book"
 
 ## Some information for coders and nerds
 To calculate geopotential values and to describe satellite trajectories, this python tool uses the spherical coordinates system:
-'''
-r = radius in km ; [0, inf()]
-theta = inclination from the z axis in radians; [0, pi]
-phi = rotation around the z axis in radians; [0, 2*pi]
-'''
+	'''
+	r = radius in km ; [0, inf()]
+	theta = inclination from the z axis in radians; [0, pi]
+	phi = rotation around the z axis in radians; [0, 2*pi]
+	'''
 They must be adapted to lat/lon coordinates by: 
-'''
-Lat = (pi/2 - theta) * 180/pi
-Long = (phi - pi) * 180/pi
-'''
+	'''
+	Lat = (pi/2 - theta) * 180/pi
+	Long = (phi - pi) * 180/pi
+	theta = pi/2 - Lat*pi/180
+	phi = Long*pi/180 + pi
+	'''
 Their equivalent in the cartesian coordinates is: 
-'''
-x = r * sin(theta) * cos(phi)
-y = r * sin(theta) * sin(phi)
-z = r * cos(theta)
-'''
+	'''
+	x = r * sin(theta) * cos(phi)
+	y = r * sin(theta) * sin(phi)
+	z = r * cos(theta)
+	'''
 This is function: x,y,z = GH_convert.sph2cart(r,theta,phi)
 
 

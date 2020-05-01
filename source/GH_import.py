@@ -84,45 +84,67 @@ def Fetch_Pos (file_name, days=0.7, data_path="../data"):
     return Pos, Time
 
 
-def Fetch_Coef ():
+def Fetch_Coef (data="subset"):
     """
     Returns the spherical harmonic coefficients for Earth's Geopotential
     Data originally extracted from : EGM2008_to2190_ZeroTide.txt
     These coef are already normalized
-    These files exist with a degree up to lmax = 2190
+    A subset is returned unless full coefficient matrix is specified
     """
-    data_path = "../data"
-    HC = np.loadtxt(f"{data_path}/GeoPot_Coef_cos_deg30.txt")
-    HS = np.loadtxt(f"{data_path}/GeoPot_Coef_sin_deg30.txt")
+    data_path = "../data"    
+    if (data == "full"):
+        HC = np.loadtxt(f"{data_path}/GeoPot_Coef_cos_deg2190.txt")
+        HS = np.loadtxt(f"{data_path}/GeoPot_Coef_sin_deg2190.txt")
+    else:
+        HC = np.loadtxt(f"{data_path}/GeoPot_Coef_cos_deg30.txt")
+        HS = np.loadtxt(f"{data_path}/GeoPot_Coef_sin_deg30.txt")
     return HC, HS
 
 
-def Fetch_Topo_Coef ():
+def Fetch_Topo_Coef (data="subset"):
     """
     Returns the spherical harmonic coefficients for Earth's Topography
     Data originally extracted from : Coeff_Height_and_Depth_to2190_DTM2006.txt
     These coef are already normalized
-    These files exist with a degree up to lmax = 2190
+    A subset is returned unless full coefficient matrix is specified
     """
-    data_path = "../data"
-    HC_topo = np.loadtxt(f"{data_path}/Height_Coef_cos_deg49.txt")
-    HS_topo = np.loadtxt(f"{data_path}/Height_Coef_sin_deg49.txt")
+    data_path = "../data"    
+    if (data == "full"):
+        HC_topo = np.loadtxt(f"{data_path}/Height_Coef_cos_deg2190.txt")
+        HS_topo = np.loadtxt(f"{data_path}/Height_Coef_sin_deg2190.txt")
+    else:
+        HC_topo = np.loadtxt(f"{data_path}/Height_Coef_cos_deg49.txt")
+        HS_topo = np.loadtxt(f"{data_path}/Height_Coef_sin_deg49.txt")
     return HC_topo, HS_topo
+
+
+def Load_temp_GLl():  
+    """ to be used with exp.Store_temp_GLl() """
+    temp_GLl_path = "../Rendered/temp"
+    G_Grid = np.loadtxt(f"{temp_GLl_path}/G_Grid")
+    G_Long = np.loadtxt(f"{temp_GLl_path}/G_Long")
+    G_Lat  = np.loadtxt(f"{temp_GLl_path}/G_Lat")
+    return G_Grid, G_Long, G_Lat
+
 
 
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================
-
+def TEST_load_temp():
+#    exp.TEST_store_temp()
+    A, B, C = Load_temp_GLl()
+    print(A); print(B); print(C)
 
 
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    HC, HS = Fetch_Coef()
-    HC_topo, HS_topo = Fetch_Topo_Coef ()
-
+#    HC, HS = Fetch_Coef()
     
+#    HC_topo, HS_topo = Fetch_Topo_Coef ("full")
+    
+#    TEST_load_temp()    
     print("\nGH_import done")
 
