@@ -143,7 +143,7 @@ def Get_Geoid_Height (R, Lat, Long,    lmax, HC, HS):
     This function returns the potential at given height/Lat/Long coordinates
     The solution is calculated up to degree lmax in the HC HS model
     The cosine coefficients for even l and m=0 are corrected to remove the 
-    ellipsoid from the results
+    reference ellipsoid from the results
     
     Equations from the geoid cook book
     """

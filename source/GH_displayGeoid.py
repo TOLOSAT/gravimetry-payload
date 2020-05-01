@@ -86,12 +86,14 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 # MAPPING FUNCTIONS
 # =============================================================================
 
-def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
+def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
     """ Makes a Matplotlib figure with the map, geoid and labels """
     # Get the data
-    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, [lmax, HC, HS])
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, 
+                                           [lmax, HC, HS], 
+                                           limits)
     # Make a map    
-#    FIG, AX = emap.Make_Map()#proj = ccrs.Mollweide)
+#    FIG, AX = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
 #    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)  
     FIG, AX = emap.Make_Map_3D()
     CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX)  
@@ -106,12 +108,14 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
     return FIG
 
 
-def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
+def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
     """ Makes a Matplotlib figure with the map, geopotential and labels """
     # Get the data
-    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geo_Pot, [lmax, HC, HS, lmax_topo, HC_topo, HS_topo])
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geo_Pot, 
+                                           [lmax, HC, HS, lmax_topo, HC_topo, HS_topo], 
+                                           limits)
     # Make a map
-#    FIG, AX = emap.Make_Map()#proj = ccrs.Mollweide)
+#    FIG, AX = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
 #    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)   
     FIG, AX = emap.Make_Map_3D()
     CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX)  
@@ -125,12 +129,14 @@ def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_top
     return FIG
 
 
-def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
+def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
     """ Makes a Matplotlib figure with the map, isopotential and labels """
     # Get the data
-    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_isopot, [W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo])
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_isopot, 
+                                           [W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo], 
+                                           limits)
     # Make a map    
-    FIG, AX = emap.Make_Map()
+    FIG, AX = emap.Make_Map(limits=limits)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)   
     # Adapt labels
     plt.figure(FIG.number)
@@ -176,11 +182,11 @@ def TEST_Map_isoPot():
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    TEST_Map_GeoPot()
+#    TEST_Map_GeoPot()
     
 #    TEST_Map_isoPot()
     
-#    TEST_Map_Geoid()
+    TEST_Map_Geoid()
     
     print("\nGH_displayGeoid done")
 
