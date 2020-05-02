@@ -51,8 +51,12 @@ def init_grid (tens, limits):
     Initiates the grid variables based on the number of points wanted
     within the given limits
     """
-    size_long = 1 + 36*tens
-    size_lat  = 1 + 18*tens
+    if (tens <= 0):
+        size_long = 5
+        size_lat  = 5
+    else:
+        size_long = 1 + 36*tens
+        size_lat  = 1 + 18*tens
     dim = limits * pi/180
     
     Line_theta = np.linspace(dim[0], dim[1], size_long)
@@ -83,14 +87,15 @@ def Gen_Grid (tens, Get_FUNCTION, in_args, limits):
 #    if (measure == "geopot"):
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
     
+    it=0
     for j in range(0, G_Lat.shape[0]):
-        term.printProgressBar(j+1, G_Lat.shape[0])
         Lat = pi/2 - G_Lat[j][0]
         R = gmath.Get_Ellipsoid_Radius(Lat)
         
-        for i in range(0, G_Long.shape[1]):
+        for i in range(0, G_Long.shape[1]):            
+            term.printProgressBar(it+1, G_Lat.size); it+=1
             Long = G_Long[0][i] - pi
-            print(f"\rLong =  {Long} ;Lat {Lat}",end="\r")
+            print(f"\rLong =  {Long*pi/180-180} ;Lat {90-Lat*pi/180}",end="\r")
             G_Grid[j,i] = Get_FUNCTION(R, Lat, Long, *in_args)
           
     return G_Grid, G_Long*180/pi, G_Lat*180/pi # in degrees now
@@ -398,12 +403,13 @@ def TEST_lmax_loop_lat_line():
     plt.grid(True)
     
     HC, HS = imp.Fetch_Coef()
-    HC_topo, HS_topo = imp.Fetch_Topo_Coef()    
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")    
     lmax_topo = 10
 
-    lmaxs = np.arange(3, 25, 2)
+#    lmaxs = np.arange(5, 180, 10)
+    lmaxs = np.array([5, 15, 35, 60, 150, 600])
     for lmax in lmaxs:
-        Long = pi/180 * 80
+        Long =  80
         Lats = np.linspace(0, pi, 91)
         
         Geo_H = np.zeros(len(Lats))
@@ -412,17 +418,18 @@ def TEST_lmax_loop_lat_line():
             Lat = Lats[i]
             R = gmath.Get_Ellipsoid_Radius(Lat)
             
-#            Geo_H[i] = Get_acceleration   (R, Lat, Long,    lmax, HC, HS); title_spec="Acceleration"
-#            Geo_H[i] = Get_Topo_Height   (R, Lat, Long,    lmax_topo, HC_topo, HS_topo); title_spec="Topography height"
-#            Geo_H[i] = Get_Geo_Pot       (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="GeoPot"
-            Geo_H[i] = Get_Geoid_Height  (R, pi/2 - Lat, Long,    lmax, HC, HS); title_spec="Geoid height"
-#            Geo_H[i] = Get_Geoid_Height2 (R, Lat, Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="Geoid height"
+#            Geo_H[i] = Get_acceleration   (R, Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Acceleration"
+            Geo_H[i] = Get_Topo_Height   (R, Lat, pi/180 *Long,    lmax, HC_topo, HS_topo); title_spec="Topography height"
+#            Geo_H[i] = Get_Geo_Pot       (R, Lat, pi/180 *Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="GeoPot"
+#            Geo_H[i] = Get_Geoid_Height  (R, pi/2 - Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Geoid height"
+#            Geo_H[i] = Get_Geoid_Height2 (R, Lat, pi/180 *Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="Geoid height"
         
         Lats = (pi/2-Lats)
         plt.plot(Lats*180/pi, Geo_H, label=f"lx={lmax}")
     
     plt.suptitle(f"{title_spec} at equator (m) vs Latitude; loop lmax")
     plt.legend()
+    return Geo_H
     
  
 def Get_isopot_average ():
@@ -478,7 +485,7 @@ def TEST_Cosine_corr():
 if __name__ == '__main__':
     
 #    TEST_plotGeoPot_radius()
-    TEST_lmax_loop_lat_line()
+    g = TEST_lmax_loop_lat_line()
 #    TEST_lmax_loop_long_line()
 #    TEST_Get_isopot () 
 #    TEST_Cosine_corr()

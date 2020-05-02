@@ -123,7 +123,7 @@ def TEST_Map_Topo():
     
     
     
-    for lmax_topo in [600, 2000]:
+    for lmax_topo in [180]:
         fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, "map", limits)
         exp.Store_Figure(fig.number, f"test topo lmax={lmax_topo}", dpi=1000)
 

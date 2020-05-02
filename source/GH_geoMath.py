@@ -155,7 +155,25 @@ def Pol_Legendre (l, m, x):
 def Normalize (l, m):
     """
     Returns the normalization coefficient of degree l and order m
-    Equation obtained fron the dicumentation that came with the EGM2008 coeffs
+    Equation obtained from
+    """
+    k = 2
+    if (m == 0) :
+        k = 1
+
+    P1 = math.factorial(l - m)
+    P2 = k*(2*l + 1)
+    P3 = math.factorial(l + m)
+
+    N = np.sqrt(P1*P2/P3)
+    return N
+
+
+def Normalize1 (l, m):
+    """
+    Returns the normalization coefficient of degree l and order m
+    Equation obtained from the dicumentation that came with the EGM2008 coeffs
+    thisfunction zeros out below 2e-162
     """
     d_om = 0
     if (m == 0) :
@@ -223,6 +241,19 @@ def TEST_gravity ():
     plt.plot(Lats, Grav2)
 
 
+def TEST_Normalize():
+    """
+    This test showed that the normalization coefficient calculated becomes 0.0
+    when its (positive) value goes below 2.27e-162. The function must change
+    This value is reched for orders above 55
+    """
+    lmax = 100
+    Norm_lm = np.zeros((lmax+1,lmax+1))
+    for l in range (0,lmax+1):
+        for m in range(0,l+1):
+            Norm_lm[l,m] = Normalize(l, m)
+    return Norm_lm
+
 
 # =============================================================================
 # MAIN
@@ -233,7 +264,19 @@ if __name__ == '__main__':
     
 #    TEST_Constants()
     
-    TEST_gravity()
+#    TEST_gravity()
+    
+    Nn_lm2 = TEST_Normalize()
+    
+    
+    a = Normalize(590, 60)
+    b = Normalize(591, 60)
+    c = Normalize(590, 61)
+    
+    
+    
+    
+    
     
     print("\nGH_import done")
 
