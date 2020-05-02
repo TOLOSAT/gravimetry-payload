@@ -24,7 +24,7 @@ The calculation process is as follows:
 1. Solve for the coefficients, by various methods, of the geopotential
 1. Calculate the height of the Geoid undulation over the surface of the Earth
 1. Compare the calculated model with previous works in scientific litterature
-1. Generate specific satellite ephemeris to answer the mission questions and confirm the mission requirements	
+1. Generate specific satellite ephemeris to answer the mission questions, and confirm the mission requirements	
 
 ## How to use Grav Harm 3
 ### Before you start
@@ -36,6 +36,19 @@ The simulated satellite ehpemeris have been rendered using NASA's free open sour
 More on GMAT at: https://software.nasa.gov/software/GSC-17177-1
 
 To download git for Windows, use this guide: https://www.computerhope.com/issues/ch001927.htm
+
+
+### Repository diretories
+In order to handle data, some directories must be created prior to the use of this tool. Here is the mimimal structure needed: 
+	'''	
+	> data
+	> source
+	> Rendered
+		> coefficients
+		> grids
+		> images
+		> temp		
+	'''
 
 
 ### Getting started

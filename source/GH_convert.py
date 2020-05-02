@@ -33,13 +33,36 @@ from numpy import pi, sin, cos
 # =============================================================================
 # FUNCTIONS FOR COORDINATES MANIPULATION
 # =============================================================================
+def thph2lola (theta, phi):
+    """ converts radians to geographical long/lat (geodetic) """
+    Lat = (pi/2 - theta) * 180/pi
+    Long = (phi - pi) * 180/pi
+    return Long, Lat
+def lola2thph (Lat, Long):
+    """ converts geographical long/lat to radians """
+    theta = pi/2 - Lat*pi/180
+    phi = Long*pi/180 + pi
+    return theta, phi
+
+
 def cart2sph (x,y,z):
     """ converts carthesian coordinates to spherical """
-    X2_Y2 = x**2 + y**2
-    r = np.sqrt(X2_Y2 + z**2)              # r
-    elev = np.arctan2(z, np.sqrt(X2_Y2))   # theta
-    az = np.arctan2(y,x)                   # phi
-    return r, elev, az
+    radius    = np.sqrt(x**2 + y**2 + z**2)         # r
+    elevation = np.arctan2(z, np.sqrt(x**2 + y**2)) # theta
+    azimuth   = np.arctan2(y,x)                     # phi
+    return radius, elevation, azimuth
+def sph2cart222 (r,theta,phi): # cannot find where and when this function was used 
+    """ converts spherical coordinates to carthesian """
+    x=r*cos(theta)*cos(phi)
+    y=r*cos(theta)*sin(phi)
+    z=r*sin(theta)
+    return x, y, z
+def sph2cart2 (r,theta,phi):
+    """ converts spherical coordinates to carthesian, ISO convention"""
+    x=r*sin(theta)*sin(phi)
+    y=r*sin(theta)*cos(phi)
+    z=r*cos(theta)
+    return x, y, z
 
 
 def cart2sphA (pts):
@@ -48,28 +71,9 @@ def cart2sphA (pts):
     return Pos
 
 
-def sph2cart (r,theta,phi):
-    """ converts spherical coordinates to carthesian """
-    x=r*cos(theta)*cos(phi)
-    y=r*cos(theta)*sin(phi)
-    z=r*sin(theta)
-    return x, y, z
-
-def sph2cart2 (r,theta,phi):
-    """ converts spherical coordinates to carthesian """
-    x=r*sin(theta)*sin(phi)
-    y=r*sin(theta)*cos(phi)
-    z=r*cos(theta)
-    return x, y, z
-
 def sph2cart_Grid(G_Grid, G_Long, G_Lat):
     """ returns the grid in a 3D x,y,z plottable format """
-    THETA = pi/2 - G_Lat*pi/180
-    PHI = G_Long*pi/180 + pi
-    R = G_Grid
-    X = R * np.sin(THETA) * np.cos(PHI)
-    Y = R * np.sin(THETA) * np.sin(PHI)
-    Z = R * np.cos(THETA)
+    X, Y, Z = sph2cart2(G_Grid, pi/2-G_Lat*pi/180, G_Long*pi/180+pi)
     return X, Y, Z
           
 
@@ -81,12 +85,9 @@ def geodes2geocen (Lat_gd):
 #    Lat_gc = np.arctan( (b/a)**2 * np.tan(Lat_gd))
     Lat_gc = np.arctan(np.tan(Lat_gd) * (1-f)**2)
     return Lat_gc
-
-    
 def geocen2geodes (Lat_gd):
     """converts geocentric latitude into geodetic (or geographic) latitude """
     f = 1/298.257223563  # ellipsoid flattening
-
     Lat_gc = np.arctan(np.tan(Lat_gd) / (1-f)**2)
     return Lat_gc    
 

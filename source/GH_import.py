@@ -80,7 +80,6 @@ def Fetch_Pos (file_name, days=0.7, data_path="../data"):
         L = len(pts) # this is not necessary in python
     Pos = cart2sphA(pts[:L])
     Time = t[:L]
-    print(f"Importing Pos file with {L} coordinates.")
     return Pos, Time
 
 

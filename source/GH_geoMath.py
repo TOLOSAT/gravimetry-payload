@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 from time import gmtime, strftime
 
 #import GH_import       as imp
-#import GH_convert      as conv
+import GH_convert      as conv
 #import GH_generate     as gen
 #import GH_solve        as solv
 #import GH_displayGeoid as dgeo
@@ -62,7 +62,7 @@ class Constants:
     f = 1/298.257223563 # flat parameter
     
     b = a_e * (1-f) # m : polar radius
-    E = np.sqrt(a_e**2-b**2) # linear _eccentricity
+    E = np.sqrt(a_e**2-b**2) # linear eccentricity
     e_1 = E/a_e
     e_2 = E/b
     m = wo**2 * a_e*2 * b / GM_e # just to simplify the code
@@ -73,12 +73,6 @@ class Constants:
     ref_g = "EGS2008"
     a_g = 6378136.3 # m : Reference radius for the potential model
     GM_g = 3986004.415E8 # m^3/s^2 : standard gravitational parameter in the potential model
-    
-    
-    
-    
-    
-cst = Constants() 
 
 
 
@@ -140,9 +134,39 @@ def Get_Normal_Gravity2 (Lat):
     
     return g_0_lat
 
+
+
 # =============================================================================
 # FUNCTIONS - MATHEMATICAL VALUES
 # =============================================================================
+def ALF_norm_gcb (n, m, phi_gd):
+    """
+    returns an array[m+1,n+1] of the values of the Associated Legendre Function
+    of all integer degrees l and order m, at point x
+    Array is normalized, equations from the geoid cook book
+    """
+    phi = conv.geodes2geocen(phi_gd)
+    t = sin(phi)
+    u = cos(phi)
+    
+    POL = np.zeros((n, n))
+    POL[0,0] = 1
+    POL[1,0] = t * Normalize(1,0)
+    POL[1,1] = u * Normalize(1,1)
+    POL[2,0] = 3/2*t**2-1/2 * Normalize(2,0)
+    POL[2,1] = 3*u*t * Normalize(2,1)
+    POL[2,2] = 3*u**2 * Normalize(2,2)
+    
+    a_nm = lambda n, m : np.sqrt( (2*n+1)*(2*n-1) / ((n-m)*(n+m)) )
+    b_nm = lambda n, m : np.sqrt( (2*n+1)*(n+m-1)*(n-m-1) / ((n-m)*(n+m)*(2*n-3)) )
+    
+    for l in range(1, n):
+        POL[l,l] = u*np.sqrt((2*l+1)/(2*l))*POL[l-1,l-1]
+    
+    
+    
+
+
 def Pol_Legendre (l, m, x):
     """
     returns an array[m+1,n+1] of the values of the associated Legendre function
@@ -247,13 +271,19 @@ def TEST_Normalize():
     when its (positive) value goes below 2.27e-162. The function must change
     This value is reched for orders above 55
     """
-    lmax = 100
-    Norm_lm = np.zeros((lmax+1,lmax+1))
+    lmax = 100; Norm_lm = np.zeros((lmax+1,lmax+1))
     for l in range (0,lmax+1):
         for m in range(0,l+1):
             Norm_lm[l,m] = Normalize(l, m)
     return Norm_lm
 
+def TEST_Normalize2():
+    """ yes, all zeros are in the output. """
+    lmax = 100; Norm_lm = np.zeros((lmax+1,lmax+1))
+    for l in range (0,lmax+1): 
+        for m in range(0,l+1):
+            Norm_lm[l,m] = Normalize(l, m) -Normalize1(l, m)
+    return Norm_lm    
 
 # =============================================================================
 # MAIN
@@ -266,8 +296,8 @@ if __name__ == '__main__':
     
 #    TEST_gravity()
     
-    Nn_lm2 = TEST_Normalize()
-    
+#    Nn_lm2 = TEST_Normalize()
+    zeros_ = TEST_Normalize2()
     
     a = Normalize(590, 60)
     b = Normalize(591, 60)

@@ -93,11 +93,11 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
                                            [lmax, HC, HS], 
                                            limits)
     # Make a map    
-#    FIG, AX = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
-#    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)  
-    FIG, AX = emap.Make_Map_3D()
-    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX)  
-    AX.set_zlabel("Geoid Height (m)",rotation=90)
+    FIG, AX = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
+    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)  
+#    FIG, AX = emap.Make_Map_3D()
+#    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX)  
+#    AX.set_zlabel("Geoid Height (m)",rotation=90)
     
     # Adapt labels
     plt.figure(FIG.number)
@@ -115,11 +115,12 @@ def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_top
                                            [lmax, HC, HS, lmax_topo, HC_topo, HS_topo], 
                                            limits)
     # Make a map
-#    FIG, AX = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
-#    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)   
-    FIG, AX = emap.Make_Map_3D()
-    CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX)  
-    AX.set_zlabel("Geopotential (m)",rotation=90)
+    FIG, AX = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
+    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)   
+#    FIG, AX = emap.Make_Map_3D()
+#    CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX)  
+#    AX.set_zlabel("Geopotential (m)",rotation=90)
+    
     # Adapt labels        
     plt.figure(FIG.number)
     plt.suptitle(title)
@@ -155,7 +156,7 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
 def TEST_Map_Geoid():
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 10; lmax_topo = 10; tens = 1; levels = 50; 
+    lmax = 4; lmax_topo = 10; tens = 1; levels = 50; 
     title = f"TEST map of Geoid"
     _ = Map_Geoid(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
 
