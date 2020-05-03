@@ -131,11 +131,13 @@ def Get_Geo_Pot (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     
     R_t = Get_Topo_Height (R_e, phi, theta,    lmax_topo, HC_topo, HS_topo)
     Sum1 = 0
-    P_lm, _ = gmath.Pol_Legendre(lmax, lmax, cos(phi))
+#    P_lm, _ = gmath.Pol_Legendre(lmax, lmax, cos(phi))
+    LPNM = gmath.ALF_norm_gcb(lmax, lmax, phi)
     for l in range (2, lmax+1):
         Sum2 = 0
         for m in range (0, l+1):
-            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
+#            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
+            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * LPNM[l, m]
         Sum1 += (cst.a_g/R_t)**l * Sum2
 
     geopot = cst.GM_g/R_t*(1 + Sum1)
@@ -150,7 +152,7 @@ def Get_Geoid_Height (R_e, phi, theta,    lmax, HC, HS):
     The cosine coefficients for even l and m=0 are corrected to remove the 
     reference ellipsoid from the results                                                
     
-    Equations from the geoid cook book
+    Equations come from the geoid cook book
     """
     cst = gmath.Constants()    
     g_0 = gmath.Get_Normal_Gravity(phi)
@@ -161,12 +163,14 @@ def Get_Geoid_Height (R_e, phi, theta,    lmax, HC, HS):
     phi_gc = phi
     
     Sum1 = 0
-    P_lm, _ = gmath.Pol_Legendre(lmax, lmax, sin(phi_gc) )
+#    P_lm, _ = gmath.Pol_Legendre(lmax, lmax, sin(phi_gc) )
+    LPNM = gmath.ALF_norm_gcb(lmax, lmax, phi_gc)
     for l in range (2, lmax+1):
         Sum2 = 0
         for m in range (0, 1):#═l+1):            
-            HC_lm = CorrCos_lm(l, m, HC[l,m])            
-            Sum2 += (HC_lm*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
+            HC_lm = CorrCos_lm(l, m, HC[l,m])
+#            Sum2 += (HC_lm*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
+            Sum2 += (HC_lm*cos(m*theta) + HS[l,m]*sin(m*theta)) * LPNM[l, m]
             
         Sum1 +=  (cst.a_g/R_e)**l * Sum2 
 

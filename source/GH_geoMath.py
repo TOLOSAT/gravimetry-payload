@@ -139,29 +139,37 @@ def Get_Normal_Gravity2 (Lat):
 # =============================================================================
 # FUNCTIONS - MATHEMATICAL VALUES
 # =============================================================================
-def ALF_norm_gcb (n, m, phi_gd):
+def ALF_norm_gcb (N, M, phi):
     """
     returns an array[m+1,n+1] of the values of the Associated Legendre Function
     of all integer degrees l and order m, at point x
     Array is normalized, equations from the geoid cook book
+    This method is called the "standard forward colums method" explained in: 
+    https://link.springer.com/article/10.1007/s00190-002-0216-2
     """
-    phi = conv.geodes2geocen(phi_gd)
     t = sin(phi)
     u = cos(phi)
     
-    POL = np.zeros((n, n))
+    POL = np.zeros((N+1, M+1))
     POL[0,0] = 1
-    POL[1,0] = t * Normalize(1,0)
-    POL[1,1] = u * Normalize(1,1)
-    POL[2,0] = 3/2*t**2-1/2 * Normalize(2,0)
-    POL[2,1] = 3*u*t * Normalize(2,1)
-    POL[2,2] = 3*u**2 * Normalize(2,2)
-    
+    POL[1,0] = t 
+    POL[1,1] = u * np.sqrt(3)
+        
     a_nm = lambda n, m : np.sqrt( (2*n+1)*(2*n-1) / ((n-m)*(n+m)) )
     b_nm = lambda n, m : np.sqrt( (2*n+1)*(n+m-1)*(n-m-1) / ((n-m)*(n+m)*(2*n-3)) )
     
-    for l in range(1, n):
-        POL[l,l] = u*np.sqrt((2*l+1)/(2*l))*POL[l-1,l-1]
+    for n in range(2, M+1):
+        POL[n,n] = u*np.sqrt((2*n+1)/(2*n))*POL[n-1,n-1]
+    
+    for n in range (1, N+1): # m
+        POL[n, 0] = a_nm(n,0) * t * POL[n-1,0]
+
+    for m in range (1, M+1): # m
+        for n in range (m+1, N+1): # n
+            POL[n, m] = a_nm(n,m)*t*POL[n-1,m] - b_nm(n,m)*POL[n-2,m]
+    
+    return POL
+
     
     
     

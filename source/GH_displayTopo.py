@@ -43,8 +43,8 @@ def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title, style="map", lim
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Topo_Height, 
                                            [lmax_topo, HC_topo, HS_topo], 
                                            limits)
-    time = f"lmax_{lmax_topo}"
-    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, time)
+#    time = f"lmax_{lmax_topo}"
+#    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, time)
 #    G_Grid, G_Long, G_Lat = imp.Load_temp_GLl()
     map_color = "terrain"
 #    map_colors = "gist_earth"
