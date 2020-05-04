@@ -146,6 +146,9 @@ def ALF_norm_gcb (N, M, phi):
     Array is normalized, equations from the geoid cook book
     This method is called the "standard forward colums method" explained in: 
     https://link.springer.com/article/10.1007/s00190-002-0216-2
+    todo: 
+        compute the derivatives as well
+        figure out if it is cos(phi) or sin(phi)
     """
     t = sin(phi)
     u = cos(phi)
@@ -170,10 +173,6 @@ def ALF_norm_gcb (N, M, phi):
     
     return POL
 
-    
-    
-    
-
 
 def Pol_Legendre (l, m, x):
     """
@@ -190,13 +189,10 @@ def Normalize (l, m):
     Equation obtained from
     """
     k = 2
-    if (m == 0) :
-        k = 1
-
+    if (m == 0) : k = 1
     P1 = math.factorial(l - m)
     P2 = k*(2*l + 1)
     P3 = math.factorial(l + m)
-
     N = np.sqrt(P1*P2/P3)
     return N
 
@@ -208,14 +204,11 @@ def Normalize1 (l, m):
     thisfunction zeros out below 2e-162
     """
     d_om = 0
-    if (m == 0) :
-        d_om = 1
-
+    if (m == 0) : d_om = 1
     P1 = math.factorial(l - m)
     P2 = (2*l + 1)
     P3 = (2 - d_om)
     P4 = math.factorial(l + m)
-
     N = np.sqrt(P1*P2*P3/P4)
     return N
 

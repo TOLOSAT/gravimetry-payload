@@ -94,15 +94,15 @@ Heavily relies on the textbooks" Heiskanen & Moritz (1967)", and "Torge (1991)".
 Will be refered to as "The Geoid Cook Book"
 '''
 
-
+ 
 ## Some information for coders and nerds
-To calculate geopotential values and to describe satellite trajectories, this python tool uses the spherical coordinates system:
+To calculate geopotential values and to describe satellite trajectories, this python tool uses the spherical coordinates system, and more specifically the ISO convention:
 	'''
-	r = radius in km ; [0, inf()]
-	theta = inclination from the z axis in radians; [0, pi]
-	phi = rotation around the z axis in radians; [0, 2*pi]
+	r     = radius in km ; [0, inf()]
+	theta = inclination around the z axis in radians; [0, pi]
+	phi   = azimuth the z axis in radians; [0, 2*pi]
 	'''
-They must be adapted to lat/lon coordinates by: 
+They must be adapted to lat/long coordinates by: 
 	'''
 	Lat = (pi/2 - theta) * 180/pi
 	Long = (phi - pi) * 180/pi
