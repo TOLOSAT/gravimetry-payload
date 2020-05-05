@@ -147,9 +147,11 @@ def ALF_norm_gcb (N, M, phi):
     Array is normalized, equations from the geoid cook book
     This method is called the "standard forward colums method" explained in: 
     https://link.springer.com/article/10.1007/s00190-002-0216-2
+    
     todo: 
         compute the derivatives as well
         figure out if it is cos(phi) or sin(phi)
+        the 
     """
     t = sin(phi)
     u = cos(phi)
@@ -163,10 +165,14 @@ def ALF_norm_gcb (N, M, phi):
     b_nm = lambda n, m : np.sqrt( (2*n+1)*(n+m-1)*(n-m-1) / ((n-m)*(n+m)*(2*n-3)) )
     
     for n in range(2, M+1):
-        POL[n,n] = u*np.sqrt((2*n+1)/(2*n))*POL[n-1,n-1]
+        POL[n,n] = u*np.sqrt((2*n+1)/(2*n))*POL[n-1,n-1]    
+#    for m in range(1, M+1):
+#        prod_i = 1
+#        for i in range (1, m): prod_i = prod_i * np.sqrt( (2*i + 1) / (2*i) )
+#        POL[m,m] = u**m * np.sqrt(3) * prod_i
     
     for n in range (1, N+1): # m
-        POL[n, 0] = a_nm(n,0) * t * POL[n-1,0]
+        POL[n, 0] = a_nm(n,0) * t * POL[n-1,0] - b_nm(n,0)*POL[n-2,0]
 
     for m in range (1, M+1): # m
         for n in range (m+1, N+1): # n

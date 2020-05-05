@@ -109,22 +109,22 @@ def Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, limits):
     return FIG
 
 def TEST_Map_Topo():
-    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")
+#    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")
     lmax_topo = 10
     tens = 1
     levels = 75
     title = f"TEST map of topography"
-#    limits= np.array([-180, 180, -90, 90])
-    limits= np.array([-7, 15, 40, 54])
+    limits= np.array([-180, 180, -90, 90])
+#    limits= np.array([-7, 15, 40, 54])
 #    limits= np.array([-25, 30, 15, 65])
 #    limits= np.array([-180, 180, -90, -40])
 #    fig = Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, limits)
-#    fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, "map", limits)
+    fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, "map", limits)
 #    exp.Store_Figure(fig.number, f"test topo lmax={lmax_topo}", dpi=1000)
     
-    for lmax_topo in [600]:
-        fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, "map", limits)
-        exp.Store_Figure(fig.number, f"test topo lmax={lmax_topo}", dpi=1000)
+#    for lmax_topo in [600]:
+#        fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, "map", limits)
+#        exp.Store_Figure(fig.number, f"test topo lmax={lmax_topo}", dpi=1000)
 
 # =============================================================================
 # MAIN

@@ -21,7 +21,12 @@
         
         limits = [Western_long, Eastern_long, Southern_lat, Northern_lat]
         tens = how large the grid should be - look at init_grid() to understand
-        
+
+debug:
+    the Sph Harm canot be computed for degrees above 154. 
+    for l = 155 and beyond, it does not work
+
+
 # =============================================================================
 """
 # =============================================================================
@@ -110,15 +115,17 @@ def Get_Topo_Height (R_e, phi, theta,    lmax_topo, HC_topo, HS_topo):
     """
     This function returns the height of Earth's estimated topography at phi/theta 
     coordinates
-    The solution is calculated up to degree lmax in the [HC, HS] model
+    The solution is calculated up to degree lmax in the [HC_topo,HS_topo] model
     """
     Sum1 = 0
-    P_lm, _ = gmath.Pol_Legendre(lmax_topo, lmax_topo, cos(phi)) # I am allowed to write that.
-    for l in range (0, lmax_topo+1):
+#    P_lm, _ = gmath.Pol_Legendre(lmax_topo, lmax_topo, cos(phi)) # I am allowed to write that.
+    P_lm = gmath.ALF_norm_gcb(lmax_topo, lmax_topo, phi).T
+    for l in range (lmax_topo, lmax_topo+1):
         Sum2 = 0
         for m in range (0, l+1):
+#            print(f"lm= {l} {m}")
 #            print(f"\rl={l} ; m={m}",end="\r")
-            Sum2 += (HC_topo[l,m]*cos(m*theta) + HS_topo[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
+            Sum2 += (HC_topo[l,m]*cos(m*theta) + HS_topo[l,m]*sin(m*theta)) * P_lm[m, l]# * gmath.Normalize(l, m)
         Sum1 += Sum2
 
     return Sum1
@@ -133,13 +140,13 @@ def Get_Geo_Pot (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     
     R_t = Get_Topo_Height (R_e, phi, theta,    lmax_topo, HC_topo, HS_topo)
     Sum1 = 0
-#    P_lm, _ = gmath.Pol_Legendre(lmax, lmax, cos(phi))
-    LPNM = gmath.ALF_norm_gcb(lmax, lmax, phi)
+    P_lm, _ = gmath.Pol_Legendre(lmax, lmax, cos(phi))
+#    LPNM = gmath.ALF_norm_gcb(lmax, lmax, phi)
     for l in range (2, lmax+1):
         Sum2 = 0
         for m in range (0, l+1):
-#            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
-            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * LPNM[l, m]
+            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize1(l, m)
+#            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * LPNM[l, m]
         Sum1 += (cst.a_g/R_t)**l * Sum2
 
     geopot = cst.GM_g/R_t*(1 + Sum1)
@@ -405,8 +412,8 @@ def TEST_lmax_loop_lat_line():
     plt.clf()
     plt.grid(True)
     
-    HC, HS = imp.Fetch_Coef("full")
-    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")    
+#    HC, HS = imp.Fetch_Coef("full")
+#    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")    
     lmax_topo = 10
 
     lmaxs = [155] #np.arange(5, 180, 10)
@@ -508,12 +515,12 @@ def TEST_high_lmax():
 if __name__ == '__main__':
     
 #    TEST_plotGeoPot_radius()
-#    g = TEST_lmax_loop_lat_line()
+    g = TEST_lmax_loop_lat_line()
 #    TEST_lmax_loop_long_line()
 #    TEST_Get_isopot () 
 #    TEST_Cosine_corr()
     
-    val = TEST_high_lmax()
+#    val = TEST_high_lmax()
     
     
     
