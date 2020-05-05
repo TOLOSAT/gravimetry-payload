@@ -13,6 +13,8 @@
         R, Lat, Long  = coordinates in the geographic (geodesic) CRS
         R, theta, phi = coordinates in the geocantric CRS - ISO convention
         
+        a_e, R_e, GM_e = relative to the reference ellipsoid
+        a_g, R_g, GM_g = relative to the geopotential model
         lmax   = maximum degree to calculate to for the geopotantial
         HC, HS = Geopotential stokes coefficients
         lmax_topo, HC_topo, HS_topo = same, but for topography. 
@@ -403,27 +405,28 @@ def TEST_lmax_loop_lat_line():
     plt.clf()
     plt.grid(True)
     
-    HC, HS = imp.Fetch_Coef()
-    HC_topo, HS_topo = imp.Fetch_Topo_Coef()    
+    HC, HS = imp.Fetch_Coef("full")
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")    
     lmax_topo = 10
 
-#    lmaxs = np.arange(5, 180, 10)
+    lmaxs = [155] #np.arange(5, 180, 10)
 #    lmaxs = np.array([5, 15, 35, 60, 150, 600])
-    lmaxs = np.arange(1, 25, 3)
+#    lmaxs = np.arange(1, 25, 3)
     for lmax in lmaxs:
         Long =  80
         Lats = np.linspace(0, pi, 91)
-        
+        print(f"making lmax = {lmax}")
         Geo_H = np.zeros(len(Lats))
         
         for i in range(len(Lats)):
             Lat = Lats[i]
+            print(f"\tmaking lat = {(90-Lat*180/pi):0.2f}")
             R = gmath.Get_Ellipsoid_Radius(Lat)
             
 #            Geo_H[i] = Get_acceleration   (R, Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Acceleration"
-#            Geo_H[i] = Get_Topo_Height   (R, Lat, pi/180 *Long,    lmax, HC_topo, HS_topo); title_spec="Topography height"
+            Geo_H[i] = Get_Topo_Height   (R, Lat, pi/180 *Long,    lmax, HC_topo, HS_topo); title_spec="Topography height"
 #            Geo_H[i] = Get_Geo_Pot       (R, Lat, pi/180 *Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="GeoPot"
-            Geo_H[i] = Get_Geoid_Height  (R, Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Geoid height"
+#            Geo_H[i] = Get_Geoid_Height  (R, Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Geoid height"
 #            Geo_H[i] = Get_Geoid_Height2 (R, Lat, pi/180 *Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="Geoid height"
         
         Lats = (pi/2-Lats)
@@ -479,6 +482,24 @@ def TEST_Cosine_corr():
         CCos_2n0[l-1] = Cosine_Correction(2*l, HC[2*l, 0])
         print(f"C({2*l},0) =\t{CCos_2n0[l-1]}")
     
+
+def TEST_high_lmax():
+#    HC, HS = imp.Fetch_Coef("full")
+#    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")   
+    lmax =154
+    Lat = 60
+    Long = 60
+    lmax_topo = 10
+    
+    theta, phi = conv.lola2thph(Lat,Long)
+    R = gmath.Get_Ellipsoid_Radius(Lat)    
+    
+    val = Get_Topo_Height   (R, phi, theta, lmax, HC_topo, HS_topo)
+#    val = Get_Geo_Pot       (R, phi, theta, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+#    val = Get_Geoid_Height  (R, phi, theta, lmax, HC, HS)
+    
+    return val 
+    
     
     
 # =============================================================================
@@ -487,10 +508,16 @@ def TEST_Cosine_corr():
 if __name__ == '__main__':
     
 #    TEST_plotGeoPot_radius()
-    g = TEST_lmax_loop_lat_line()
+#    g = TEST_lmax_loop_lat_line()
 #    TEST_lmax_loop_long_line()
 #    TEST_Get_isopot () 
 #    TEST_Cosine_corr()
+    
+    val = TEST_high_lmax()
+    
+    
+    
+    
     
     print("\nGH_generate done")
 

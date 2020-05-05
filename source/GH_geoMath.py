@@ -121,6 +121,7 @@ def Get_Normal_Gravity (Lat):
     
     return g_0_lat
 
+
 def Get_Normal_Gravity2 (Lat):
     """
     Returns the normal gravity, on the ellipsoid, at the given latitude
@@ -183,10 +184,11 @@ def Pol_Legendre (l, m, x):
     return Plm_z, Plm_dz # use Plm_z[m, l]
 
 
+"""Normalize fnctions don't have much use anymore """
 def Normalize (l, m):
     """
     Returns the normalization coefficient of degree l and order m
-    Equation obtained from
+    Equation obtained from the GCB
     """
     k = 2
     if (m == 0) : k = 1
@@ -195,8 +197,6 @@ def Normalize (l, m):
     P3 = math.factorial(l + m)
     N = np.sqrt(P1*P2/P3)
     return N
-
-
 def Normalize1 (l, m):
     """
     Returns the normalization coefficient of degree l and order m
@@ -286,6 +286,16 @@ def TEST_Normalize2():
             Norm_lm[l,m] = Normalize(l, m) -Normalize1(l, m)
     return Norm_lm    
 
+
+def TEST_APF():
+    lmax = 155
+    phi = 180/pi
+    return ALF_norm_gcb(lmax, lmax, phi*pi/180)
+
+
+
+
+
 # =============================================================================
 # MAIN
 # =============================================================================
@@ -297,13 +307,16 @@ if __name__ == '__main__':
     
 #    TEST_gravity()
     
-#    Nn_lm2 = TEST_Normalize()
-    zeros_ = TEST_Normalize2()
+    Nn_lm2 = TEST_Normalize()
+#    zeros_ = TEST_Normalize2()
     
-    a = Normalize(590, 60)
-    b = Normalize(591, 60)
-    c = Normalize(590, 61)
+#    a = Normalize(590, 60)
+#    b = Normalize(591, 60)
+#    c = Normalize(590, 61)
     
+    
+#    alf_mat = TEST_APF()
+    aa = ALF_norm_gcb(200, 200, 1)
     
     
     
