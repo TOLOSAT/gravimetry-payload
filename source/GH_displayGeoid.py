@@ -155,7 +155,7 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
 def TEST_Map_Geoid():
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 4; lmax_topo = 10; tens = 1; levels = 50; 
+    lmax = 10; lmax_topo = 10; tens = 1; levels = 50; 
     title = f"TEST map of Geoid"
     _ = Map_Geoid(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
 
@@ -163,7 +163,7 @@ def TEST_Map_Geoid():
 def TEST_Map_GeoPot():
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 5; lmax_topo = 5; tens = 0; levels = 50 
+    lmax = 10; lmax_topo = 10; tens = 1; levels = 50 
     title = f"TEST map of GeoPotential"
     _ = Map_GeoPot(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
 
@@ -182,11 +182,11 @@ def TEST_Map_isoPot():
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    TEST_Map_GeoPot()
+#    TEST_Map_GeoPot()
     
 #    TEST_Map_isoPot()
     
-#    TEST_Map_Geoid()
+    TEST_Map_Geoid()
     
     print("\nGH_displayGeoid done")
 

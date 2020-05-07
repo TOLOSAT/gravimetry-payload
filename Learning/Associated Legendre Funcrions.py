@@ -144,12 +144,12 @@ def ALF_norm_gcb (N, M, phi):
     
 # =============================================================================
 
-M = 700
-N = 700
-X = np.pi
+N = 70
+M = N - 1
+X = 1
 
 #PM, PD         = LPMNS(M, N, cos(X))
-#PM_for, PD_for = LPMNA(M, N, cos(X))
+PM_for, PD_for = LPMNA(M, N, cos(X))
 PM_spy, PD_spy = Pol_Legendre (N, M, cos(X))
 #Err = PM_spy - PM_for
 

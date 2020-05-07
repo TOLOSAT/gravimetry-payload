@@ -58,7 +58,7 @@ def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5), limits=
     FIG, AX = Make_Map_Fig(proj, fignum, ax_pos, shape, limits)
     Add_Gridlines(AX, proj)
     Add_Credits(AX)
-    AX.coastlines(linewidth = 0.6)
+#    AX.coastlines(linewidth = 0.6)
     return FIG, AX
 
 

@@ -12,6 +12,9 @@
     Generally used variables:
         R, Lat, Long  = coordinates in the geographic (geodesic) CRS
         R, theta, phi = coordinates in the geocantric CRS - ISO convention
+        	R     <=> R    = radius in km ; [0, inf()]
+        	theta <=> LAT  = inclination around the z axis in radians; [0, pi]
+        	phi   <=> LONG = azimuth the z axis in radians; [0, 2*pi]
         
         a_e, R_e, GM_e = relative to the reference ellipsoid
         a_g, R_g, GM_g = relative to the geopotential model
@@ -101,7 +104,7 @@ def Gen_Grid (tens, Get_FUNCTION, in_args, limits):
         
         for i in range(0, G_theta.shape[1]):            
             term.printProgressBar(it+1, G_phi.size); it+=1 # print(f"\rLong =  {theta*pi/180-180} ;Lat {90-phi*pi/180}",end="\r")
-            theta = G_theta[0][i] - pi
+            theta = G_theta[0][i]+ pi
             G_Grid[j,i] = Get_FUNCTION(R_e, phi, theta, *in_args)
           
     return G_Grid, G_theta*180/pi, G_phi*180/pi # in degrees now
@@ -111,16 +114,17 @@ def Gen_Grid (tens, Get_FUNCTION, in_args, limits):
 # =============================================================================
 # FUNCTIONS TO CALCULATE SPHERICAL HARMONIC SUMS
 # =============================================================================
-def Get_Topo_Height (R_e, phi, theta,    lmax_topo, HC_topo, HS_topo):
+def Get_Topo_Height (R_e, phi, theta,   lmax_topo, HC_topo, HS_topo):
     """
     This function returns the height of Earth's estimated topography at phi/theta 
     coordinates
     The solution is calculated up to degree lmax in the [HC_topo,HS_topo] model
     """
+    
     Sum1 = 0
-    P_lm, _ = gmath.Pol_Legendre(lmax_topo, lmax_topo, sin(phi)) # I am allowed to write that.
+    P_lm, _ = gmath.Pol_Legendre(lmax_topo, lmax_topo, cos(phi)) # I am allowed to write that.
 #    P_lm = gmath.ALF_norm_gcb(lmax_topo, lmax_topo, phi).T
-    for l in range (lmax_topo, lmax_topo+1):
+    for l in range (0, lmax_topo+1):
         Sum2 = 0
         for m in range (0, l+1):
 #            print(f"lm= {l} {m}")
@@ -139,7 +143,7 @@ def Get_Geo_Pot (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     """
     cst = gmath.Constants()
     
-    R_t = Get_Topo_Height (R_e, phi, theta,    lmax_topo, HC_topo, HS_topo)
+    R_t = R_e #+ Get_Topo_Height (R_e, phi, theta,    lmax_topo, HC_topo, HS_topo)
     Sum1 = 0
     P_lm, _ = gmath.Pol_Legendre(lmax, lmax, cos(phi))
 #    LPNM = gmath.ALF_norm_gcb(lmax, lmax, phi)
@@ -188,7 +192,7 @@ def Get_Geoid_Height (R_e, phi, theta,    lmax, HC, HS):
 
     return Geo_H
 
-
+'''
 def Get_Geoid_Height2 (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     """
     This function returns the potential at given height/phi/theta coordinates
@@ -271,7 +275,7 @@ def Get_isopot (R_e, phi, theta,    W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_to
     Height = R_iso - R_e
     return Height # , R_iso 
 
-
+'''
 
 # =============================================================================
 # SUB FUNCTIONS BUT STILL HARMONICS
@@ -323,8 +327,7 @@ def Cosine_Correction2 (N):
     C[16] =  -0.346362564558E-20                            
     C[18] =   0.241145603096E-22                            
     C[20] =  -0.160243292770E-24 
-    return C[N]
-    
+    return C[N]   
     
     
 
@@ -417,9 +420,9 @@ def TEST_lmax_loop_lat_line():
 #    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")    
     lmax_topo = 10
 
-#    lmaxs = [155] #np.arange(5, 180, 10)
+    lmaxs = np.arange(5, 180, 10)
 #    lmaxs = np.array([5, 15, 35, 60, 150, 600])
-    lmaxs = np.arange(1, 25, 3)
+#    lmaxs = np.arange(1, 25, 3)
     for lmax in lmaxs:
         Long =  80
         Lats = np.linspace(0, pi, 91)
@@ -509,7 +512,22 @@ def TEST_high_lmax():
     return val 
     
     
+def TEST_gen_grid():
+    tens = 1
+    limits = np.array([-180, 180, -90, 90])
     
+#    G_Grid, G_theta, G_phi = init_grid(tens, limits)
+    G_Grid, G_theta, G_phi =  Gen_Grid(tens, void, [], limits)
+    
+    FIG = plt.figure()
+    AX = FIG.add_subplot("111")    
+    data = AX.contourf(G_theta, G_phi, G_Grid)
+    CBAR = plt.colorbar(mappable=data, ax=AX)
+    return G_theta, G_phi, G_Grid
+def void(r, phi, theta):
+    return r
+
+
 # =============================================================================
 # MAIN
 # =============================================================================
@@ -523,7 +541,7 @@ if __name__ == '__main__':
     
 #    val = TEST_high_lmax()
     
-    
+#    th, ph, gr = TEST_gen_grid()
     
     
     

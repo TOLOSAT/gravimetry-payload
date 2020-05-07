@@ -56,7 +56,7 @@ def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title, style="map", lim
     elif (style == "relief"):
         FIG, AX = emap.Make_Map_3D()
         CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX, map_color=map_color)  
-        AX.set_zlabel("Height (m)",rotation=90) 
+        AX.set_zlabel("Height (m)", rotation=90) 
     else:        
         FIG, AX = emap.Make_Map(limits = limits)# , proj = ccrs.Mollweide)
         CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels, map_color=map_color) 
@@ -110,7 +110,7 @@ def Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, limits):
 
 def TEST_Map_Topo():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax_topo =15
+    lmax_topo = 15
     tens = 1
     levels = 75
     title = f"TEST map of topography"

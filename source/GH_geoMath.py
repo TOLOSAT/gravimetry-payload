@@ -323,7 +323,7 @@ if __name__ == '__main__':
 #    alf_mat = TEST_APF()
     aa = ALF_norm_gcb(200, 200, 1)
     
-    
+    Plm_z, Plm_dz = lpmn (10, 10,pi)
     
     
     
