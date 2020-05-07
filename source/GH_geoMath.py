@@ -190,7 +190,6 @@ def Pol_Legendre (l, m, x):
     return Plm_z, Plm_dz # use Plm_z[m, l]
 
 
-"""Normalize fnctions don't have much use anymore """
 def Normalize (l, m):
     """
     Returns the normalization coefficient of degree l and order m
@@ -206,7 +205,7 @@ def Normalize (l, m):
 def Normalize1 (l, m):
     """
     Returns the normalization coefficient of degree l and order m
-    Equation obtained from the dicumentation that came with the EGM2008 coeffs
+    Equation obtained from the documentation that came with the EGM2008 coeffs
     thisfunction zeros out below 2e-162
     """
     d_om = 0

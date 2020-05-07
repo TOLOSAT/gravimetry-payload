@@ -36,7 +36,7 @@ import GH_earthMap     as emap
 # =============================================================================
 # DISPLAY FUNCTIONS
 # =============================================================================
-def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title, style="map", limits=np.array([0,180,0,90])):    
+def Map_Topo (lmax_topo, HC_topo, HS_topo, tens, levels, title, style="map", limits=np.array([-180,180,-90,90])):    
     """ 
     Makes a Matplotlib figure with the map, topography and labels 
     """
@@ -109,8 +109,8 @@ def Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, limits):
     return FIG
 
 def TEST_Map_Topo():
-#    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")
-    lmax_topo = 10
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    lmax_topo =15
     tens = 1
     levels = 75
     title = f"TEST map of topography"
@@ -118,6 +118,7 @@ def TEST_Map_Topo():
 #    limits= np.array([-7, 15, 40, 54])
 #    limits= np.array([-25, 30, 15, 65])
 #    limits= np.array([-180, 180, -90, -40])
+#    limits= np.array([-180, 180, -90, 90])*pi/180
 #    fig = Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, limits)
     fig = Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, "map", limits)
 #    exp.Store_Figure(fig.number, f"test topo lmax={lmax_topo}", dpi=1000)

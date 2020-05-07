@@ -60,7 +60,6 @@ def init_grid (tens, limits):
     Initiates the grid variables based on the number of points wanted
     within the given limits
     """
-    dim = limits * pi/180
     if (tens <= 0):
         size_long = 5
         size_lat  = 5
@@ -68,6 +67,7 @@ def init_grid (tens, limits):
         size_long = 1 + 36*tens
         size_lat  = 1 + 18*tens
     
+    dim = limits * pi/180
     Line_theta = np.linspace(dim[0], dim[1], size_long)
     Line_phi  = np.linspace(dim[2], dim[3], size_lat)
     
@@ -118,14 +118,15 @@ def Get_Topo_Height (R_e, phi, theta,    lmax_topo, HC_topo, HS_topo):
     The solution is calculated up to degree lmax in the [HC_topo,HS_topo] model
     """
     Sum1 = 0
-#    P_lm, _ = gmath.Pol_Legendre(lmax_topo, lmax_topo, cos(phi)) # I am allowed to write that.
-    P_lm = gmath.ALF_norm_gcb(lmax_topo, lmax_topo, phi).T
+    P_lm, _ = gmath.Pol_Legendre(lmax_topo, lmax_topo, sin(phi)) # I am allowed to write that.
+#    P_lm = gmath.ALF_norm_gcb(lmax_topo, lmax_topo, phi).T
     for l in range (lmax_topo, lmax_topo+1):
         Sum2 = 0
         for m in range (0, l+1):
 #            print(f"lm= {l} {m}")
 #            print(f"\rl={l} ; m={m}",end="\r")
-            Sum2 += (HC_topo[l,m]*cos(m*theta) + HS_topo[l,m]*sin(m*theta)) * P_lm[m, l]# * gmath.Normalize(l, m)
+            Sum2 += (HC_topo[l,m]*cos(m*theta) + HS_topo[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
+#            Sum2 += (HC_topo[l,m]*cos(m*theta) + HS_topo[l,m]*sin(m*theta)) * P_lm[m, l]
         Sum1 += Sum2
 
     return Sum1
@@ -416,9 +417,9 @@ def TEST_lmax_loop_lat_line():
 #    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")    
     lmax_topo = 10
 
-    lmaxs = [155] #np.arange(5, 180, 10)
+#    lmaxs = [155] #np.arange(5, 180, 10)
 #    lmaxs = np.array([5, 15, 35, 60, 150, 600])
-#    lmaxs = np.arange(1, 25, 3)
+    lmaxs = np.arange(1, 25, 3)
     for lmax in lmaxs:
         Long =  80
         Lats = np.linspace(0, pi, 91)
@@ -427,7 +428,7 @@ def TEST_lmax_loop_lat_line():
         
         for i in range(len(Lats)):
             Lat = Lats[i]
-            print(f"\tmaking lat = {(90-Lat*180/pi):0.2f}")
+#            print(f"\tmaking lat = {(90-Lat*180/pi):0.2f}")
             R = gmath.Get_Ellipsoid_Radius(Lat)
             
 #            Geo_H[i] = Get_acceleration   (R, Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Acceleration"
@@ -436,8 +437,8 @@ def TEST_lmax_loop_lat_line():
 #            Geo_H[i] = Get_Geoid_Height  (R, Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Geoid height"
 #            Geo_H[i] = Get_Geoid_Height2 (R, Lat, pi/180 *Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="Geoid height"
         
-        Lats = (pi/2-Lats)
-        plt.plot(Lats*180/pi, Geo_H, label=f"lx={lmax}")
+        Lats = (pi/2-Lats) * 180/pi
+        plt.plot(Lats, Geo_H, label=f"lx={lmax}")
     
     plt.suptitle(f"{title_spec} at equator (m) vs Latitude; loop lmax")
     plt.legend()

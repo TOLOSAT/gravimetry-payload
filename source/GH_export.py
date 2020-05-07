@@ -7,6 +7,8 @@
 
     The functions in this script are used to export and create array files
 
+todo:
+    Something is wrong with: Store_temp_GLl
 # =============================================================================
 """
 
