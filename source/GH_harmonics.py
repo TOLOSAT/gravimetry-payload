@@ -51,7 +51,7 @@ import GH_convert      as conv
 import GH_terminal     as term
 #import GH_harmonics    as harm
 import GH_geoMath      as gmath
-#import GH_earthMap     as emap
+import GH_earthMap     as emap
 
 
 
@@ -64,8 +64,8 @@ def init_grid (tens, limits):
     within the given limits
     """
     if (tens <= 0):
-        size_long = 5
-        size_lat  = 5
+        size_long = 2
+        size_lat  = 100
     else:
         size_long = 1 + 36*tens
         size_lat  = 1 + 18*tens
@@ -107,7 +107,9 @@ def Gen_Grid (tens, Get_FUNCTION, in_args, limits):
             theta = G_theta[0][i]+ pi
             G_Grid[j,i] = Get_FUNCTION(R_e, phi, theta, *in_args)
           
-    return G_Grid, G_theta*180/pi, G_phi*180/pi # in degrees now
+    return G_Grid, G_theta*180/pi, G_phi*180/pi # in degrees, L
+
+
 
 
 
@@ -149,7 +151,7 @@ def Get_Geo_Pot (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
 #    LPNM = gmath.ALF_norm_gcb(lmax, lmax, phi)
     for l in range (2, lmax+1):
         Sum2 = 0
-        for m in range (0, l+1):
+        for m in range (0, 1):
             Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize1(l, m)
 #            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * LPNM[l, m]
         Sum1 += (cst.a_g/R_t)**l * Sum2
@@ -177,14 +179,15 @@ def Get_Geoid_Height (R_e, phi, theta,    lmax, HC, HS):
     phi_gc = phi
     
     Sum1 = 0
-#    P_lm, _ = gmath.Pol_Legendre(lmax, lmax, sin(phi_gc) )
-    LPNM = gmath.ALF_norm_gcb(lmax, lmax, phi_gc)
+    P_lm, _ = gmath.Pol_Legendre(lmax, lmax, cos(phi_gc) )
+#    LPNM = gmath.ALF_norm_gcb(lmax, lmax, phi_gc)
     for l in range (2, lmax+1):
         Sum2 = 0
-        for m in range (0, 1):#═l+1):            
+        for m in range (0, l+1):            
             HC_lm = CorrCos_lm(l, m, HC[l,m])
-#            Sum2 += (HC_lm*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
-            Sum2 += (HC_lm*cos(m*theta) + HS[l,m]*sin(m*theta)) * LPNM[l, m]
+            Sum2 += (HC_lm*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
+#            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
+#            Sum2 += (HC_lm*cos(m*theta) + HS[l,m]*sin(m*theta)) * LPNM[l, m]
             
         Sum1 +=  (cst.a_g/R_e)**l * Sum2 
 
@@ -281,16 +284,17 @@ def Get_isopot (R_e, phi, theta,    W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_to
 # SUB FUNCTIONS BUT STILL HARMONICS
 # =============================================================================
 def CorrCos_lm (l, m, HC_lm):
-    """ correct the HC_lm coef if the conditions are correct - GCB """
-    lmax_corr=10
-    if ( (m==0) and (l<=lmax_corr) and (l%2 == 0) ):
-        HC_lm += Cosine_Correction(l) /2
+    """ corrects the HC_lm coef if the conditions are correct - GCB """
+    lmax_corr=20
+    if ( (m==0) and (l<=lmax_corr) and (l%2 == 0) ): # print(f"corr lm {l} {m}")
+        HC_lm -= Cosine_Correction2(l)
     return HC_lm
+
 
 def Cosine_Correction (N): 
     """ 
     Returns the corrected Cosine coefficient 
-    The maths in this book cmes from the Geoid cook book and the fortran code 
+    The maths in this book comes from the Geoid cook book and the fortran code 
     I dissasembled
     """    
     n = N/2    
@@ -303,7 +307,7 @@ def Cosine_Correction (N):
     m = c.m
     e_2 = c.e_2
     
-    q0 = 1/2*((1 + 3/e_2**2) * np.arctan(e_2) - 3/e_2)
+    q0 = 1/2*((1 + 3/e_2**2) * np.arctan(e_2 - 3/e_2))
     CA_ME2 = 1/3*(1 - 2/15*m*e_2/q0)
     
     J_2n = (-1)**(n+1) * 3*(E/a_e)**(2*n) / ((2*n+1)*(2*n+3))
@@ -330,7 +334,7 @@ def Cosine_Correction2 (N):
     return C[N]   
     
     
-
+'''
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================    
@@ -420,7 +424,8 @@ def TEST_lmax_loop_lat_line():
 #    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")    
     lmax_topo = 10
 
-    lmaxs = np.arange(5, 180, 10)
+    lmaxs = [155]
+#    lmaxs = np.arange(5, 180, 10)
 #    lmaxs = np.array([5, 15, 35, 60, 150, 600])
 #    lmaxs = np.arange(1, 25, 3)
     for lmax in lmaxs:
@@ -526,6 +531,36 @@ def TEST_gen_grid():
     return G_theta, G_phi, G_Grid
 def void(r, phi, theta):
     return r
+'''
+
+def TEST_ellipso_corr():
+    """replace range(0, l+1) by (0, 1) in m loop of Get_Geoid_Height """
+    HC, HS = imp.Fetch_Coef()
+    lmax = 29
+    c_cos = np.zeros((lmax+1, lmax+1))
+    c_sin = np.zeros((lmax+1, lmax+1))
+    for i in range(2, 11):
+#        c_cos[i, 0] = Cosine_Correction2(i)
+#        if (i%2==1): c_cos[i, 0] = HC[i, 0]
+        if (i%2==0): c_cos[i, 0] = Cosine_Correction(i)
+        
+    
+    tens = 0
+    limits = np.array([-180, 180, -90, 90])
+    
+    G_Grid, G_Long, G_Lat =  Gen_Grid (tens, Get_Geoid_Height, 
+#                                        [lmax, c_cos, c_sin], 
+                                        [lmax, HC, HS],
+                                         limits)        
+#    FIG, AX = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
+#    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX)        
+    FIG, AX = emap.Make_Map_3D()
+    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX)  
+    AX.set_zlabel("Geoid Height (m)",rotation=90) 
+    plt.title("Ellipsoid removal residual")
+    return c_cos, G_Grid
+
+
 
 
 # =============================================================================
@@ -534,7 +569,7 @@ def void(r, phi, theta):
 if __name__ == '__main__':
     
 #    TEST_plotGeoPot_radius()
-    g = TEST_lmax_loop_lat_line()
+#    g = TEST_lmax_loop_lat_line()
 #    TEST_lmax_loop_long_line()
 #    TEST_Get_isopot () 
 #    TEST_Cosine_corr()
@@ -542,7 +577,7 @@ if __name__ == '__main__':
 #    val = TEST_high_lmax()
     
 #    th, ph, gr = TEST_gen_grid()
-    
+    cc, gg = TEST_ellipso_corr()
     
     
     print("\nGH_generate done")

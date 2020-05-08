@@ -53,12 +53,12 @@ def Make_Map_Fig (proj, fignum, ax_pos, shape, limits):
     return FIG, AX
 
 
-def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5), limits=np.array([0,180,0,90])):
+def Make_Map (proj=ccrs.PlateCarree, fignum=[], ax_pos=111, shape=(7,5), limits=np.array([-180,180,-90,90])):
     """ Adds gridlines, credits and coastlines to a mpl figure """
     FIG, AX = Make_Map_Fig(proj, fignum, ax_pos, shape, limits)
     Add_Gridlines(AX, proj)
     Add_Credits(AX)
-#    AX.coastlines(linewidth = 0.6)
+    AX.coastlines(linewidth = 0.6)
     return FIG, AX
 
 
@@ -73,13 +73,13 @@ def Make_Map_3D (fignum=[], ax_pos=111, shape=(7,5) ):
 # =============================================================================
 # PLOT FUNCTIONS
 # =============================================================================
-def Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels=35, proj=ccrs.PlateCarree, map_color="jet"):
+def Plot_contourf(G_Grid, G_Long, G_Lat, AX=plt.gca(), levels=35, proj=ccrs.PlateCarree, map_color="jet"):
     """
     Display of G_Grid, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
     """
     alpha = 1
-    plt.axes(AX)
+#    plt.axes(AX)
     data = AX.contourf(G_Long, G_Lat, G_Grid,
                        levels = levels, alpha = alpha,
                        transform = proj(), cmap=plt.get_cmap(map_color))
@@ -88,13 +88,13 @@ def Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels=35, proj=ccrs.PlateCarree, m
     return CBAR
 
 
-def Plot_surface (G_Grid, G_Long, G_Lat, AX, map_color="jet"):
+def Plot_surface (G_Grid, G_Long, G_Lat, AX=plt.gca(), map_color="jet"):
     """
     3D Display of G_Grid surface, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
     """
     alpha = 1
-    plt.axes(AX)
+#    plt.axes(AX)
     data = AX.plot_surface(G_Long, G_Lat, G_Grid, 
                            alpha = alpha, antialiased=False,
                            cmap=plt.get_cmap(map_color))
@@ -105,7 +105,7 @@ def Plot_surface (G_Grid, G_Long, G_Lat, AX, map_color="jet"):
     return CBAR
 
 
-def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX, ratio=0.15, map_color="jet"):
+def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX=plt.gca(), ratio=0.15, map_color="jet"):
     """
     Ball representation of G_Grid + radius, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]

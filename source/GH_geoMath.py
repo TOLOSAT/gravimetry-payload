@@ -61,12 +61,12 @@ class Constants:
     a_e = 6378137.00 # m : equatorial radius or ellipsoid model
     f = 1/298.257223563 # flat parameter
     
-    b = a_e * (1-f) # m : polar radius
-    E = np.sqrt(a_e**2-b**2) # linear eccentricity
+    b_e = a_e * (1-f) # m : polar radius
+    E = np.sqrt(a_e**2 - b_e**2) # linear eccentricity
     e_1 = E/a_e
-    e_2 = E/b
-    m = wo**2 * a_e*2 * b / GM_e # just to simplify the code
-    g_a = GM_e/(a_e*b) * (1 - 3/2*m - 3/14*e_2*m) # m/s^2 : gravity acc. at equator
+    e_2 = E/b_e
+    m = wo**2 * a_e*2 * b_e / GM_e # just to simplify the code
+    g_a = GM_e/(a_e*b_e) * (1 - 3/2*m - 3/14*e_2*m) # m/s^2 : gravity acc. at equator
     g_b = GM_e/(a_e**2) * (1 - m - 3/7*e_2*m) # m/s^2 : gravity acc. at poles
     
     # EGS2008 potential model

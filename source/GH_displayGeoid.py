@@ -24,7 +24,7 @@ import GH_import       as imp
 #import GH_solve        as solv
 #import GH_displayGeoid as dgeo
 #import GH_displaySat   as dsat
-#import GH_export       as exp
+import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
 import GH_harmonics    as harm
@@ -32,7 +32,7 @@ import GH_harmonics    as harm
 import GH_earthMap     as emap
 
 
-"""
+'''
 # =============================================================================
 # DISPLAY FUNCTIONS
 # =============================================================================
@@ -80,7 +80,7 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 #    plt.legend(loc = 'lower right', title = 'Degree n', fontsize = 5)
 
     plt.show()
-"""
+'''
 
 # =============================================================================
 # MAPPING FUNCTIONS
@@ -92,6 +92,11 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, 
                                            [lmax, HC, HS], 
                                            limits)
+    # save grid
+    time = f"grid geoid {lmax}-{lmax_topo}"
+    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, time)
+    
+    
     # Make a map    
     FIG, AX = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX, levels)  
@@ -153,12 +158,12 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
 # TEST FUNCTIONS
 # =============================================================================
 def TEST_Map_Geoid():
-    HC, HS = imp.Fetch_Coef()
-    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 10; lmax_topo = 10; tens = 1; levels = 50; 
-    title = f"TEST map of Geoid"
-    _ = Map_Geoid(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
-
+#    HC, HS = imp.Fetch_Coef("full")
+#    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")
+    lmax = 100; lmax_topo = 100; tens = 10; levels = 70; 
+    title = f"Map of Geoid undulation"
+    fig = Map_Geoid(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+    exp.Store_Figure(fig.number, f"test geoid", dpi=1000)
 
 def TEST_Map_GeoPot():
     HC, HS = imp.Fetch_Coef()
