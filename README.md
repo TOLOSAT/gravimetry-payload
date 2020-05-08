@@ -1,7 +1,7 @@
 ## tolosat_grav_payload
 This is the github repository for the software tools developped by the gravimetry payload of the _TOLOSAT_ CubeSat. 
 For more information on TOLOSAT, follow us on twitter at: https://twitter.com/tolosat1
-
+<imq src="images/Tolosat_logo.png" width="100">
 
 # ==== Grav Harm 3 ====
 
@@ -79,7 +79,7 @@ The original tool was made by  the U.S. National Geospatial-Intelligence Agency 
 ## Just the Geoid please
 The Geoid undulations can be calculated. The tool currently supports computations up to degree 60, degree 154 if i can figure out my math. Going beyond 155 degrees required a new method of computing the Associated Legendre Function. 
 The reference ellipsoid is removed, but some residual height is left over. 
-Incliding the NGA fortran-calcuated geoid undulation 1'x1' map wil later be implemented. 
+Incliding the NGA fortran-calcuated geoid undulation 1'x1' map will later be implemented. 
 
 
 ## Sources and material
@@ -105,8 +105,8 @@ Will be refered to as "The Geoid Cook Book"
 To calculate geopotential values and to describe satellite trajectories, this python tool uses the spherical coordinates system, and more specifically the ISO convention:
 	'''
 	r     = radius in km ; [0, inf()]
-	theta = inclination around the z axis in radians; [0, pi]
-	phi   = azimuth the z axis in radians; [0, 2*pi]
+	theta = inclination around the z axis in radians; [0, pi] (Latitude)
+	phi   = azimuth the z axis in radians; [0, 2*pi] (Longitude)
 	'''
 They must be adapted to lat/long coordinates by: 
 	'''
@@ -120,8 +120,28 @@ Their equivalent in the cartesian coordinates is:
 	x = r * sin(theta) * cos(phi)
 	y = r * sin(theta) * sin(phi)
 	z = r * cos(theta)
+	# This is function: x,y,z = GH_convert.sph2cart(r,theta,phi)
 	'''
-This is function: x,y,z = GH_convert.sph2cart(r,theta,phi)
+
+# mages from GravHarm 3
+This is the section where I show off a bit
+
+## Plot styles
+The maps generated with this tool can be in many styles: 
+* A 2D color map
+<img src="images/topo_map.png" width="300">
+* A 2.5D relief map
+<img src="images/topo_relief.png" width="300">
+* A 3D "Ball Earth" that can be turned aroung in a 3D matplotlib figure
+<img src="images/topo_ball.png" width="300">
+<img src="images/topo_ball_2.png" width="300">
+
+## Plot content
+Many physical values can be plotted: 
+* Topography (seen above)
+* Geoid undulation 
+<img src="images/geoid_map.png" width="300">
+
 
 
 # Credits 
