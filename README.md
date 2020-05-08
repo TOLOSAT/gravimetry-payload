@@ -27,7 +27,8 @@ The calculation process is as follows:
 1. Generate specific satellite ephemeris to answer the mission questions, and confirm the mission requirements	
 
 ## How to use Grav Harm 3
-### Before you start
+
+### Before you start 
 In order to work properly, this tool requires an additional directory of files called "data", that can be downloaded at:
 https://drive.google.com/drive/folders/19jqZdLf2ABAerFzBV8e-6N0IGVGUOotc
 This directory contains coefficient files and simulated satellite trajectory files. It must be placed in the git repository, sams directory as "source", which contains all the tool's precious scripts. If you cannot access this Google Drive link, you aren't supposed to anyway (for now). If you really want access to it, send an email to any of the contributors.
@@ -39,9 +40,13 @@ To download git for Windows, use this guide: https://www.computerhope.com/issues
 
 
 ### Repository diretories
-In order to handle data, some directories must be created prior to the use of this tool. Here is the mimimal structure needed: 
+In order to handle data, some directories must be created prior to the use of this tool. They are mentionned in the .gitignore to avoid moding loads of images and large text files around. Here is the mimimal structure needed: 
 	'''	
-	> data
+	> data  (mentionned in 'Before you start')
+		- GeoPot_Coef_cos_deg30.txt
+		- GeoPot_Coef_sin_deg30.txt
+		- Height_Coef_cos_deg49.txt
+		- Height_Coef_sin_deg49.txt
 	> source
 	> Rendered
 		> coefficients
@@ -66,14 +71,15 @@ The user must have some knowledge of python to write scripts, but many basic fun
 
 
 ## Geopotential models
-This tool was mainly built around the "EGM2008" Earth Gravity Model, and the "WGS84" earthixed terestrial reference system. 
+This tool's model-mapping capabilities were mainly built around the "EGM2008" Earth Gravity Model, and the "WGS84" earthixed terestrial reference system. 
 The data in this model can be found at: https://earth-info.nga.mil/GandG///wgs84/gravitymod/egm2008/egm08_wgs84.html
-The original tool was made by  the U.S. National Geospatial-Intelligence Agency (NGA) EGM Development Team. The code and coefficients were designed for Fortran. A quick script to re-write the coefficients into numpy arrays has been written. 
+The original tool was made by  the U.S. National Geospatial-Intelligence Agency (NGA) EGM Development Team. The code and coefficients were designed for Fortran. A quick script to re-write the coefficients into numpy arrays has been written. The fortran source code is being studied to get insight on how it computes geoid undulations.
 
 
 ## Just the Geoid please
-IF ALL YOU WANT TO DO IS CALCULATE THE GEOID ELEVATION AT LAT/LONG COORDINATES, I'M NOT DONE CODING THAT YET. 
-THE FUNCTIONS DO NOT MAKE SENSE,SEND ME THE RIGHT ONES IF YOU KNOW THEM. GIVE ME SOME TIME, THANKS. 
+The Geoid undulations can be calculated. The tool currently supports computations up to degree 60, degree 154 if i can figure out my math. Going beyond 155 degrees required a new method of computing the Associated Legendre Function. 
+The reference ellipsoid is removed, but some residual height is left over. 
+Incliding the NGA fortran-calcuated geoid undulation 1'x1' map wil later be implemented. 
 
 
 ## Sources and material
@@ -122,5 +128,6 @@ This is function: x,y,z = GH_convert.sph2cart(r,theta,phi)
 * Xavier C. de Labriolle
 * Antoine Bendimerad
 * Cedric Belmant
+* Javier Navarro Montilla
 [Add yourselves folks]
 
