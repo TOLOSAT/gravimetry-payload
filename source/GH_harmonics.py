@@ -58,14 +58,14 @@ import GH_earthMap     as emap
 # =============================================================================
 # FUNCTIONS TO GENERATE DATA ARRAYs
 # =============================================================================
-def init_grid (tens, limits):
+def init_grid (tens=0, limits=np.array([-180, 180, -90, 90])):
     """
     Initiates the grid variables based on the number of points wanted
     within the given limits
     """
     if (tens <= 0):
-        size_long = 2
-        size_lat  = 100
+        size_long = 5
+        size_lat  = 5
     else:
         size_long = 1 + 36*tens
         size_lat  = 1 + 18*tens
@@ -80,7 +80,7 @@ def init_grid (tens, limits):
     return G_Grid, G_theta, G_phi
 
 
-def Gen_Grid (tens, Get_FUNCTION, in_args, limits):
+def Gen_Grid (tens, Get_FUNCTION, in_args, limits=np.array([-180, 180, -90, 90])):
     """
     This function generates a grid of the desired spherical harmonic model
     at Lat/Long coordinates
@@ -121,8 +121,7 @@ def Get_Topo_Height (R_e, phi, theta,   lmax_topo, HC_topo, HS_topo):
     This function returns the height of Earth's estimated topography at phi/theta 
     coordinates
     The solution is calculated up to degree lmax in the [HC_topo,HS_topo] model
-    """
-    
+    """    
     Sum1 = 0
     P_lm, _ = gmath.Pol_Legendre(lmax_topo, lmax_topo, cos(phi)) # I am allowed to write that.
 #    P_lm = gmath.ALF_norm_gcb(lmax_topo, lmax_topo, phi).T
@@ -195,6 +194,7 @@ def Get_Geoid_Height (R_e, phi, theta,    lmax, HC, HS):
 
     return Geo_H
 
+
 '''
 def Get_Geoid_Height2 (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     """
@@ -230,6 +230,7 @@ def Get_Geoid_Height2 (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_
     Geo_H = GM_g/(R_e*g_e) * Sum_geo  -  2*pi*G*ro/g_e * (R_e*Sum_topo)**2
 
     return Geo_H
+'''
 
 
 def Get_acceleration (R_e, phi, theta,    lmax, HC, HS):
@@ -259,7 +260,6 @@ def Get_acceleration (R_e, phi, theta,    lmax, HC, HS):
     GP_1 = GM_g/R_1*(1 + Sum1)
     GP_2 = GM_g/R_2*(1 + Sum2)    
     local_acc = (GP_1 - GP_2) / d
-    
     return local_acc
 
 
@@ -278,7 +278,7 @@ def Get_isopot (R_e, phi, theta,    W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_to
     Height = R_iso - R_e
     return Height # , R_iso 
 
-'''
+
 
 # =============================================================================
 # SUB FUNCTIONS BUT STILL HARMONICS
@@ -289,6 +289,20 @@ def CorrCos_lm (l, m, HC_lm):
     if ( (m==0) and (l<=lmax_corr) and (l%2 == 0) ): # print(f"corr lm {l} {m}")
         HC_lm -= Cosine_Correction2(l)
     return HC_lm
+def Cosine_Correction2 (N):
+    """ raw data from the hsynth fortran code """    
+    C = np.zeros(21)
+    C[ 2] =  -0.484166774985E-03                            
+    C[ 4] =   0.790303733524E-06                            
+    C[ 6] =  -0.168724961164E-08                            
+    C[ 8] =   0.346052468485E-11                            
+    C[10] =  -0.265002226377E-14                            
+    C[12] =  -0.410790140988E-16                            
+    C[14] =   0.447177356743E-18                            
+    C[16] =  -0.346362564558E-20                            
+    C[18] =   0.241145603096E-22                            
+    C[20] =  -0.160243292770E-24 
+    return C[N]  
 
 
 def Cosine_Correction (N): 
@@ -316,25 +330,9 @@ def Cosine_Correction (N):
     Corr_2n = J_2n / np.sqrt(4*n + 1) * GM_e/GM_g * (a_e/a_g)**n
 
     return Corr_2n 
-
-
-def Cosine_Correction2 (N):
-    """ raw data from the hsynth fortran code """    
-    C = np.zeros(21)
-    C[ 2] =  -0.484166774985E-03                            
-    C[ 4] =   0.790303733524E-06                            
-    C[ 6] =  -0.168724961164E-08                            
-    C[ 8] =   0.346052468485E-11                            
-    C[10] =  -0.265002226377E-14                            
-    C[12] =  -0.410790140988E-16                            
-    C[14] =   0.447177356743E-18                            
-    C[16] =  -0.346362564558E-20                            
-    C[18] =   0.241145603096E-22                            
-    C[20] =  -0.160243292770E-24 
-    return C[N]   
+  
     
-    
-'''
+
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================    
@@ -530,11 +528,14 @@ def TEST_gen_grid():
     CBAR = plt.colorbar(mappable=data, ax=AX)
     return G_theta, G_phi, G_Grid
 def void(r, phi, theta):
-    return r
-'''
+    return 0
+
 
 def TEST_ellipso_corr():
-    """replace range(0, l+1) by (0, 1) in m loop of Get_Geoid_Height """
+    """
+    replace range(0, l+1) by (0, 1) in m loop of Get_Geoid_Height 
+    replace if(tens==0): statement in of init_grid
+    """
     HC, HS = imp.Fetch_Coef()
     lmax = 29
     c_cos = np.zeros((lmax+1, lmax+1))
@@ -577,8 +578,8 @@ if __name__ == '__main__':
 #    val = TEST_high_lmax()
     
 #    th, ph, gr = TEST_gen_grid()
-    cc, gg = TEST_ellipso_corr()
+#    cc, gg = TEST_ellipso_corr()
     
     
-    print("\nGH_generate done")
+    print("\nGH_harmonics done")
 

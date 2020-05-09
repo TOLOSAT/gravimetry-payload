@@ -16,9 +16,9 @@ todo:
 # LIBRARIES
 # =============================================================================
 import numpy as np
-from numpy import pi, sin, cos
+#from numpy import pi, sin, cos
 import matplotlib.pyplot as plt
-from time import gmtime, strftime
+#from time import gmtime, strftime
 
 #import GH_import       as imp
 #import GH_convert      as conv
@@ -28,7 +28,7 @@ from time import gmtime, strftime
 #import GH_displaySat   as dsat
 #import GH_export       as exp
 #import GH_displayTopo  as dtopo
-import GH_terminal     as term
+#import GH_terminal     as term
 #import GH_harmonics    as harm
 #import GH_geoMath      as gmath
 #import GH_earthMap     as emap
@@ -62,12 +62,17 @@ def Store_Array(data, title, path="../Rendered"):
 #    print(f"\r\tDone writing {title}")
 
 
-def Store_temp_GLl(G_Grid, G_Long, G_Lat, time=""):
-    """ to be used with imp.Load_temp_GLl() """
+def Store_temp_GLl(G_Grid, G_Long, G_Lat, detail=""):
+    """ 
+    Stores arrays into text files for future import
+    Should be used with imp.Load_GLl() 
+    If you want to keep the arrays, move them into the Randered/grid directory, 
+    or they might get written over
+    """
     temp_GLl_path = "../Rendered/temp"
-    Store_Array(G_Grid, f"{time} G_Grid", temp_GLl_path)
-    Store_Array(G_Long, f"{time} G_Long", temp_GLl_path)
-    Store_Array(G_Lat,  f"{time} G_Lat",  temp_GLl_path)
+    Store_Array(G_Grid, f"{detail} G_Grid", temp_GLl_path)
+    Store_Array(G_Long, f"{detail} G_Long", temp_GLl_path)
+    Store_Array(G_Lat,  f"{detail} G_Lat",  temp_GLl_path)
 
 
 
@@ -106,7 +111,7 @@ def TEST_store_temp():
 # =============================================================================
 if __name__ == '__main__':
     
-    TEST_store_temp()
+#    TEST_store_temp()
     
     print("\nGH_export done")
 

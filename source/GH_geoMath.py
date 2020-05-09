@@ -151,7 +151,7 @@ def ALF_norm_gcb (N, M, phi):
     todo: 
         compute the derivatives as well
         figure out if it is cos(phi) or sin(phi)
-        the 
+        the thing maxes out at some point
     """
     t = sin(phi)
     u = cos(phi)
@@ -202,6 +202,8 @@ def Normalize (l, m):
     P3 = math.factorial(l + m)
     N = np.sqrt(P1*P2/P3)
     return N
+
+
 def Normalize1 (l, m):
     """
     Returns the normalization coefficient of degree l and order m
@@ -282,6 +284,7 @@ def TEST_Normalize():
         for m in range(0,l+1):
             Norm_lm[l,m] = Normalize(l, m)
     return Norm_lm
+
 
 def TEST_Normalize2():
     """ yes, all zeros are in the output. """

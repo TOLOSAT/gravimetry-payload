@@ -110,7 +110,7 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Geoid height in m")    
-    return FIG
+    return FIG, [G_Grid, G_Long, G_Lat]
 
 
 def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
@@ -132,7 +132,7 @@ def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_top
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Gravitational potential in m^2/s^2")    
-    return FIG
+    return FIG, [G_Grid, G_Long, G_Lat]
 
 
 def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
@@ -150,7 +150,42 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Height above reference ellipsoid where W(R)=W_0 (m)")    
-    return FIG
+    return FIG, [G_Grid, G_Long, G_Lat]
+
+
+def Map_Geoid_HR(detail="grid geoid 100-100"):
+    """ Makes a Matplotlib figure with the map, geoid and labels """
+    G_Grid, G_Long, G_Lat = imp.Load_GLl(detail)
+    lmax = 100
+    lmax_topo = 100
+    levels = 40
+    limits = [G_Long[0][0], G_Long[0][-1], G_Lat[0][0], G_Lat[-1][0]]
+    
+    FIG1, AX1 = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
+    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX1, levels)
+    plt.figure(FIG1.number)
+    plt.suptitle("Geoid undulation High resolution")
+    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plt.title(plot_specs, fontsize=10)
+    CBAR.set_label("Geoid height in m")
+    
+    FIG2, AX2 = emap.Make_Map_3D()
+    CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX2, ratio = 0.15) 
+    plt.figure(FIG2.number)
+    plt.suptitle("Geoid undulation High resolution")
+    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plt.title(plot_specs, fontsize=10)
+    CBAR.set_label("Geoid height in m")
+    
+    FIG3, AX3 = emap.Make_Map_3D()
+    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX3) 
+    plt.figure(FIG2.number)
+    plt.suptitle("Geoid undulation High resolution")
+    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plt.title(plot_specs, fontsize=10)
+    CBAR.set_label("Geoid height in m")
+    
+    return [G_Grid, G_Long, G_Lat]
 
 
 
@@ -191,7 +226,10 @@ if __name__ == '__main__':
     
 #    TEST_Map_isoPot()
     
-    TEST_Map_Geoid()
+#    TEST_Map_Geoid()
+    
+    g = Map_Geoid_HR()
+    
     
     print("\nGH_displayGeoid done")
 

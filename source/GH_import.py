@@ -117,12 +117,16 @@ def Fetch_Topo_Coef (data="subset"):
     return HC_topo, HS_topo
 
 
-def Load_temp_GLl():  
-    """ to be used with exp.Store_temp_GLl() """
-    temp_GLl_path = "../Rendered/temp"
-    G_Grid = np.loadtxt(f"{temp_GLl_path}/G_Grid")
-    G_Long = np.loadtxt(f"{temp_GLl_path}/G_Long")
-    G_Lat  = np.loadtxt(f"{temp_GLl_path}/G_Lat")
+def Load_GLl (detail="zeros"):
+    """ 
+    Should be used with exp.Store_temp_GLl()
+    You MUST move the files you're interested in, they are in Rendered
+    Load a G_Grid, G_Long, G_Lat 
+    """
+    GLl_path = "../Rendered/grid"
+    G_Grid = np.loadtxt(f"{GLl_path}/{detail} G_Grid")
+    G_Long = np.loadtxt(f"{GLl_path}/{detail} G_Long")
+    G_Lat  = np.loadtxt(f"{GLl_path}/{detail} G_Lat")
     return G_Grid, G_Long, G_Lat
 
 
@@ -132,7 +136,7 @@ def Load_temp_GLl():
 # =============================================================================
 def TEST_load_temp():
 #    exp.TEST_store_temp()
-    A, B, C = Load_temp_GLl()
+    A, B, C = Load_GLl()
     print(A); print(B); print(C)
 
 
@@ -144,6 +148,6 @@ if __name__ == '__main__':
     
 #    HC_topo, HS_topo = Fetch_Topo_Coef ("full")
     
-#    TEST_load_temp()    
+    TEST_load_temp()    
     print("\nGH_import done")
 
