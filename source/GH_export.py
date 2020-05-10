@@ -113,5 +113,7 @@ if __name__ == '__main__':
     
 #    TEST_store_temp()
     
+    Store_temp_GLl(G_Grid, G_Long, G_Lat, "TEST1")
+    
     print("\nGH_export done")
 

@@ -153,7 +153,7 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
     return FIG, [G_Grid, G_Long, G_Lat]
 
 
-def Map_Geoid_HR(detail="grid geoid 100-100"):
+def Map_Geoid_HR(detail="grid geoid 100-100", title="Geoid undulation High resolution"):
     """ Makes a Matplotlib figure with the map, geoid and labels """
     G_Grid, G_Long, G_Lat = imp.Load_GLl(detail)
     lmax = 100
@@ -164,15 +164,15 @@ def Map_Geoid_HR(detail="grid geoid 100-100"):
     FIG1, AX1 = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX1, levels)
     plt.figure(FIG1.number)
-    plt.suptitle("Geoid undulation High resolution")
+    plt.suptitle(title)
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Geoid height in m")
-    
+    '''
     FIG2, AX2 = emap.Make_Map_3D()
     CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX2, ratio = 0.15) 
     plt.figure(FIG2.number)
-    plt.suptitle("Geoid undulation High resolution")
+    plt.suptitle(title)
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Geoid height in m")
@@ -180,11 +180,11 @@ def Map_Geoid_HR(detail="grid geoid 100-100"):
     FIG3, AX3 = emap.Make_Map_3D()
     CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX3) 
     plt.figure(FIG2.number)
-    plt.suptitle("Geoid undulation High resolution")
+    plt.suptitle(title)
     plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Geoid height in m")
-    
+    '''
     return [G_Grid, G_Long, G_Lat]
 
 
@@ -228,7 +228,7 @@ if __name__ == '__main__':
     
 #    TEST_Map_Geoid()
     
-    g = Map_Geoid_HR()
+    g2 = Map_Geoid_HR("TEST1", "EGM2008 model")
     
     
     print("\nGH_displayGeoid done")

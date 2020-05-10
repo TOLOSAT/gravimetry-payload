@@ -23,7 +23,7 @@ from time import gmtime, strftime
 #import GH_solve        as solv
 #import GH_displayGeoid as dgeo
 #import GH_displaySat   as dsat
-#import GH_export       as exp
+import GH_export       as exp
 #import GH_displayTopo  as dtopo
 #import GH_terminal     as term
 #import GH_harmonics    as harm
@@ -130,6 +130,33 @@ def Load_GLl (detail="zeros"):
     return G_Grid, G_Long, G_Lat
 
 
+def Load_gridget_xmin(name="OUTPUT.DAT"):
+    """
+    This function is to be used along the gridget.exe fortran code develloped 
+    by the NGA. It outmits a 1'x1' map, and a section of it can be requested
+    through a commald terminal. I modified the code so that it asks for the
+    minute step between points as well.
+    The output must be the 3 column version, this function extracts the grid, 
+    ans saves it Grav Harm 3 style.
+    """
+    F77_path = "../../Fortran NGA/Fortran grid"
+    GLl_path = "../Rendered/grid"
+    
+    RAW = np.loadtxt(f"{F77_path}/{name}")
+#    size = (181,360) # if length  = 65160
+    size = (1201, 1201) # if length  = 65160
+    
+    G_Lat  = np.flip(np.reshape(RAW[:,0],     size), 0)
+    G_Long =         np.reshape(RAW[:,1]-180, size)
+    G_Grid =         np.reshape(RAW[:,2],     size)
+    
+    # resize them ?
+    return G_Grid, G_Long, G_Lat
+    
+    
+
+
+
 
 # =============================================================================
 # TEST FUNCTIONS
@@ -148,6 +175,11 @@ if __name__ == '__main__':
     
 #    HC_topo, HS_topo = Fetch_Topo_Coef ("full")
     
-    TEST_load_temp()    
+#    TEST_load_temp()   
+    
+    G_Grid, G_Long, G_Lat = Load_gridget_xmin()
+    
+    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, "EGM2008 full")
+    
     print("\nGH_import done")
 
