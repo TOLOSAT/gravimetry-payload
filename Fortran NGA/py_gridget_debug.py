@@ -43,11 +43,11 @@ def stats():
 # INPUT PARAMETERS
 # =============================================================================
 path_in  = './Fortran grid'
-n_in     = 'Und_min1x1_egm2008_isw=82_WGS84_TideFree_SE'
+#n_in     = 'Und_min1x1_egm2008_isw=82_WGS84_TideFree_SE'
 #n_in     = 'RAW_binary_test'
-#n_in     = 'RAW_binary_test2.txt'
+n_in     = 'RAW_binary_test2.txt'
 path_out = '.'
-nout     = 'pyOUTPUT.DAT'
+nout     = 'OUTPUT.DAT'
 
 dlat = 1/60 # degrees
 dlon = 1/60 # degrees
@@ -69,7 +69,7 @@ print(line_5000)
 print("\t Execution")
 print(line_5000)
 
-
+'''
 # ---- 109
 # =============================================================================
 # PROMPT OR GEOGRAPHIC REGION
@@ -110,19 +110,120 @@ while not(ok):
 
 iout = 2; print("I'm only going for lat/lon/G_Height anyway bitches\n")
 
-
+'''
 # ---- line 152
 # =============================================================================
 # OPEN INPUT AND OUTPUT FILES
 # =============================================================================
 fnul1  = f"{path_in}/{n_in}"
+file_1  = open(fnul1, "rb") # text file with binary coordinates
+#field = np.fromfile(file_1, dtype='float32')
+#    file_1.close(); file_1  = open(fnul1, "rb")
+
 file_1 = FortranFile(fnul1, 'r')
 
+
+
+
+
+
+
+
+'''
+header = file_1.read(6)
+arr = []
+for i in range (0, 21600):
+    arr.append( struct.unpack('f', file_1.read(4))[0] )
+
+
+#    print(arr[-1])
+
+txt = file_1.read(50)
+print(txt)
+
+
+MAX = len(arr)
+
+ii = 0
+#while (ii<MAX):
+aa = arr[ii]
+while (arr[ii]==aa): ii += 1
+print(f"all equal to {aa} until ii={ii}")
+
+
+iii=21600
+
+points = 25
+for jj in range (iii, iii+points):
+    print(f"point {jj} is {arr[jj]}")
+
+
+
+
+for y in range (0, 10):
+    ct = -1
+    file_1.close()
+    file_1  = open(fnul1, "rb")
+    
+    header = file_1.read(6)
+    ct +=6
+    
+    arr = []
+    for i in range (0, ncols):
+        arr.append( struct.unpack('f', file_1.read(4))[0] );
+        ct+=4
+    
+    file_1.read(y)
+    ct += y
+    arr.append( struct.unpack('f', file_1.read(4))[0] ); ct +=4
+    
+    print(f"ct={ct}\ty={y}\tdata={arr[-1]}")
+    input()
+
+
+for y in range(14, 15):
+    ct = -1
+    file_1.close()
+    file_1  = open(fnul1, "rb")
+    
+    header = file_1.read(6)
+    ct +=6
+    
+    file_1.read(ncols*4)
+    ct += ncols*4
+    
+    file_1.read(y)
+    ct += y
+    
+    arr = []
+    for i in range (0, ncols):
+        arr.append( struct.unpack('f', file_1.read(4))[0] )
+        file_1.read(2)
+        ct+=6
+        
+
+#    arr.append( struct.unpack('f', file_1.read(4))[0] ); ct +=4
+    
+    print(f"ct={ct}\ty={y}\tdata={arr[-1]}")
+    input()
+'''
+
+
+
+
+
+
+
+
+
+
+'''
 fnul10 = f"{path_out}/{nout}"
 file_10 = open(fnul10, "w+") # output file
 
-print(f"Input Sequential Binary Data File : \n\t{n_in}\n")
-print(f"Output Extracted Ascii Data File  : \n\t{nout}\n")
+print(f"Input Sequential Binary Data File : \n\t{n_in}")
+print(f"Output Extracted Ascii Data File  : \n\t{nout}")
+print("\n")
 if (iout==1):
     print("ONE OUTPUT RECORD PER EXTRACTED PARALLEL BAND")
 elif (iout==2):
@@ -140,9 +241,9 @@ print(line_5000)
 d_8 = 1e-8
 iglob = 1 - (int(((deast-dwest)/360) + d_8))
 
-in_ = round( ((90-dnorth)/dlat) - d_8) #+ 1
-is_ = round( ((90-dsouth)/dlat) - d_8) #+ 1
-jw  = round(dwest/dlon - d_8) #+ 1
+in_ = round( ((90-dnorth)/dlat) - d_8) + 1
+is_ = round( ((90-dsouth)/dlat) - d_8) + 1
+jw  = round(dwest/dlon - d_8) + 1
 je  = round(deast/dlon + d_8) + iglob
 irow = is_ - in_ + 1
 jcol = je - jw + 1
@@ -160,7 +261,7 @@ wlon =      (jwl - 1)*dlon
 slat = 90 - (is_ - 1)*dlat
 elon =      (jel - 1)*dlon
 
-print("Geometry of extracted grid:")
+print("Geopetry of extracted grid:")
 
 print(f" Latitude of northern-most points = {tlat} (Degrees)\n",
       f"Latitude of southern-most points = {slat} (Degrees)\n",
@@ -195,42 +296,37 @@ if (iout==1):
 if (iout==2):
     for i in range (0, nrows):
         flat[i] = 90 - (i)*dlat
-        
-# ----reaching the data we are interested in
-for i in range(0, in_):
-    file_1.read_record(dtype=np.float32)
+# ----
+for i in range(0, in_ - 1): # reaching the point we are interested in
+    file_1.read(1)
 
 print(line_5000)
 print("Statistics of Extracted values:\n")
 
 ii = 0
-for i in range (in_, is_+1):                                                    # ---- Flag 
-    grid = file_1.read_record(dtype=np.float32)
+for i in range (in_, is_+1):
+    file_1.read(1)
     ii += 1
     jj = 0
-    for j in range (jw, je):                                                    # ---- Flag 
-        input(f"i={i}\t ii={ii}\t j={j}\t jj={jj}")
+    for j in range (jw, je+1):
         jl = j
-        if (jl < 0):     jl += ncols
-        if (jl > ncols): jl -= ncols
-        
+        if (jl<1):     jl += ncols
+        if (jl>ncols): jl -= ncols
+        jj += 1
         temp[jj] = grid[jl]
         scrd[jj, 0] = grid[jl]
         scrd[jj, 1] = 1
         flon[jj] = (jl-1)*dlon
-        
-        jj += 1
     
-#    if (iout==1): 
-#        file_10.write(str(temp[j]))    
+    if (iout==1): 
+        file_10.write(str(temp[j]))
+    
     if (iout==2):
-        for j in range (0, jj):                                                 # ---- Flag 
+        for j in range (0, jj-1):
             file_10.write(f"{flat[i]}\t{flon[j]}\t{temp[j]}\n")
     
     stats()
 
-#file_1.close()
-    
 file_10.close()
 
 
@@ -249,4 +345,4 @@ print(line_5000)
 print("\t Normal Termination")
 print(line_5000)
 
-
+'''
