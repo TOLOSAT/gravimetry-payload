@@ -69,7 +69,7 @@ def Store_temp_GLl(G_Grid, G_Long, G_Lat, detail=""):
     If you want to keep the arrays, move them into the Randered/grid directory, 
     or they might get written over
     """
-    temp_GLl_path = "../Rendered/temp"
+    temp_GLl_path = "../Rendered/grid"
     Store_Array(G_Grid, f"{detail} G_Grid", temp_GLl_path)
     Store_Array(G_Long, f"{detail} G_Long", temp_GLl_path)
     Store_Array(G_Lat,  f"{detail} G_Lat",  temp_GLl_path)
@@ -113,7 +113,7 @@ if __name__ == '__main__':
     
 #    TEST_store_temp()
     
-    Store_temp_GLl(G_Grid, G_Long, G_Lat, "TEST1")
+    Store_temp_GLl(G_Grid, G_Long, G_Lat, "TEST0")
     
     print("\nGH_export done")
 

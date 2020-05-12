@@ -73,7 +73,7 @@ def Make_Map_3D (fignum=[], ax_pos=111, shape=(7,5) ):
 # =============================================================================
 # PLOT FUNCTIONS
 # =============================================================================
-def Plot_contourf(G_Grid, G_Long, G_Lat, AX=plt.gca(), levels=35, proj=ccrs.PlateCarree, map_color="jet"):
+def Plot_contourf(G_Grid, G_Long, G_Lat, AX=plt.gca(), levels=75, proj=ccrs.PlateCarree, map_color="jet"):
     """
     Display of G_Grid, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
@@ -224,9 +224,9 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    Map_Earth()
+#    Map_Earth()
     
-#    Make_Map()
+    Make_Map()
     
 #    Make_Map_3D()
     

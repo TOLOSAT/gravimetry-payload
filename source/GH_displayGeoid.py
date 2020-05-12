@@ -156,8 +156,6 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
 def Map_Geoid_HR(detail="grid geoid 100-100", title="Geoid undulation High resolution"):
     """ Makes a Matplotlib figure with the map, geoid and labels """
     G_Grid, G_Long, G_Lat = imp.Load_GLl(detail)
-    lmax = 100
-    lmax_topo = 100
     levels = 40
     limits = [G_Long[0][0], G_Long[0][-1], G_Lat[0][0], G_Lat[-1][0]]
     
@@ -165,7 +163,7 @@ def Map_Geoid_HR(detail="grid geoid 100-100", title="Geoid undulation High resol
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX1, levels)
     plt.figure(FIG1.number)
     plt.suptitle(title)
-    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plot_specs = f"{G_Grid.size} points; {detail}; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Geoid height in m")
     '''
@@ -173,7 +171,7 @@ def Map_Geoid_HR(detail="grid geoid 100-100", title="Geoid undulation High resol
     CBAR = emap.Plot_surface_3D(G_Grid, G_Long, G_Lat, AX2, ratio = 0.15) 
     plt.figure(FIG2.number)
     plt.suptitle(title)
-    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plot_specs = f"{G_Grid.size} points; {detail}; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Geoid height in m")
     
@@ -181,7 +179,7 @@ def Map_Geoid_HR(detail="grid geoid 100-100", title="Geoid undulation High resol
     CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX3) 
     plt.figure(FIG2.number)
     plt.suptitle(title)
-    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plot_specs = f"{G_Grid.size} points; {detail}; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Geoid height in m")
     '''
@@ -194,7 +192,7 @@ def Map_Geoid_HR(detail="grid geoid 100-100", title="Geoid undulation High resol
 # =============================================================================
 def TEST_Map_Geoid():
 #    HC, HS = imp.Fetch_Coef("full")
-#    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")
+#    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
     lmax = 100; lmax_topo = 100; tens = 10; levels = 70; 
     title = f"Map of Geoid undulation"
     fig = Map_Geoid(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
@@ -227,8 +225,14 @@ if __name__ == '__main__':
 #    TEST_Map_isoPot()
     
 #    TEST_Map_Geoid()
+    gx, LLx, llx = Map_Geoid_HR("grid geoid 100-100", "GH3 geoid")
+    gf, LLf, llf = Map_Geoid_HR("EGM2008 1h",         "F77 geoid")
+#    gf, _,  _  = Map_Geoid_HR("EGM2008 edge",      "fortran  geoid")
     
-    g2 = Map_Geoid_HR("TEST1", "EGM2008 model")
+    FIG, AX= emap.Make_Map()
+    emap.Plot_contourf(gx - gf, LL, ll, AX)
+    plt.title("Difference between GH3 and F77 geoid interpretations")
+    
     
     
     print("\nGH_displayGeoid done")

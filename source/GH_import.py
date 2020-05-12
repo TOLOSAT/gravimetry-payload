@@ -130,33 +130,31 @@ def Load_GLl (detail="zeros"):
     return G_Grid, G_Long, G_Lat
 
 
-def Load_gridget_xmin(name="OUTPUT.DAT"):
+def Load_gridget_xmin(name="pyOUTPUT.txt"):
     """
-    This function is to be used along the gridget.exe fortran code develloped 
-    by the NGA. It outmits a 1'x1' map, and a section of it can be requested
-    through a commald terminal. I modified the code so that it asks for the
-    minute step between points as well.
-    The output must be the 3 column version, this function extracts the grid, 
-    ans saves it Grav Harm 3 style.
+    This function is to be used along with py_gridget_xmin.py
+    It renders a temporary 3-column file with the grid data
+    This function imports that file, and returns the grid and meshgrid
     """
-    F77_path = "../../Fortran NGA/Fortran grid"
+#    F77_path = "../../Fortran NGA"
+    F77_path = "../Rendered/temp"
     GLl_path = "../Rendered/grid"
     
     RAW = np.loadtxt(f"{F77_path}/{name}")
-#    size = (181,360) # if length  = 65160
-    size = (1201, 1201) # if length  = 65160
-    
-    G_Lat  = np.flip(np.reshape(RAW[:,0],     size), 0)
-    G_Long =         np.reshape(RAW[:,1]-180, size)
-    G_Grid =         np.reshape(RAW[:,2],     size)
+    print(f"{name}: RAW length={len(RAW)}")
+#    shape = (181,361) # if length  = 65160
+#    shape = (181,360) # if length  = 65160
+#    shape = (19,19)
+#    if (len(RAW)==703): shape = (19,37)
+#    if (len(RAW)==65341): shape = (181,361)
+    G_Lat  = np.flip(np.reshape(RAW[:,0], shape), 0)
+    G_Long = np.reshape(RAW[:,1], shape)
+    G_Grid = np.flip(np.reshape(RAW[:,2], shape), 0)
     
     # resize them ?
     return G_Grid, G_Long, G_Lat
     
     
-
-
-
 
 # =============================================================================
 # TEST FUNCTIONS
@@ -165,6 +163,7 @@ def TEST_load_temp():
 #    exp.TEST_store_temp()
     A, B, C = Load_GLl()
     print(A); print(B); print(C)
+
 
 
 # =============================================================================
@@ -179,7 +178,7 @@ if __name__ == '__main__':
     
     G_Grid, G_Long, G_Lat = Load_gridget_xmin()
     
-    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, "EGM2008 full")
+    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, "EGM2008 1h")
     
     print("\nGH_import done")
 
