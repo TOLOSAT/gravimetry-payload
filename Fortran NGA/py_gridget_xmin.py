@@ -1,5 +1,9 @@
 """
-source: Fortran code for gridget 1min
+source: Fortran code "gridget_1min.f" found at:
+https://earth-info.nga.mil/GandG///wgs84/gravitymod/egm2008/egm08_wgs84.html
+
+I translated it into python, and then adapted the code to what I wanted it
+to do. 
 
 c-----------------------------------------------------------------------
 c     ORIGINAL PROGRAM:                           SIMON HOLMES, JUL 2007
@@ -7,20 +11,17 @@ c     MODIFIED FOR CORNER-CELL REGISTRATION       SIMON HOLMES, MAY 2008
 c     MUTLI-OUTPUT OPTION                         SIMON HOLMES, MAY 2008
 #     TRANSLATION INTO PYTHON              XAVIER DE LABRIOLLE, MAY 2020
 c-----------------------------------------------------------------------
-
 """
 import numpy as np
 from scipy.io import FortranFile
 
-term_width = 60
-line_5000 = "-" * term_width
 
-def stats():
-    pass
+
 
 # =============================================================================
 # MAIN
 # =============================================================================
+line_5000 = "-" * 60
 print("\n")
 print(line_5000)
 print("\t Extract a grid of pre-computed geoid undulations")
@@ -172,14 +173,16 @@ for ii in range (0, irow):
     if (ii != irow-1):
         for s in range (0, skip_lon):
             _ = file_1.read_record(dtype=np.float32)
-    
-stats()
 
 file_1.close()
 file_10.close()
+    
+print(line_5000)
+print("This is where I would be showing stats but I didn't code it.",
+      "\nAlso I dont see the point.")
 
 print(line_5000)
 print("\t Normal Termination")
 print(line_5000)
-
+print("Credtis: Xavier de Labriolle")
 

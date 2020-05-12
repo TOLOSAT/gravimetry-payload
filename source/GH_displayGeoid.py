@@ -93,8 +93,8 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
                                            [lmax, HC, HS], 
                                            limits)
     # save grid
-    time = f"grid geoid {lmax}-{lmax_topo}"
-    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, time)
+    detail = f"grid geoid {lmax}-{lmax_topo}"
+    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, detail)
     
     
     # Make a map    
@@ -153,7 +153,7 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
     return FIG, [G_Grid, G_Long, G_Lat]
 
 
-def Map_Geoid_HR(detail="grid geoid 100-100", title="Geoid undulation High resolution"):
+def Map_Geoid_grid(detail="grid geoid 100-100", title="Geoid undulation High resolution"):
     """ Makes a Matplotlib figure with the map, geoid and labels """
     G_Grid, G_Long, G_Lat = imp.Load_GLl(detail)
     levels = 40
@@ -225,14 +225,16 @@ if __name__ == '__main__':
 #    TEST_Map_isoPot()
     
 #    TEST_Map_Geoid()
-    gx, LLx, llx = Map_Geoid_HR("grid geoid 100-100", "GH3 geoid")
-    gf, LLf, llf = Map_Geoid_HR("EGM2008 1h",         "F77 geoid")
+    
+    gx, LLx, llx = Map_Geoid_grid("grid geoid 100-100", "GH3 geoid")
+    gf, LLf, llf = Map_Geoid_grid("EGM2008 1h",         "F77 geoid")
 #    gf, _,  _  = Map_Geoid_HR("EGM2008 edge",      "fortran  geoid")
     
+    '''
     FIG, AX= emap.Make_Map()
-    emap.Plot_contourf(gx - gf, LL, ll, AX)
+    emap.Plot_contourf(gx - gf, LLx, llx, AX)
     plt.title("Difference between GH3 and F77 geoid interpretations")
-    
+    '''
     
     
     print("\nGH_displayGeoid done")
