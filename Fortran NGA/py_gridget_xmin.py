@@ -26,7 +26,7 @@ print("\t Extract a grid of pre-computed geoid undulations")
 print(line_5000)
 
 # FILE PARAMETERS
-path_in  = "../../Fortran NGA/Fortran grid"
+path_in  = "../data"
 n_in     = "Und_min1x1_egm2008_isw=82_WGS84_TideFree_SE"
 path_out = "../Rendered/temp"
 nout     = "pyOUTPUT.txt"

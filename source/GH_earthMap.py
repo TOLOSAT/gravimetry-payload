@@ -47,8 +47,8 @@ import GH_convert      as conv
 def Make_Map_Fig (proj, fignum, ax_pos, shape, limits):
     """ Generates a mpl figure with the wanted coordiates system projection """
     FIG = plt.figure(*fignum, figsize=shape)
-    AX = FIG.add_subplot(ax_pos, projection=proj())
-    AX.set_extent(limits) 
+    AX = FIG.add_subplot(ax_pos, projection=proj(central_longitude=0))
+    AX.set_extent(limits, crs=ccrs.PlateCarree()) 
     plt.show(block=False)
     return FIG, AX
 
@@ -73,11 +73,12 @@ def Make_Map_3D (fignum=[], ax_pos=111, shape=(7,5) ):
 # =============================================================================
 # PLOT FUNCTIONS
 # =============================================================================
-def Plot_contourf(G_Grid, G_Long, G_Lat, AX=plt.gca(), levels=75, proj=ccrs.PlateCarree, map_color="jet"):
+def Plot_contourf(G_Grid, G_Long, G_Lat, AX=0, levels=75, proj=ccrs.PlateCarree, map_color="jet"):
     """
     Display of G_Grid, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
     """
+    if (AX==0): AX = plt.gca()
     alpha = 1
 #    plt.axes(AX)
     data = AX.contourf(G_Long, G_Lat, G_Grid,
@@ -88,11 +89,12 @@ def Plot_contourf(G_Grid, G_Long, G_Lat, AX=plt.gca(), levels=75, proj=ccrs.Plat
     return CBAR
 
 
-def Plot_surface (G_Grid, G_Long, G_Lat, AX=plt.gca(), map_color="jet"):
+def Plot_surface (G_Grid, G_Long, G_Lat, AX=0, map_color="jet"):
     """
     3D Display of G_Grid surface, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
     """
+    if (AX==0): AX = plt.gca()
     alpha = 1
 #    plt.axes(AX)
     data = AX.plot_surface(G_Long, G_Lat, G_Grid, 
@@ -105,12 +107,13 @@ def Plot_surface (G_Grid, G_Long, G_Lat, AX=plt.gca(), map_color="jet"):
     return CBAR
 
 
-def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX=plt.gca(), ratio=0.15, map_color="jet"):
+def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX=0, ratio=0.15, map_color="jet"):
     """
     Ball representation of G_Grid + radius, with coordinates G_Long and G_Lat 
     map_colors = ["jet", "terrain", "gist_earth"]
     ratio=0: sphere earth. ratio = 1: chaos earth
     """
+    if (AX==0): AX = plt.gca()
     AX.figure.set_size_inches((6,6))
     
     ranges = abs(G_Grid.max() - G_Grid.min())
@@ -205,7 +208,7 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
     # =========================================================================
     plt.axes(AX2)
     plt.title("PlateCarree projection, LAND & OCEAN(110m) COASTLINE(50m) features", fontsize=10)
-    AX2.set_extent([-7, 4, 47, 54])
+    AX2.set_extent([-7, 4, 47, 54], crs=ccrs.PlateCarree())
     Add_Gridlines(AX2)    
     Add_Credits(AX1)
     
@@ -226,7 +229,13 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
 if __name__ == '__main__':
 #    Map_Earth()
     
-    Make_Map()
+    
+#    limits= np.array([-180, 180, -90, 90])          # WORLD
+#    limits= np.array([-7, 15, 40, 54])              # CHANNEL
+    limits= np.array([-25, 30, 15, 65])             # WC EUROPE AND NW AFRICA
+#    limits= np.array([100, 170, -50, 10])           # AUSTRALIA
+#    limits= np.array([-180, 180, -90, -40])         # ANTARCTICA
+    Make_Map(proj=ccrs.Mollweide, limits=limits)
     
 #    Make_Map_3D()
     

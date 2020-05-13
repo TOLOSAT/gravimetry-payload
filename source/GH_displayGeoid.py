@@ -159,7 +159,7 @@ def Map_Geoid_grid(detail="grid geoid 100-100", title="Geoid undulation High res
     levels = 40
     limits = [G_Long[0][0], G_Long[0][-1], G_Lat[0][0], G_Lat[-1][0]]
     
-    FIG1, AX1 = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
+    FIG1, AX1 = emap.Make_Map(limits=limits, proj = ccrs.Mollweide)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX1, levels)
     plt.figure(FIG1.number)
     plt.suptitle(title)

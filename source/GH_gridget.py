@@ -22,7 +22,7 @@ import GH_import as imp
 line_5000 = "#" +"-" * 60
 
 # FILE PARAMETERS
-path_in  = "../../Fortran NGA/Fortran grid"
+path_in  = "../data"
 n_in     = "Und_min1x1_egm2008_isw=82_WGS84_TideFree_SE"
 path_out = "../Rendered/temp"
 nout     = "pyOUTPUT.txt"
@@ -192,14 +192,8 @@ if (__name__ == "__main__"):
     
     G_Grid, G_Long, G_Lat = imp.Load_gridget_xmin(shape)
 
-    """
     print("\n")
-    print(line_5000)
-    print("This is where I would be showing stats but I didn't code it.",
-          "\nAlso I dont see the point.\n")
-    
     print(line_5000)
     print("\t Normal Termination")
     print(line_5000)
-    print("Credtis: Xavier de Labriolle")
     """

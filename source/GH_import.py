@@ -141,7 +141,7 @@ def Load_gridget_xmin(shape = (61,61), name="pyOUTPUT.txt"):
     GLl_path = "../Rendered/grid"
     
     RAW = np.loadtxt(f"{F77_path}/{name}")
-    print(f"{name}: RAW length={len(RAW)}")
+    print(f"Importing {name}: RAW length={len(RAW)}")
 #    shape = (181,361) # if length  = 65160
 #    shape = (181,360) # if length  = 65160
 #    shape = (19,19)
@@ -178,7 +178,7 @@ if __name__ == '__main__':
     
     G_Grid, G_Long, G_Lat = Load_gridget_xmin()
     
-    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, "EGM2008 1h")
+#    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, "EGM2008 1h")
     
     print("\nGH_import done")
 
