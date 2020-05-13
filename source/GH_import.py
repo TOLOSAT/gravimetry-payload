@@ -130,7 +130,7 @@ def Load_GLl (detail="zeros"):
     return G_Grid, G_Long, G_Lat
 
 
-def Load_gridget_xmin(name="pyOUTPUT.txt"):
+def Load_gridget_xmin(shape = (61,61), name="pyOUTPUT.txt"):
     """
     This function is to be used along with py_gridget_xmin.py
     It renders a temporary 3-column file with the grid data

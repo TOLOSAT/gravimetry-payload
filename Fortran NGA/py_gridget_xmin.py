@@ -114,9 +114,9 @@ print(  f"Latitude of northern boundary = {flat[0]:.3f} (Degrees)",
       f"\nLatitude of southern boundary = {flat[-1]:.3f} (Degrees)",
       f"\nLongitude of western boundary = {flon[0]:.3f} (Degrees)",
       f"\nLongitude of eastern boundary = {flon[-1]:.3f} (Degrees)",
-      f"\n\n Latitude spacing = {dlat_out*60} (Minutes)",
-        f"\nLongitude spacing = {dlon_out*60} (Minutes)",
-      f"\n\nGrid is {irow} Rows x {jcol} Columns of values")
+      f"\n\n           Latitude spacing = {dlat_out*60} (Minutes)",
+        f"\n          Longitude spacing = {dlon_out*60} (Minutes)",
+      f"\n\nGrid is {irow} rows x {jcol} columns of values")
 
 
 # =============================================================================
