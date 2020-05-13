@@ -16,12 +16,10 @@ import numpy as np
 from scipy.io import FortranFile
 
 
-
-
 # =============================================================================
 # MAIN
 # =============================================================================
-line_5000 = "-" * 60
+line_5000 = "#" +"-" * 60
 print("\n")
 print(line_5000)
 print("\t Extract a grid of pre-computed geoid undulations")
@@ -55,13 +53,6 @@ while not(ok):
 print("\n")
 
 # PROMPT FOR RESOLUTION
-print("Not asking for resolution yet")
-dlat_out = 1 # degrees
-dlon_out = 1 # degrees
-
-
-# PROMPT FOR OUTPUT FORMAT
-'''
 print ("Enter sample spacing : dlat_out dlon_out")
 ok = False
 while not(ok):
@@ -72,12 +63,14 @@ while not(ok):
         (dlon_out<=0) or (dlon_out>600) or
         (int(dlat_out)!=dlat_out) or
         (int(dlon_out)!=dlon_out) ):
-        ok = True
-    else: 
         print("\t INVALID, enter integers within (1, 600)")
+    else: 
+        ok = True
 print("\n")
-'''
 
+# convert to minutes
+dlat_out = dlat_out / 60
+dlon_out = dlon_out / 60
 
 # =============================================================================
 # INITIALISE DIMENSIONS OF EXTRACTED GRID
@@ -86,7 +79,6 @@ north_i = round((90-dnorth) / dlat)
 south_i = round((90-dsouth) / dlat) # included
 west_j  = round((180+dwest) / dlon)
 east_j  = round((180+deast) / dlon) # included
-
 
 if (west_j < 0):     west_j += ncols
 if (west_j > ncols): west_j -= ncols
@@ -99,17 +91,16 @@ south_m = 90 - south_i*dlat
 west_m  = west_j*dlon - 180
 east_m  = east_j*dlon - 180
 
-print(north_i, south_i, west_j, east_j)
-print(north_m, south_m, west_m, east_m)
+print(west_j, east_j, south_i, north_i)
+print(west_m, east_m, south_m, north_m)
 
 flat = np.arange(north_m, south_m-dlat/3, -dlat_out/(dlat*60) )
 flon = np.arange(west_m,  east_m+dlat/3,   dlon_out/(dlon*60) )
-if (
-    west_j > east_j):
+if (west_j > east_j):
     flon_a = np.arange(west_m, 180, dlon_out/(dlon*60))
     flon_b = np.arange(-180, east_m+dlat/3,dlon_out/(dlon*60))
     flon = [*flon_a,*flon_b]
- 
+
 irow  = len(flat)
 jcol  = len(flon)
 shape = (irow, jcol)
@@ -119,13 +110,13 @@ skip_lon = round(dlon_out/dlon) - 1
 
 print(line_5000)
 print("Geometry of extracted grid:\n")
-print(  f"Latitude of northern boundary = {flat[0]:.6f} (Degrees)",
-      f"\nLatitude of southern boundary = {flat[-1]:.6f} (Degrees)",
-      f"\nLongitude of western boundary = {flon[0]:.6f} (Degrees)",
-      f"\nLongitude of eastern boundary = {flon[-1]:.6f} (Degrees)",
+print(  f"Latitude of northern boundary = {flat[0]:.3f} (Degrees)",
+      f"\nLatitude of southern boundary = {flat[-1]:.3f} (Degrees)",
+      f"\nLongitude of western boundary = {flon[0]:.3f} (Degrees)",
+      f"\nLongitude of eastern boundary = {flon[-1]:.3f} (Degrees)",
       f"\n\n Latitude spacing = {dlat_out*60} (Minutes)",
         f"\nLongitude spacing = {dlon_out*60} (Minutes)",
-      f"\n\n{irow} Rows x {jcol} Columns of values output.")
+      f"\n\nGrid is {irow} Rows x {jcol} Columns of values")
 
 
 # =============================================================================
@@ -146,7 +137,7 @@ file_10 = open(fnul10, "w+") # output file
 # EXTRACT GRID ONE ROW AT A TIME
 # =============================================================================
 print(line_5000)
-print("Extracting ...")
+print("Extracting ...\n")
 print("Grid corner values:")
 print("LAT\t\tLONG\t\tUND")
 
@@ -157,6 +148,7 @@ for i in range(0, north_i):
 
 # LOOP-EXTRACT INTERESTING ROW DATA
 for ii in range (0, irow):  
+    # This line reads one whole line of the unformatted binary file
     grid = file_1.read_record(dtype=np.float32)
      
     temp = np.zeros(jcol)
@@ -176,13 +168,15 @@ for ii in range (0, irow):
 
 file_1.close()
 file_10.close()
-    
+
+"""
+print("\n")
 print(line_5000)
 print("This is where I would be showing stats but I didn't code it.",
-      "\nAlso I dont see the point.")
+      "\nAlso I dont see the point.\n")
 
 print(line_5000)
 print("\t Normal Termination")
 print(line_5000)
 print("Credtis: Xavier de Labriolle")
-
+"""

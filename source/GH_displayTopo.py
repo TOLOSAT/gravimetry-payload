@@ -114,10 +114,10 @@ def TEST_Map_Topo():
     tens = 1
     levels = 75
     title = f"TEST map of topography"
-#    limits= np.array([-180, 180, -90, 90])
+    limits= np.array([-180, 180, -90, 90])
 #    limits= np.array([-7, 15, 40, 54])
 #    limits= np.array([-25, 30, 15, 65])
-    limits= np.array([100, 170, -50, 10])
+#    limits= np.array([100, 170, -50, 10])
 #    limits= np.array([-180, 180, -90, -40])
 #    limits= np.array([-180, 180, -90, 90])*pi/180
 #    fig = Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, tens, levels, title, limits)
