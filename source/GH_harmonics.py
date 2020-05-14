@@ -79,8 +79,33 @@ def init_grid (tens=0, limits=np.array([-180, 180, -90, 90])):
     
     return G_Grid, G_theta, G_phi
 
+def init_grid2 (mins=0, limits=np.array([-180, 180, -90, 90])):
+    """
+    Initiates the grid variables based on the number of points wanted
+    within the given limits
+    gris step is in minutes, 60 min = 1 degree
+    """
+    dim = limits * pi/180
+    
+    if (mins <= 0):
+        size_long = 5
+        size_lat  = 5
+        Line_theta = np.linspace(dim[0], dim[1], size_long)
+        Line_phi   = np.linspace(dim[2], dim[3], size_lat)
+    else:
+        step = mins/60 * pi/180
+        Line_theta = np.arange(dim[0], dim[1]+step/2, step)
+        Line_phi   = np.arange(dim[2], dim[3]+step/2, step)
+        size_long = len(Line_theta)
+        size_lat  = len(Line_phi)
+    
+    G_theta, G_phi = np.meshgrid(Line_theta, Line_phi)
+    G_Grid = np.zeros((size_lat, size_long))
+    
+    return G_Grid, G_theta, G_phi
 
-def Gen_Grid (tens, Get_FUNCTION, in_args, limits=np.array([-180, 180, -90, 90])):
+
+def Gen_Grid (mins, Get_FUNCTION, in_args, limits=np.array([-180, 180, -90, 90])):
     """
     This function generates a grid of the desired spherical harmonic model
     at Lat/Long coordinates
@@ -91,10 +116,10 @@ def Gen_Grid (tens, Get_FUNCTION, in_args, limits=np.array([-180, 180, -90, 90])
         limits: the geographical limits to the Long/lat map 
     Output:
         G_Grid: grid of Get_FUNCTION(R,phi,theta,*in_args)
-        G_Long: grid of longitudes, [tens] points, within limits
+        G_Long: grid of longitudes, [mins] step, within bounraries [limits]
         G_Lat:  same for latitudes
     """
-    G_Grid, G_theta, G_phi = init_grid(tens, limits)   
+    G_Grid, G_theta, G_phi = init_grid(mins, limits)   
     print(f"Making a grid with \"{Get_FUNCTION.__name__}()\", with {G_Grid.size} points\n",end="\r")
     
     it=0
