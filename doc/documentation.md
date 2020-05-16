@@ -12,7 +12,7 @@ This tool was written in _python 3.6_, since 2019, by Xavier C. de Lariolle, [ad
 
 
 ## What does it do?
-The purpose of this tool is to solve for the _Stokes "spherical harmonic coefficients"_ to the geopotential or Earth. 
+The purpose of this tool is to solve for the _Stokes "spherical harmonic coefficients"_ to the geopotential or Earth, sourced from satellite trajectories. 
 The calculation process is as follows: 
 1. Obtain the positions to the trajectory of a satellite
 1. Derivate the position to find the acceleration
@@ -54,7 +54,7 @@ In order to handle data, some directories must be created prior to the use of th
 ### Getting started
 I suggest using anaconda to download libraries, and spyder3 as an IDE.
 
-The needed libraries are: numpy, scipy, matplotlib, cartopy, os, time, math, [add if you use more]. 
+The needed libraries are: numpy, scipy, matplotlib, cartopy, os, time, math, FortranFile [add if you use more]. 
 This tool contains many scripts, each regrouping the functions related to a specific task. The name of the task is reflected in the name of the script. 
 
 It all happens in the script "GH_user". 
@@ -72,9 +72,11 @@ The original tool was made by  the U.S. National Geospatial-Intelligence Agency 
 
 
 ## Just the Geoid please
-The Geoid undulations can be calculated. The tool currently supports computations up to degree 60, degree 154 if i can figure out my math. Going beyond 155 degrees required a new method of computing the Associated Legendre Function. 
+This tool calculates the Geoid undulations on it's own, from input coefficients. The tool currently supports computations up to degree 60, degree 154 if I can figure out my math. Going beyond 155 degrees required a new method of computing the Associated Legendre Function. 
+
 The reference ellipsoid is removed, but some residual height is left over. 
-Incliding the NGA fortran-calcuated geoid undulation 1'x1' map will later be implemented. 
+
+The NGA (mentioned above) also provides 1'x1' (minute) solution maps in binary format, along with the associated Fortran code to extract sub-grids. Extrapolation is also possible. The sub-grid-extracting code was re-written in python by Xavier C. de Labriolle, with the choice of sample step as a new feature (input the desired minutes between points). This code is in the GH_gridget script. These maps have theoretically been computed up to a degree/order of 2160, but no evidence to suppport that has currently been found. 
 
 
 ## Sources and material
