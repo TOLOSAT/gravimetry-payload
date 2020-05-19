@@ -87,7 +87,7 @@ def init_grid2 (mins=0, limits=np.array([-180, 180, -90, 90])):
     """
     dim = limits * pi/180
     
-    if (mins <= 0):
+    if ( (mins < 1) or (mins > 600) ):
         size_long = 5
         size_lat  = 5
         Line_theta = np.linspace(dim[0], dim[1], size_long)

@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
     """ plotting maps of geoids """
     lmax_topo = 15
-    tens = 1
+    mins = 1
     levels = 35
 
     """ save the plots and coefficients """
@@ -114,9 +114,9 @@ if __name__ == '__main__':
 
 #     Mapping the coefficients
     title2 = f"Map of original geopotential"
-    MAP_GEN = dgeo.Map_GeoPot(tens, levels, title2, lmax_gen,   HC,     HS,     lmax_topo, HC_topo, HS_topo)
+    MAP_GEN = dgeo.Map_Geoid(mins, levels, title2, lmax_gen,   HC,     HS,    )
     title3 = f"Map of solved geopotential"
-    MAP_SIM = dgeo.Map_GeoPot(tens, levels, title3, lmax_solve, HC_sim, HS_sim, lmax_topo, HC_topo, HS_topo)
+    MAP_SIM = dgeo.Map_Geoid(mins, levels, title3, lmax_solve, HC_sim, HS_sim )
 
 
 #%% save plots and coefficients

@@ -86,14 +86,14 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 # MAPPING FUNCTIONS
 # =============================================================================
 
-def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
+def Map_Geoid (tens, levels, title,    lmax, HC, HS, limits=np.array([-180,180,-90,90])):
     """ Makes a Matplotlib figure with the map, geoid and labels """
     # Get the data
     G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, 
                                            [lmax, HC, HS], 
                                            limits)
     # save grid
-    detail = f"grid geoid {lmax}-{lmax_topo}"
+    detail = f"grid geoid l{lmax}"
     exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, detail)
     
     
@@ -107,7 +107,7 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo
     # Adapt labels
     plt.figure(FIG.number)
     plt.suptitle(title)
-    plot_specs = f"{G_Grid.size} points; lmax_topo = {lmax_topo} degrees; lmax = {lmax} degrees; {levels} color levels"
+    plot_specs = f"{G_Grid.size} points; lmax = {lmax} degrees; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Geoid height in m")    
     return FIG, [G_Grid, G_Long, G_Lat]
@@ -159,7 +159,7 @@ def Map_Geoid_grid(detail="grid geoid 100-100", title="Geoid undulation High res
     levels = 40
     limits = [G_Long[0][0], G_Long[0][-1], G_Lat[0][0], G_Lat[-1][0]]
     
-    FIG1, AX1 = emap.Make_Map(limits=limits, proj = ccrs.Mollweide)
+    FIG1, AX1 = emap.Make_Map(limits=limits) #, proj = ccrs.Mollweide)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX1, levels)
     plt.figure(FIG1.number)
     plt.suptitle(title)
@@ -193,9 +193,9 @@ def Map_Geoid_grid(detail="grid geoid 100-100", title="Geoid undulation High res
 def TEST_Map_Geoid():
 #    HC, HS = imp.Fetch_Coef("full")
 #    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 100; lmax_topo = 100; tens = 10; levels = 70; 
+    lmax = 10; tens = 1; levels = 70; 
     title = f"Map of Geoid undulation"
-    fig = Map_Geoid(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+    fig = Map_Geoid(tens, levels, title, lmax, HC, HS)
     exp.Store_Figure(fig.number, f"test geoid", dpi=1000)
 
 def TEST_Map_GeoPot():
@@ -226,13 +226,13 @@ if __name__ == '__main__':
     
 #    TEST_Map_Geoid()
     
-    gx, LLx, llx = Map_Geoid_grid("grid geoid 100-100", "GH3 geoid")
+    gx, LLx, llx = Map_Geoid_grid("grid geoid l100", "GH3 geoid")
     gf, LLf, llf = Map_Geoid_grid("EGM2008 1h",         "F77 geoid")
 #    gf, _,  _  = Map_Geoid_HR("EGM2008 edge",      "fortran  geoid")
     
     '''
     FIG, AX= emap.Make_Map()
-    emap.Plot_contourf(gx - gf, LLx, llx, AX)
+    emap.Plot_contourf(gx - gf, LLx, llx, AX, map_color="seismic")
     plt.title("Difference between GH3 and F77 geoid interpretations")
     '''
     
