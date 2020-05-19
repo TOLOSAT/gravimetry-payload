@@ -64,8 +64,6 @@ def Plot2D_PosEarthfixed (Pos, Title="No given title"):
     return FIG
 
 
-
-
 def Plot3D_Pos (fignum, Pos, Title):
     """
     This functions creates a matplotlib figure and plots Pos in 3D.
@@ -147,7 +145,6 @@ def TEST_Plots ():
     Title = f"Test_Plots: {file_name} for {days} days"
 #    fig1 = Plot3D_Pos(1, Pos, Title)
     fig2 = Plot2D_PosEarthfixed(Pos, Title)
-    return
 
 
 # =============================================================================

@@ -108,6 +108,9 @@ if __name__ == '__main__':
 
 
 #%% # plotting path simulation
+    title0 = f"Source path to generation"
+    FIG_PATH = dsat.Plot2D_PosEarthfixed(Pos_sim, title0)
+    
     title1 = f"Simulated and solved acceleration"
     component = 0 #0, 1, 2 : r, theta, phi
     FIG_ACC = dsat.Plot_Acc_Sim_Solv(Time, Acc_sim, Acc_solved_sim, component, title1)
@@ -126,9 +129,10 @@ if __name__ == '__main__':
         exp.Store_Array(HC_sim, f"HC_sim {array_specs} degrees.txt", save_co_path)
         exp.Store_Array(HS_sim, f"HS_sim {array_specs} degrees.txt", save_co_path)
 
-        exp.Store_Figure(FIG_ACC.number, title1, time_str, save_im_path, 500)
-        exp.Store_Figure(MAP_GEN.number, title2, time_str, save_im_path, 500)
-        exp.Store_Figure(MAP_SIM.number, title3, time_str, save_im_path, 500)
+        exp.Store_Figure(FIG_PATH.number, title0, time_str, save_im_path, 500)
+        exp.Store_Figure(FIG_ACC.number,  title1, time_str, save_im_path, 500)
+        exp.Store_Figure(MAP_GEN.number,  title2, time_str, save_im_path, 500)
+        exp.Store_Figure(MAP_SIM.number,  title3, time_str, save_im_path, 500)
 
 
 print("\nUser instructions done")

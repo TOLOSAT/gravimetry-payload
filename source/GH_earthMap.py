@@ -40,7 +40,12 @@ import GH_convert      as conv
 #import GH_earthMap     as emap
 
 
-
+# =============================================================================
+# SETUP
+# =============================================================================
+colors.DivergingNorm(vmin=-10000, vcenter=0., vmax=10000)
+    
+    
 # =============================================================================
 # FIGURE FUNCTIONS
 # =============================================================================
@@ -80,7 +85,7 @@ def Plot_contourf(G_Grid, G_Long, G_Lat, AX=0, levels=75, proj=ccrs.PlateCarree,
     """
     if (AX==0): AX = plt.gca()
     alpha = 1
-#    plt.axes(AX)
+    
     data = AX.contourf(G_Long, G_Lat, G_Grid,
                        levels = levels, alpha = alpha,
                        transform = proj(), cmap=plt.get_cmap(map_color))
@@ -96,7 +101,7 @@ def Plot_surface (G_Grid, G_Long, G_Lat, AX=0, map_color="jet"):
     """
     if (AX==0): AX = plt.gca()
     alpha = 1
-#    plt.axes(AX)
+    
     data = AX.plot_surface(G_Long, G_Lat, G_Grid, 
                            alpha = alpha, antialiased=False,
                            cmap=plt.get_cmap(map_color))
