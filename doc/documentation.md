@@ -36,19 +36,20 @@ To download git for Windows, use this guide: https://www.computerhope.com/issues
 
 ### Repository diretories
 In order to handle data, some directories must be created prior to the use of this tool. They are mentionned in the .gitignore to avoid moding loads of images and large text files around. Here is the mimimal structure needed: 
-	'''	
-	> data  (mentionned in 'Before you start')
-		- GeoPot_Coef_cos_deg30.txt
-		- GeoPot_Coef_sin_deg30.txt
-		- Height_Coef_cos_deg49.txt
-		- Height_Coef_sin_deg49.txt
-	> source
-	> Rendered
-		> coefficients
-		> grids
-		> images
-		> temp		
-	'''
+
+```
+> data  (mentionned in 'Before you start')
+	- GeoPot_Coef_cos_deg30.txt
+	- GeoPot_Coef_sin_deg30.txt
+	- Height_Coef_cos_deg49.txt
+	- Height_Coef_sin_deg49.txt
+> source
+> Rendered
+	> coefficients
+	> grids
+	> images
+	> temp		
+```
 
 
 ### Getting started
@@ -83,44 +84,44 @@ The NGA (mentioned above) also provides 1'x1' (minute) solution maps in binary f
 It is important to understand the concepts behing the geopotential, the geoid, the reference ellipsoid, spherical harmonics, Stokes coefficients. 
 
 The main sources for the mathematics involved in this code are:
-'''
-"Definition of Functionals of the Geopotential and Their Calculation from Spherical Harmonic Models"
-by Franz Barthelmes
-for ICGEM
-Revision: jan. 2013
-Will be refered to as "GFZ".
 
-"How to Compute Geoid Undulations (Geoid Height Relative to a Given Reference Ellipsoid) from Spherical Harmonic Coefficients for Satellite Altimetry Applications"
-by Martin Losch and Verena Seufer
-dates back to 2003
-Heavily relies on the textbooks" Heiskanen & Moritz (1967)", and "Torge (1991)".
-Will be refered to as "The Geoid Cook Book"
-'''
+> "Definition of Functionals of the Geopotential and Their Calculation from Spherical Harmonic Models"
+> by Franz Barthelmes
+> for the ICGEM
+> Revision: jan. 2013
+> Will be refered to as "GFZ".
+
+> "How to Compute Geoid Undulations (Geoid Height Relative to a Given Reference Ellipsoid) from Spherical Harmonic Coefficients for Satellite Altimetry Applications"
+> by Martin Losch and Verena Seufer
+> dates back to 2003
+> Heavily relies on the textbooks" Heiskanen & Moritz (1967)", and "Torge (1991)".
+> Will be refered to as "The Geoid Cook Book"
 
  
 ## Some information for coders and nerds
 To calculate geopotential values and to describe satellite trajectories, this python tool uses the spherical coordinates system, and more specifically the ISO convention:
-	'''
-	r     = radius in km ; [0, inf()]
-	theta = inclination around the z axis in radians; [0, pi] (Latitude)
-	phi   = azimuth the z axis in radians; [0, 2*pi] (Longitude)
-	'''
+```
+r     = radius in km ; [0, inf()]
+theta = inclination around the z axis in radians; [0, pi] (Latitude)
+phi   = azimuth the z axis in radians; [0, 2*pi] (Longitude)
+```
 They must be adapted to lat/long coordinates by: 
-	'''
-	Lat = (pi/2 - theta) * 180/pi
-	Long = (phi - pi) * 180/pi
-	theta = pi/2 - Lat*pi/180
-	phi = Long*pi/180 + pi
-	'''
+```
+Lat   = (pi/2 - theta) * 180/pi
+Long  = (phi - pi) * 180/pi
+theta = pi/2 - Lat*pi/180
+phi   = Long*pi/180 + pi
+```
 Their equivalent in the cartesian coordinates is: 
-	'''
-	x = r * sin(theta) * cos(phi)
-	y = r * sin(theta) * sin(phi)
-	z = r * cos(theta)
-	# This is function: x,y,z = GH_convert.sph2cart(r,theta,phi)
-	'''
+```
+x = r * sin(theta) * cos(phi)
+y = r * sin(theta) * sin(phi)
+z = r * cos(theta)
+# This is function: x,y,z = GH_convert.sph2cart(r,theta,phi)
+```
 
-# mages from GravHarm 3
+
+# Images from GravHarm 3
 This is the section where I show off a bit
 
 ## Plot styles
@@ -133,11 +134,14 @@ The maps generated with this tool can be in many styles:
 <img src="images/topo_ball.png" width="300"> <img src="images/topo_ball_2.png" width="300">
 
 ## Plot content
-Many physical values can be plotted: 
+Many physical values can be calculated: 
 * Topography (seen above)
+* Geopotential at the surface of the Earth
+* Isopotential surfaces
 * Geoid undulation 
 <img src="images/geoid_map.png" width="600">
-
+As previously mentionned, the official EGM2008 geoid undulations can be extracted and plotted. 
+The difference with the calculated undulation can be computed.
 
 
 # Credits 

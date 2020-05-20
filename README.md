@@ -5,4 +5,4 @@ For more information on TOLOSAT, follow us on twitter at: https://twitter.com/to
 
 Make sure to check out the [documentation](doc/documentation.md).
 
-<img src="images/geoid_map.png" width="700">
+<img src="doc/images/geoid_map.png" width="700">
