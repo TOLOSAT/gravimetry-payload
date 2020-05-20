@@ -24,9 +24,13 @@ The calculation process is as follows:
 ## How to use Grav Harm 3
 
 ### Before you start 
-In order to work properly, this tool requires an additional directory of files called "data", that can be downloaded at:
+I suggest using anaconda to download libraries, and spyder3 as an IDE.
+
+The needed libraries are: numpy, scipy, matplotlib, cartopy, os, time, math, FortranFile [add if you use more]. 
+
+In order to work properly, this tool requires additional directories and files that can be downloaded at:
 https://drive.google.com/drive/folders/19jqZdLf2ABAerFzBV8e-6N0IGVGUOotc
-This directory contains coefficient files and simulated satellite trajectory files. It must be placed in the git repository, sams directory as "source", which contains all the tool's precious scripts. If you cannot access this Google Drive link, you aren't supposed to anyway (for now). If you really want access to it, send an email to any of the contributors.
+The "data" directory contains coefficient files and simulated satellite trajectory files. It must be placed in the master directory. If you cannot access this Google Drive link, you aren't supposed to anyway (for now). If you really want access to it, send an email to any of the contributors.
 
 The simulated satellite ehpemeris have been rendered using NASA's free open source GMAT software.
 More on GMAT at: https://software.nasa.gov/software/GSC-17177-1
@@ -34,10 +38,10 @@ More on GMAT at: https://software.nasa.gov/software/GSC-17177-1
 To download git for Windows, use this guide: https://www.computerhope.com/issues/ch001927.htm
 
 
-### Repository diretories
+### master directory
 In order to handle data, some directories must be created prior to the use of this tool. They are mentionned in the .gitignore to avoid moding loads of images and large text files around. Here is the mimimal structure needed: 
-
 ```
+> doc
 > data  (mentionned in 'Before you start')
 	- GeoPot_Coef_cos_deg30.txt
 	- GeoPot_Coef_sin_deg30.txt
@@ -53,9 +57,6 @@ In order to handle data, some directories must be created prior to the use of th
 
 
 ### Getting started
-I suggest using anaconda to download libraries, and spyder3 as an IDE.
-
-The needed libraries are: numpy, scipy, matplotlib, cartopy, os, time, math, FortranFile [add if you use more]. 
 This tool contains many scripts, each regrouping the functions related to a specific task. The name of the task is reflected in the name of the script. 
 
 It all happens in the script "GH_user". 
@@ -84,19 +85,19 @@ The NGA (mentioned above) also provides 1'x1' (minute) solution maps in binary f
 It is important to understand the concepts behing the geopotential, the geoid, the reference ellipsoid, spherical harmonics, Stokes coefficients. 
 
 The main sources for the mathematics involved in this code are:
+```
+"Definition of Functionals of the Geopotential and Their Calculation from Spherical Harmonic Models"
+by Franz Barthelmes
+for the ICGEM
+Revision: jan. 2013
+Will be refered to as "GFZ".
 
-> "Definition of Functionals of the Geopotential and Their Calculation from Spherical Harmonic Models"
-> by Franz Barthelmes
-> for the ICGEM
-> Revision: jan. 2013
-> Will be refered to as "GFZ".
-
-> "How to Compute Geoid Undulations (Geoid Height Relative to a Given Reference Ellipsoid) from Spherical Harmonic Coefficients for Satellite Altimetry Applications"
-> by Martin Losch and Verena Seufer
-> dates back to 2003
-> Heavily relies on the textbooks" Heiskanen & Moritz (1967)", and "Torge (1991)".
-> Will be refered to as "The Geoid Cook Book"
-
+"How to Compute Geoid Undulations (Geoid Height Relative to a Given Reference Ellipsoid) from Spherical Harmonic Coefficients for Satellite Altimetry Applications"
+by Martin Losch and Verena Seufer
+dates back to 2003
+Heavily relies on the textbooks" Heiskanen & Moritz (1967)", and "Torge (1991)".
+Will be refered to as "The Geoid Cook Book"
+```
  
 ## Some information for coders and nerds
 To calculate geopotential values and to describe satellite trajectories, this python tool uses the spherical coordinates system, and more specifically the ISO convention:
@@ -141,7 +142,7 @@ Many physical values can be calculated:
 * Geoid undulation 
 <img src="images/geoid_map.png" width="600">
 As previously mentionned, the official EGM2008 geoid undulations can be extracted and plotted. 
-The difference with the calculated undulation can be computed.
+The difference with the computed undulation can be calculated.
 
 
 # Credits 
