@@ -8,6 +8,17 @@
     The purpose of this script is to display various graphs and maps about
     Geoid coefficients
 
+    Generally used variables: 
+        
+        lmax   = maximum degree to calculate to for the geopotantial
+        HC, HS = Geopotential stokes coefficients
+        lmax_topo, HC_topo, HS_topo = same, but for topography. 
+        
+        limits = [Western_long, Eastern_long, Southern_lat, Northern_lat]
+        tens = how large the grid should be - look at init_grid() to understand
+        
+        
+        
 # =============================================================================
 """
 # =============================================================================
@@ -153,11 +164,11 @@ def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, 
     return FIG, [G_Grid, G_Long, G_Lat]
 
 
-def Map_Geoid_grid(detail="grid geoid 100-100", title="Geoid undulation High resolution"):
+def Map_Geoid_grid(detail="grid geoid l100", title="Geoid undulation High resolution"):
     """ Makes a Matplotlib figure with the map, geoid and labels """
     G_Grid, G_Long, G_Lat = imp.Load_GLl(detail)
     levels = 40
-    limits = [G_Long[0][0], G_Long[0][-1], G_Lat[0][0], G_Lat[-1][0]]
+    limits = emap.get_limits(G_Long, G_Lat)
     
     FIG1, AX1 = emap.Make_Map(limits=limits) #, proj = ccrs.Mollweide)
     CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX1, levels)
@@ -191,14 +202,15 @@ def Map_Geoid_grid(detail="grid geoid 100-100", title="Geoid undulation High res
 # TEST FUNCTIONS
 # =============================================================================
 def TEST_Map_Geoid():
-#    HC, HS = imp.Fetch_Coef("full")
-#    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    """  plots a quick geoid undulation map """
+    HC, HS = imp.Fetch_Coef("full")
     lmax = 10; tens = 1; levels = 70; 
     title = f"Map of Geoid undulation"
     fig = Map_Geoid(tens, levels, title, lmax, HC, HS)
-    exp.Store_Figure(fig.number, f"test geoid", dpi=1000)
+#    exp.Store_Figure(fig.number, f"test geoid", dpi=1000)
 
 def TEST_Map_GeoPot():
+    """ plots a quick geopotential map """
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
     lmax = 10; lmax_topo = 10; tens = 1; levels = 50 
@@ -207,6 +219,7 @@ def TEST_Map_GeoPot():
 
 
 def TEST_Map_isoPot():
+    """ plots a quick isopotential map """
     W_0 = harm.Get_isopot_average() 
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()

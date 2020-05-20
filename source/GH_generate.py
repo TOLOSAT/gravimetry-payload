@@ -33,6 +33,8 @@ import GH_solve        as solv
 # =============================================================================
 # FUNCTIONS TO GENERATE ACCELERATION ARRAYS
 # =============================================================================
+
+
 def Gen_Sim_Acc (lmax, HC, HS, Pos):
     """
     Generates simulated acceleration values from known coefficients
@@ -47,7 +49,7 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
         Acc_sim: simulated acceleration values in spherical coordinates
 
     """
-    print("\nGenerating simulated acclerations, lmax =", lmax, "")
+    print("Generating simulated acclerations, lmax =", lmax, "")
 
     CS = conv.Make_Line_Coef(lmax, HC, HS)
     print(f"Shape of the Coef array = {CS.shape}")

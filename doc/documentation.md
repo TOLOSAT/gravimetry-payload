@@ -150,5 +150,5 @@ The difference with the computed undulation can be calculated.
 * Antoine Bendimerad
 * Cedric Belmant
 * Javier Navarro Montilla
-[Add yourselves folks]
+* [Add yourselves folks]
 

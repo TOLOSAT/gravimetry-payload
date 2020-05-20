@@ -71,12 +71,12 @@ if __name__ == '__main__':
 #    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     #file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
     file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
-    days = 0.1
+    days = 0.001
 
     """ data solving """
     lmax_gen = 5 # when generating the data
 
-    lmax_solve = 5  # when solving for coefficients
+    lmax_solve = 3  # when solving for coefficients
 
     """ plotting maps of geoids """
     lmax_topo = 15
@@ -95,8 +95,8 @@ if __name__ == '__main__':
 
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+    
     Pos_sim, Time = imp.Fetch_Pos(file_name, days)
-
     Acc_sim = gen.Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
 
 
@@ -117,9 +117,10 @@ if __name__ == '__main__':
 
 #     Mapping the coefficients
     title2 = f"Map of original geopotential"
-    MAP_GEN = dgeo.Map_Geoid(mins, levels, title2, lmax_gen,   HC,     HS,    )
+    MAP_GEN = dgeo.Map_Geoid(mins, levels, title2, lmax_gen,   HC,     HS    )
+    
     title3 = f"Map of solved geopotential"
-    MAP_SIM = dgeo.Map_Geoid(mins, levels, title3, lmax_solve, HC_sim, HS_sim )
+    MAP_SIM = dgeo.Map_Geoid(mins, levels, title3, lmax_solve, HC_sim, HS_sim)
 
 
 #%% save plots and coefficients

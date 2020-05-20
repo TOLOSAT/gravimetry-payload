@@ -288,6 +288,28 @@ def Get_acceleration (R_e, phi, theta,    lmax, HC, HS):
     return local_acc
 
 
+def Get_acceleration2 (R_e, phi, theta,    lmax, HC, HS):
+    """
+    This function returns the acceleration at given height/phi/theta coordinates
+    The solution is calculated up to degree lmax in the HC HS model
+    The equations come from the GFZ handbook : 
+        the derivative of the potential along the r axis
+    """
+    c = gmath.Constants()
+    a_g=c.a_g; GM_g=c.GM_g; 
+    
+    Sum1 = 0
+    P_lm, _ = gmath.Pol_Legendre(lmax, lmax, cos(phi))
+    for l in range (2, lmax+1):
+        Sum2 = 0
+        for m in range (0, l+1):
+            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
+        Sum1 += (a_g/R_e)**l * (l+1) * Sum2
+
+    W_ar = GM_g/R_e**2 *Sum1
+    return W_ar
+
+
 def Get_isopot (R_e, phi, theta,    W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo): 
     """
     This function returns the Height at given phi/theta coordinates at which the 
@@ -380,7 +402,7 @@ def TEST_plot_radius(fignum, lmax, Lat, Long, HC, HS, lmax_topo, HC_topo, HS_top
     G_Pot_Basic = np.zeros(Rs.shape)
     
     for i in range (len(Rs)):
-        G_Pot[i] = Get_Geo_Pot (Rs[i]*R_earth, Lat*pi/180, Long*pi/180, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+        G_Pot[i]       = Get_Geo_Pot (Rs[i]*R_earth, Lat*pi/180, Long*pi/180, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
         G_Pot_Basic[i] = Get_Geo_Pot (Rs[i]*R_earth, Lat*pi/180, Long*pi/180, 2, HC, HS, lmax_topo, HC_topo, HS_topo)
 #        G_Pot_Basic[i] = Math_calc_geopot_basic(Rs[i]*R_earth)
        
@@ -402,7 +424,7 @@ def TEST_plotGeoPot_radius():
     plt.clf()
     for i in range (2, 15):
         TEST_plot_radius(1, i*2, 50, 50, HC, HS, 10, HC_topo, HS_topo)
-    
+
 
 def TEST_lmax_loop_long_line():
     """ plots the geoid height at the equator, around the world """
@@ -412,7 +434,7 @@ def TEST_lmax_loop_long_line():
     
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()    
-    lmax_topo = 10
+#    lmax_topo = 10
 
     lmaxs = np.arange(3, 25, 2)
     for lmax in lmaxs:
@@ -436,21 +458,21 @@ def TEST_lmax_loop_long_line():
     plt.suptitle(f"{title_spec} at equator (m) vs Longitude; loop lmax")
     plt.legend()
 
-    
+
 def TEST_lmax_loop_lat_line():
     """ plots the geoid height at the equator, around the world """
     plt.figure()
     plt.clf()
     plt.grid(True)
     
-#    HC, HS = imp.Fetch_Coef("full")
-#    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")    
-    lmax_topo = 10
+    HC, HS = imp.Fetch_Coef()
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef()    
+#    lmax_topo = 10
 
-    lmaxs = [155]
+#    lmaxs = [155]
 #    lmaxs = np.arange(5, 180, 10)
 #    lmaxs = np.array([5, 15, 35, 60, 150, 600])
-#    lmaxs = np.arange(1, 25, 3)
+    lmaxs = np.arange(1, 25, 3)
     for lmax in lmaxs:
         Long =  80
         Lats = np.linspace(0, pi, 91)
@@ -462,8 +484,8 @@ def TEST_lmax_loop_lat_line():
 #            print(f"\tmaking lat = {(90-Lat*180/pi):0.2f}")
             R = gmath.Get_Ellipsoid_Radius(Lat)
             
-#            Geo_H[i] = Get_acceleration   (R, Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Acceleration"
-            Geo_H[i] = Get_Topo_Height   (R, Lat, pi/180 *Long,    lmax, HC_topo, HS_topo); title_spec="Topography height"
+            Geo_H[i] = Get_acceleration2 (R, Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Acceleration"
+#            Geo_H[i] = Get_Topo_Height   (R, Lat, pi/180 *Long,    lmax, HC_topo, HS_topo); title_spec="Topography height"
 #            Geo_H[i] = Get_Geo_Pot       (R, Lat, pi/180 *Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="GeoPot"
 #            Geo_H[i] = Get_Geoid_Height  (R, Lat, pi/180 *Long,    lmax, HC, HS); title_spec="Geoid height"
 #            Geo_H[i] = Get_Geoid_Height2 (R, Lat, pi/180 *Long,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo); title_spec="Geoid height"
@@ -471,11 +493,11 @@ def TEST_lmax_loop_lat_line():
         Lats = (pi/2-Lats) * 180/pi
         plt.plot(Lats, Geo_H, label=f"lx={lmax}")
     
-    plt.suptitle(f"{title_spec} at equator (m) vs Latitude; loop lmax")
+    plt.suptitle(f"{title_spec} at long{Long} vs Latitude; loop lmax")
     plt.legend()
     return Geo_H
-    
- 
+
+
 def Get_isopot_average ():
     """ Returns the geopotential average at the surface of the ellipsoid """
 #    HC, HS = imp.Fetch_Coef()
@@ -523,12 +545,12 @@ def TEST_Cosine_corr():
     
 
 def TEST_high_lmax():
-#    HC, HS = imp.Fetch_Coef("full")
-#    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")   
+    HC, HS = imp.Fetch_Coef("full")
+    HC_topo, HS_topo = imp.Fetch_Topo_Coef("full")   
     lmax =154
     Lat = 60
     Long = 60
-    lmax_topo = 10
+#    lmax_topo = 10
     
     theta, phi = conv.lola2thph(Lat,Long)
     R = gmath.Get_Ellipsoid_Radius(Lat)    
@@ -550,13 +572,13 @@ def TEST_gen_grid():
     FIG = plt.figure()
     AX = FIG.add_subplot("111")    
     data = AX.contourf(G_theta, G_phi, G_Grid)
-    CBAR = plt.colorbar(mappable=data, ax=AX)
+    _ = plt.colorbar(mappable=data, ax=AX)
     return G_theta, G_phi, G_Grid
 def void(r, phi, theta):
     return 0
 
 
-def TEST_ellipso_corr():
+def TEST_ellipsoid_corr():
     """
     replace range(0, l+1) by (0, 1) in m loop of Get_Geoid_Height 
     replace if(tens==0): statement in of init_grid
@@ -581,7 +603,7 @@ def TEST_ellipso_corr():
 #    FIG, AX = emap.Make_Map(limits=limits)#proj = ccrs.Mollweide)
 #    CBAR = emap.Plot_contourf(G_Grid, G_Long, G_Lat, AX)        
     FIG, AX = emap.Make_Map_3D()
-    CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX)  
+    _ = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX)  
     AX.set_zlabel("Geoid Height (m)",rotation=90) 
     plt.title("Ellipsoid removal residual")
     return c_cos, G_Grid
@@ -595,15 +617,15 @@ def TEST_ellipso_corr():
 if __name__ == '__main__':
     
 #    TEST_plotGeoPot_radius()
-#    g = TEST_lmax_loop_lat_line()
-#    TEST_lmax_loop_long_line()
+    g = TEST_lmax_loop_lat_line()
+#    g = TEST_lmax_loop_long_line()
 #    TEST_Get_isopot () 
 #    TEST_Cosine_corr()
     
 #    val = TEST_high_lmax()
     
 #    th, ph, gr = TEST_gen_grid()
-#    cc, gg = TEST_ellipso_corr()
+#    cc, gg = TEST_ellipsoid_corr()
     
     
     print("\nGH_harmonics done")
