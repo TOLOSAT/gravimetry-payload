@@ -8,6 +8,15 @@
     The purpose of this script is to display various graphs and maps about
     Topography coefficients
 
+    Generally used variables: 
+        
+        lmax   = maximum degree to calculate to for the geopotantial
+        HC, HS = Geopotential stokes coefficients
+        lmax_topo, HC_topo, HS_topo = same, but for topography. 
+        
+        limits = [Western_long, Eastern_long, Southern_lat, Northern_lat]
+        mins = The grid resolution in arc minutes
+
 # =============================================================================
 """
 # =============================================================================

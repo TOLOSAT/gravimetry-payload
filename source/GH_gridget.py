@@ -11,6 +11,21 @@ c     MODIFIED FOR CORNER-CELL REGISTRATION       SIMON HOLMES, MAY 2008
 c     MUTLI-OUTPUT OPTION                         SIMON HOLMES, MAY 2008
 #     TRANSLATION INTO PYTHON              XAVIER DE LABRIOLLE, MAY 2020
 c-----------------------------------------------------------------------
+
+# =============================================================================
+Information:
+    This code needs the source file in raw binary fortran record format, caled:
+        Und_min1x1_egm2008_isw=82_WGS84_TideFree_SE
+    
+    It can be downloaded at these two links:
+        https://earth-info.nga.mil/GandG///wgs84/gravitymod/egm2008/egm08_wgs84.html
+        https://drive.google.com/drive/folders/1XgGn2QoFGJ-u_m4aoL2No-PmxIRraLg6
+    
+    The latter (Google Drive) must be substantially faster than from the NGA 
+    servers. It must be decompressed, obviously.
+
+# =============================================================================
+
 """
 # LIBRARIES
 import numpy as np
