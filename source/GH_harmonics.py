@@ -58,27 +58,6 @@ import GH_earthMap     as emap
 # =============================================================================
 # FUNCTIONS TO GENERATE DATA ARRAYs
 # =============================================================================
-def init_grid2 (tens=0, limits=np.array([-180, 180, -90, 90])):
-    """
-    Initiates the grid variables based on the number of points wanted
-    within the given limits
-    """
-    if (tens <= 0):
-        size_long = 5
-        size_lat  = 5
-    else:
-        size_long = 1 + 36*tens
-        size_lat  = 1 + 18*tens
-    
-    dim = limits * pi/180
-    Line_theta = np.linspace(dim[0], dim[1], size_long)
-    Line_phi  = np.linspace(dim[2], dim[3], size_lat)
-    
-    G_theta, G_phi = np.meshgrid(Line_theta, Line_phi)
-    G_Grid = np.zeros((size_lat, size_long))
-    
-    return G_Grid, G_theta, G_phi
-
 def init_grid (mins=0, limits=np.array([-180, 180, -90, 90])):
     """
     Initiates the grid variables based on the number of points wanted

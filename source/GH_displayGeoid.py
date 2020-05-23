@@ -202,7 +202,7 @@ def Map_Geoid_grid(detail="grid geoid l100", title="Geoid undulation High resolu
 # =============================================================================
 def TEST_Map_Geoid():
     """  plots a quick geoid undulation map """
-    HC, HS = imp.Fetch_Coef("full")
+    HC, HS = imp.Fetch_Coef("full4")
     lmax = 10; mins = 600; levels = 70; 
     title = f"Map of Geoid undulation"
     fig = Map_Geoid(mins, levels, title, lmax, HC, HS)
@@ -236,17 +236,17 @@ if __name__ == '__main__':
     
 #    TEST_Map_isoPot()
     
-#    TEST_Map_Geoid()
+    TEST_Map_Geoid()
     
-    gx, LLx, llx = Map_Geoid_grid("grid geoid l100", "GH3 geoid")
-    gf, LLf, llf = Map_Geoid_grid("EGM2008 1h",         "F77 geoid")
-#    gf, _,  _  = Map_Geoid_HR("EGM2008 edge",      "fortran  geoid")
-    
-    '''
-    FIG, AX= emap.Make_Map()
-    emap.Plot_contourf(gx - gf, LLx, llx, AX, map_color="seismic")
-    plt.title("Difference between GH3 and F77 geoid interpretations")
-    '''
+#    gx, LLx, llx = Map_Geoid_grid("grid geoid l100", "GH3 geoid")
+#    gf, LLf, llf = Map_Geoid_grid("EGM2008 1h",         "F77 geoid")
+##    gf, _,  _  = Map_Geoid_HR("EGM2008 edge",      "fortran  geoid")
+#    
+#    '''
+#    FIG, AX= emap.Make_Map()
+#    emap.Plot_contourf(gx - gf, LLx, llx, AX, map_color="seismic")
+#    plt.title("Difference between GH3 and F77 geoid interpretations")
+#    '''
     
     
     print("\nGH_displayGeoid done")
