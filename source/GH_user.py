@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
     """ plotting maps of geoids """
     lmax_topo = 15
-    mins = 1
+    mins = 10
     levels = 35
 
     """ save the plots and coefficients """

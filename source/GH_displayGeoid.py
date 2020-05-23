@@ -15,10 +15,9 @@
         lmax_topo, HC_topo, HS_topo = same, but for topography. 
         
         limits = [Western_long, Eastern_long, Southern_lat, Northern_lat]
-        tens = how large the grid should be - look at init_grid() to understand
-        
-        
-        
+        mins = The grid resolution in arc minutes
+
+
 # =============================================================================
 """
 # =============================================================================
@@ -97,10 +96,10 @@ def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
 # MAPPING FUNCTIONS
 # =============================================================================
 
-def Map_Geoid (tens, levels, title,    lmax, HC, HS, limits=np.array([-180,180,-90,90])):
+def Map_Geoid (mins, levels, title,    lmax, HC, HS, limits=np.array([-180,180,-90,90])):
     """ Makes a Matplotlib figure with the map, geoid and labels """
     # Get the data
-    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geoid_Height, 
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (mins, harm.Get_Geoid_Height, 
                                            [lmax, HC, HS], 
                                            limits)
     # save grid
@@ -124,10 +123,10 @@ def Map_Geoid (tens, levels, title,    lmax, HC, HS, limits=np.array([-180,180,-
     return FIG, [G_Grid, G_Long, G_Lat]
 
 
-def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
+def Map_GeoPot (mins, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
     """ Makes a Matplotlib figure with the map, geopotential and labels """
     # Get the data
-    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_Geo_Pot, 
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (mins, harm.Get_Geo_Pot, 
                                            [lmax, HC, HS, lmax_topo, HC_topo, HS_topo], 
                                            limits)
     # Make a map
@@ -146,10 +145,10 @@ def Map_GeoPot (tens, levels, title,    lmax, HC, HS, lmax_topo, HC_topo, HS_top
     return FIG, [G_Grid, G_Long, G_Lat]
 
 
-def Map_isoPot (tens, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
+def Map_isoPot (mins, levels, title,     W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo, limits=np.array([-180,180,-90,90])):
     """ Makes a Matplotlib figure with the map, isopotential and labels """
     # Get the data
-    G_Grid, G_Long, G_Lat = harm.Gen_Grid (tens, harm.Get_isopot, 
+    G_Grid, G_Long, G_Lat = harm.Gen_Grid (mins, harm.Get_isopot, 
                                            [W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo], 
                                            limits)
     # Make a map    
@@ -204,18 +203,18 @@ def Map_Geoid_grid(detail="grid geoid l100", title="Geoid undulation High resolu
 def TEST_Map_Geoid():
     """  plots a quick geoid undulation map """
     HC, HS = imp.Fetch_Coef("full")
-    lmax = 10; tens = 1; levels = 70; 
+    lmax = 10; mins = 600; levels = 70; 
     title = f"Map of Geoid undulation"
-    fig = Map_Geoid(tens, levels, title, lmax, HC, HS)
+    fig = Map_Geoid(mins, levels, title, lmax, HC, HS)
 #    exp.Store_Figure(fig.number, f"test geoid", dpi=1000)
 
 def TEST_Map_GeoPot():
     """ plots a quick geopotential map """
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 10; lmax_topo = 10; tens = 1; levels = 50 
+    lmax = 10; lmax_topo = 10; mins = 600; levels = 50 
     title = f"TEST map of GeoPotential"
-    _ = Map_GeoPot(tens, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+    _ = Map_GeoPot(mins, levels, title, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
 
 
 def TEST_Map_isoPot():
@@ -223,9 +222,9 @@ def TEST_Map_isoPot():
     W_0 = harm.Get_isopot_average() 
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax = 5; lmax_topo = 5; tens = 1; levels = 50
+    lmax = 5; lmax_topo = 5; mins = 600; levels = 50
     title = f"TEST map of isopotential W_0={W_0:.2f} m^2/s^2"
-    _ = Map_isoPot(tens, levels, title, W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
+    _ = Map_isoPot(mins, levels, title, W_0, lmax, HC, HS, lmax_topo, HC_topo, HS_topo)
    
     
     

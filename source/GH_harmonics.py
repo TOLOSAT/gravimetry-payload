@@ -23,7 +23,7 @@
         lmax_topo, HC_topo, HS_topo = same, but for topography. 
         
         limits = [Western_long, Eastern_long, Southern_lat, Northern_lat]
-        tens = how large the grid should be - look at init_grid() to understand
+        mins = The grid resolution in arc minutes
 
 debug:
     the Sph Harm canot be computed for degrees above 154. 
@@ -58,7 +58,7 @@ import GH_earthMap     as emap
 # =============================================================================
 # FUNCTIONS TO GENERATE DATA ARRAYs
 # =============================================================================
-def init_grid (tens=0, limits=np.array([-180, 180, -90, 90])):
+def init_grid2 (tens=0, limits=np.array([-180, 180, -90, 90])):
     """
     Initiates the grid variables based on the number of points wanted
     within the given limits
@@ -79,7 +79,7 @@ def init_grid (tens=0, limits=np.array([-180, 180, -90, 90])):
     
     return G_Grid, G_theta, G_phi
 
-def init_grid2 (mins=0, limits=np.array([-180, 180, -90, 90])):
+def init_grid (mins=0, limits=np.array([-180, 180, -90, 90])):
     """
     Initiates the grid variables based on the number of points wanted
     within the given limits
@@ -110,7 +110,7 @@ def Gen_Grid (mins, Get_FUNCTION, in_args, limits=np.array([-180, 180, -90, 90])
     This function generates a grid of the desired spherical harmonic model
     at Lat/Long coordinates
     Input: 
-        tens: how large the array should be
+        mins: hthe grid resolution in arc minutes
         Get_FUNCTION: the callable function that must be used
         *in_args: the arguments to the callable function besides R, phi, theta
         limits: the geographical limits to the Long/lat map 
@@ -383,6 +383,22 @@ def Cosine_Correction (N):
 # =============================================================================
 # TEST FUNCTIONS
 # =============================================================================    
+def TEST_gen_grid():
+    mins = 600
+    limits = np.array([-180, 180, -90, 90])
+    
+#    G_Grid, G_theta, G_phi = init_grid(mins, limits)
+    G_Grid, G_theta, G_phi =  Gen_Grid(mins, void, [], limits)
+    
+    FIG = plt.figure()
+    AX = FIG.add_subplot("111")    
+    data = AX.contourf(G_theta, G_phi, G_Grid)
+    _ = plt.colorbar(mappable=data, ax=AX)
+    return G_theta, G_phi, G_Grid
+def void(r, phi, theta):
+    return 0
+
+
 def Math_calc_geopot_basic(z):
     """ some function needed in TEST_plot_radius """
     G = 6.673E-11
@@ -503,12 +519,12 @@ def Get_isopot_average ():
 #    HC, HS = imp.Fetch_Coef()
 #    HC_topo, HS_topo = imp.Fetch_Topo_Coef() 
 #    
-#    lmax_av = 29; lmax_topo_av = 48; tens_av = 10
-#    Grid, _, _ = Gen_Grid (tens_av, Get_Geo_Pot, [lmax_av, HC, HS, lmax_topo_av, HC_topo, HS_topo])
+#    lmax_av = 29; lmax_topo_av = 48; mins_av = 10
+#    Grid, _, _ = Gen_Grid (mins_av, Get_Geo_Pot, [lmax_av, HC, HS, lmax_topo_av, HC_topo, HS_topo])
 #    mm = np.amin(Grid)
 #    MM = np.amax(Grid)
 #    W_0 = np.average(Grid)   
-#    print(f"lmax_av = {lmax_av}; lmax_topo_av={lmax_topo_av}; tens={tens_av}; \n\tmm={mm}; \n\tMM={MM}; \n\tW_0={W_0}")   
+#    print(f"lmax_av = {lmax_av}; lmax_topo_av={lmax_topo_av}; mins={mins_av}; \n\tmm={mm}; \n\tMM={MM}; \n\tW_0={W_0}")   
 #  
 #    mm=62499132.77072437
 #    MM=62680791.364166744 
@@ -560,28 +576,12 @@ def TEST_high_lmax():
 #    val = Get_Geoid_Height  (R, phi, theta, lmax, HC, HS)
     
     return val 
-    
-    
-def TEST_gen_grid():
-    tens = 1
-    limits = np.array([-180, 180, -90, 90])
-    
-#    G_Grid, G_theta, G_phi = init_grid(tens, limits)
-    G_Grid, G_theta, G_phi =  Gen_Grid(tens, void, [], limits)
-    
-    FIG = plt.figure()
-    AX = FIG.add_subplot("111")    
-    data = AX.contourf(G_theta, G_phi, G_Grid)
-    _ = plt.colorbar(mappable=data, ax=AX)
-    return G_theta, G_phi, G_Grid
-def void(r, phi, theta):
-    return 0
 
 
 def TEST_ellipsoid_corr():
     """
     replace range(0, l+1) by (0, 1) in m loop of Get_Geoid_Height 
-    replace if(tens==0): statement in of init_grid
+    replace if(mins<=0): statement in of init_grid
     """
     HC, HS = imp.Fetch_Coef()
     lmax = 29
@@ -593,10 +593,10 @@ def TEST_ellipsoid_corr():
         if (i%2==0): c_cos[i, 0] = Cosine_Correction(i)
         
     
-    tens = 0
+    mins = 0
     limits = np.array([-180, 180, -90, 90])
     
-    G_Grid, G_Long, G_Lat =  Gen_Grid (tens, Get_Geoid_Height, 
+    G_Grid, G_Long, G_Lat =  Gen_Grid (mins, Get_Geoid_Height, 
 #                                        [lmax, c_cos, c_sin], 
                                         [lmax, HC, HS],
                                          limits)        
