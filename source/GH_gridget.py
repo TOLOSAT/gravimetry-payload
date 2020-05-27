@@ -32,6 +32,7 @@ import numpy as np
 from scipy.io import FortranFile
 
 import GH_import as imp
+import GH_export as exp
 
 # GLOBAL VARIABLES
 line_5000 = "#" +"-" * 60
@@ -211,4 +212,10 @@ if (__name__ == "__main__"):
     print(line_5000)
     print("\t Normal Termination")
     print(line_5000)
+
     """
+    exp.Store_temp_GLl(G_Grid, G_Long, G_Lat, "Sulawesi")
+    """
+
+
+

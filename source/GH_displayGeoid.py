@@ -236,11 +236,14 @@ if __name__ == '__main__':
     
 #    TEST_Map_isoPot()
     
-    TEST_Map_Geoid()
+#    TEST_Map_Geoid()
+    
+    
+    gx, LLx, llx = Map_Geoid_grid("Sulawesi", "Geoid undulation (Sulawesi)")
+    
     
 #    gx, LLx, llx = Map_Geoid_grid("grid geoid l100", "GH3 geoid")
 #    gf, LLf, llf = Map_Geoid_grid("EGM2008 1h",         "F77 geoid")
-##    gf, _,  _  = Map_Geoid_HR("EGM2008 edge",      "fortran  geoid")
 #    
 #    '''
 #    FIG, AX= emap.Make_Map()

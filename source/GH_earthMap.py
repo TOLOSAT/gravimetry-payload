@@ -246,10 +246,11 @@ if __name__ == '__main__':
     
 #    limits= np.array([-180, 180, -90, 90])          # WORLD
 #    limits= np.array([-7, 15, 40, 54])              # CHANNEL
-    limits= np.array([-25, 30, 15, 65])             # WC EUROPE AND NW AFRICA
+#    limits= np.array([-25, 30, 15, 65])             # WC EUROPE AND NW AFRICA
 #    limits= np.array([100, 170, -50, 10])           # AUSTRALIA
 #    limits= np.array([-180, 180, -90, -40])         # ANTARCTICA
-    Make_Map(proj=ccrs.Mollweide, limits=limits)
+    limits= np.array([115, 140, -15, 5])         # SULAWESI
+    Make_Map(limits=limits)
     
 #    Make_Map_3D()
     
