@@ -5,7 +5,7 @@
 # =============================================================================
  Information:
 
-    The purpose of this script is to generate data arrays for satellite 
+    The purpose of this script is to generate data arrays for satellite
     trajectory
 
 # =============================================================================
@@ -47,7 +47,6 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
         Pos: line
     Output:
         Acc_sim: simulated acceleration values in spherical coordinates
-
     """
     print("Generating simulated acclerations, lmax =", lmax, "")
 

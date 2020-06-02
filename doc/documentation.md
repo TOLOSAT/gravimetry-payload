@@ -1,6 +1,6 @@
-# ==== Grav Harm 3 ====
+<p class="text-center"> # ==== Grav Harm 3 ====
 
-
+<p class="text-justify">
 ## About this tool
 This tool has been developped to strengthen our claims, here at the TOLOSAT Gravimetry Payload, for phases A and B of this CubeSat mission. I have late-night-baptized this tool:
 __"Grav Harm 3"__
@@ -82,7 +82,7 @@ The reference ellipsoid is removed from the model, but some residual height (<8m
 The NGA (mentioned above) also provides 1'x1' (minute) solution maps in binary format, along with the associated Fortran code to extract sub-grids. Extrapolation is also possible. The 'sub-grid-extracting' code was re-written in python by Xavier C. de Labriolle, with the choice of sample step as a new feature (input the desired minutes between points). This code is in the ["GH_gridget.py"](source/GH_gridget.py) script. These maps have theoretically been computed up to a degree/order of 2160, but no evidence to suppport that has currently been found. 
 
 The result of the import can result in this type of resolution: 
-<img src="images/gridget_sulawesi.png" width="600">
+<img src="images/gridget_sulawesi.png" width="400">
 
 
 ## Sources and material

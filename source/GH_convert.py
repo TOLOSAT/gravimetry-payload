@@ -34,31 +34,36 @@ from numpy import pi, sin, cos
 # FUNCTIONS FOR COORDINATES MANIPULATION
 # =============================================================================
 def thph2lola (theta, phi):
-    """ converts radians to geographical long/lat (geodetic) """
+    """ converts radians to geographical long/lat (geodetic)
+    """
     Lat = (pi/2 - theta) * 180/pi
     Long = (phi - pi) * 180/pi
     return Long, Lat
 def lola2thph (Lat, Long):
-    """ converts geographical long/lat to radians """
+    """ converts geographical long/lat to radians
+    """
     theta = pi/2 - Lat*pi/180
     phi = Long*pi/180 + pi
     return theta, phi
 
 
 def cart2sph (x,y,z):
-    """ converts carthesian coordinates to spherical """
+    """ converts carthesian coordinates to spherical
+    """
     radius    = np.sqrt(x**2 + y**2 + z**2)         # r
     elevation = np.arctan2(z, np.sqrt(x**2 + y**2)) # theta
     azimuth   = np.arctan2(y,x)                     # phi
     return radius, elevation, azimuth
-def sph2cart222 (r,theta,phi): # cannot find where and when this function was used 
-    """ converts spherical coordinates to carthesian """
+def sph2cart222 (r,theta,phi): # cannot find where and when this function was used
+    """ converts spherical coordinates to carthesian
+    """
     x=r*cos(theta)*cos(phi)
     y=r*cos(theta)*sin(phi)
     z=r*sin(theta)
     return x, y, z
-def sph2cart2 (r,theta,phi):
-    """ converts spherical coordinates to carthesian, ISO convention"""
+def sph2cart (r,theta,phi):
+    """ converts spherical coordinates to carthesian, ISO convention
+    """
     x=r*sin(theta)*sin(phi)
     y=r*sin(theta)*cos(phi)
     z=r*cos(theta)
@@ -66,30 +71,34 @@ def sph2cart2 (r,theta,phi):
 
 
 def cart2sphA (pts):
-    """ converts an array of carthesian coordinates to spherical """
+    """ converts an array of carthesian coordinates to spherical
+    """
     Pos = np.array([cart2sph(x,y,z) for x,y,z in pts])
     return Pos
 
 
 def sph2cart_Grid(G_Grid, G_Long, G_Lat):
-    """ returns the grid in a 3D x,y,z plottable format """
-    X, Y, Z = sph2cart2(G_Grid, pi/2-G_Lat*pi/180, G_Long*pi/180+pi)
+    """ returns the grid in a 3D x,y,z plottable format
+    """
+    X, Y, Z = sph2cart(G_Grid, pi/2-G_Lat*pi/180, G_Long*pi/180+pi)
     return X, Y, Z
-          
+
 
 def geodes2geocen (Lat_gd):
-    """converts geodetic (or geographic) latitude into geocentric latitude """
-    a = 6378137 # m 
-    f = 1/298.257223563  # Some constants 
+    """converts geodetic (or geographic) latitude into geocentric latitude
+    """
+    a = 6378137 # m
+    f = 1/298.257223563  # Some constants
     b = a * (1-f) # m
 #    Lat_gc = np.arctan( (b/a)**2 * np.tan(Lat_gd))
     Lat_gc = np.arctan(np.tan(Lat_gd) * (1-f)**2)
     return Lat_gc
 def geocen2geodes (Lat_gd):
-    """converts geocentric latitude into geodetic (or geographic) latitude """
+    """converts geocentric latitude into geodetic (or geographic) latitude
+    """
     f = 1/298.257223563  # ellipsoid flattening
     Lat_gc = np.arctan(np.tan(Lat_gd) / (1-f)**2)
-    return Lat_gc    
+    return Lat_gc
 
 
 
@@ -97,15 +106,13 @@ def geocen2geodes (Lat_gd):
 # FUNCTIONS FOR ARRAY MANAGEMENT
 # =============================================================================
 def Make_Line (arr):
-    """
-    Returns the array with all rows appended
+    """ Returns the array with all rows appended
     """
     return np.reshape(arr, (1, arr.size))
 
 
 def Make_Array (line, col = 3):
-    """
-    Returns the line list in an array of col columns
+    """ Returns the line list in an array of col columns
     """
     length = int(len(line)/col)
     arr = np.reshape(line, (length, col))
@@ -184,8 +191,7 @@ def Make_Line_Coef (lmax, HC, HS):
 # =============================================================================
 
 def TEST_Line_Array ():
-    """
-    Tests the functions in this script.
+    """ Tests the functions in this script.
     """
     A = np.asarray(np.linspace(0, 19,20))
     B = Make_Array(A, 4)

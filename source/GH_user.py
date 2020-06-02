@@ -27,7 +27,7 @@
 
 todo: replace "acc" by "geopot" lol
 
-future stuff: 
+future stuff:
     earth rotation
     approx drag and shit (solar radiation, tidal effects)
 # =============================================================================
@@ -66,21 +66,20 @@ if __name__ == '__main__':
     """ THE THINGS YOU CAN CHANGE AS A USER """
 
     """ The original satellite path """
-    #file_name = "ISS_Earthfixed_1jour_1sec.e"
-    #file_name = "ISS_Earthfixed_1jour_60sec.e"
-#    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
-    #file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
+    # file_name = "ISS_Earthfixed_1jour_1sec.e"
+    # file_name = "ISS_Earthfixed_1jour_60sec.e"
+    # file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
+    # file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
     file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
-    days = 0.001
+    days = 0.1
 
     """ data solving """
-    lmax_gen = 5 # when generating the data
-
-    lmax_solve = 3  # when solving for coefficients
+    lmax_gen   = 5 # when generating the data
+    lmax_solve = 5  # when solving for coefficients
 
     """ plotting maps of geoids """
-    lmax_topo = 15
-    mins = 10
+    lmax_topo = 5
+    mins = 600
     levels = 35
 
     """ save the plots and coefficients """
@@ -95,7 +94,7 @@ if __name__ == '__main__':
 
     HC, HS = imp.Fetch_Coef()
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    
+
     Pos_sim, Time = imp.Fetch_Pos(file_name, days)
     Acc_sim = gen.Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
 
@@ -110,7 +109,7 @@ if __name__ == '__main__':
 #%% # plotting path simulation
     title0 = f"Source path to generation"
     FIG_PATH = dsat.Plot2D_PosEarthfixed(Pos_sim, title0)
-    
+
     title1 = f"Simulated and solved acceleration"
     component = 0 #0, 1, 2 : r, theta, phi
     FIG_ACC = dsat.Plot_Acc_Sim_Solv(Time, Acc_sim, Acc_solved_sim, component, title1)
@@ -118,7 +117,7 @@ if __name__ == '__main__':
 #     Mapping the coefficients
     title2 = f"Map of original geopotential"
     MAP_GEN = dgeo.Map_Geoid(mins, levels, title2, lmax_gen,   HC,     HS    )
-    
+
     title3 = f"Map of solved geopotential"
     MAP_SIM = dgeo.Map_Geoid(mins, levels, title3, lmax_solve, HC_sim, HS_sim)
 

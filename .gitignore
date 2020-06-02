@@ -1,3 +1,4 @@
+# add files to ignore their import to github
 data 
 desktop
 __pycache__
@@ -6,3 +7,4 @@ discontinued
 Rendered
 Documentation
 temp
+.spyproject
