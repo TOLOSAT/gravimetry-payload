@@ -8,7 +8,7 @@
     The purpose of this script is to display various graphs and maps about
     Satellite trajectories
 
-topo: implement earth rotation. precession ? 
+topo: implement earth rotation. precession ?
 # =============================================================================
 """
 # =============================================================================
@@ -130,6 +130,57 @@ def Plot_Acc_Sim_Solv (Time, Acc_sim, Acc_solved, component, title):
 
     plt.legend()
     plt.show(block=False)
+
+    return FIG
+
+
+def Plot_pos_spe_acc(Pos, Spe, Acc, Time):
+    """ Makes a 3x3 set of plots to show all axes of position, speed, and acceleration
+    """
+    FIG = plt.figure(figsize=(12,5))
+
+    # r
+    AX1 = FIG.add_subplot(331)
+    plt.plot(Time[:], Pos[:,0], "b")
+    plt.title("Altitude ")
+    plt.ylabel("r (km)")
+    AX1.set_xticklabels('')
+
+    AX2 = FIG.add_subplot(332)
+    plt.plot(Time[0:-1], Spe[:,0], "g")
+    plt.title("Speed ")
+    AX2.set_xticklabels('')
+
+    AX3 = FIG.add_subplot(333)
+    plt.plot(Time[0:-2], Acc[:,0], "r")
+    plt.title("Acceleration")
+    AX3.set_xticklabels('')
+
+    # theta
+    AX4 = FIG.add_subplot(334)
+    plt.plot(Time[:], Pos[:,1], "b")
+    plt.ylabel("theta")
+    AX4.set_xticklabels('')
+
+    AX5 = FIG.add_subplot(335)
+    plt.plot(Time[0:-1], Spe[:,1], "g")
+    AX5.set_xticklabels('')
+
+    AX6 = FIG.add_subplot(336)
+    plt.plot(Time[0:-2], Acc[:,1], "r")
+    AX6.set_xticklabels('')
+
+    # phi
+    AX7 = FIG.add_subplot(337)
+    plt.plot(Time[:], Pos[:,2], "b")
+    plt.ylabel("phi")
+
+    AX8 = FIG.add_subplot(338)
+    plt.plot(Time[0:-1], Spe[:,2], "g")
+    plt.xlabel("time (s)")
+
+    AX9 = FIG.add_subplot(339)
+    plt.plot(Time[0:-2], Acc[:,2], "r")
 
     return FIG
 

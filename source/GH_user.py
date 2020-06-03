@@ -96,11 +96,12 @@ if __name__ == '__main__':
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
 
     Pos_sim, Time = imp.Fetch_Pos(file_name, days)
-    Acc_sim = gen.Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
+    # Acc_sim = gen.Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
+    Acc_sim, _ = gen.Gen_Acc(Pos_sim, Time)
 
 
 #%% # Do math...
-    Solved_coef_sim, Acc_solved_sim = solv.Solve_Coef(lmax_solve, Pos_sim, Acc_sim)
+    Solved_coef_sim, Acc_solved_sim = solv.Solve_Coef(lmax_solve, Pos_sim, Acc_sim.T)
     HC_sim, HS_sim = conv.Make_Array_Coef(lmax_solve, Solved_coef_sim)
 
     Acc_solved_sim = conv.Make_Array(Acc_solved_sim[:-2]) # this "-2" must be replaced with a modulo function to get the highest number thats a multiple of 3, AND smaller than the length of the array

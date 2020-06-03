@@ -5,8 +5,8 @@
 # =============================================================================
  Information:
 
-    The functions in this script all regard matters related to matplotlib 
-    figures and cartopy maps. This script replaces previous works done with the 
+    The functions in this script all regard matters related to matplotlib
+    figures and cartopy maps. This script replaces previous works done with the
     discontinued Basemap library.
 
 # =============================================================================
@@ -44,8 +44,8 @@ import GH_convert      as conv
 # SETUP
 # =============================================================================
 colors.DivergingNorm(vmin=-10000, vcenter=0., vmax=10000)
-    
-    
+
+
 # =============================================================================
 # FIGURE FUNCTIONS
 # =============================================================================
@@ -53,7 +53,7 @@ def Make_Map_Fig (proj, fignum, ax_pos, shape, limits):
     """ Generates a mpl figure with the wanted coordiates system projection """
     FIG = plt.figure(*fignum, figsize=shape)
     AX = FIG.add_subplot(ax_pos, projection=proj(central_longitude=0))
-    AX.set_extent(limits, crs=ccrs.PlateCarree()) 
+    AX.set_extent(limits, crs=ccrs.PlateCarree())
     plt.show(block=False)
     return FIG, AX
 
@@ -74,68 +74,68 @@ def Make_Map_3D (fignum=[], ax_pos=111, shape=(7,5) ):
     return FIG, AX
 
 
-   
+
 # =============================================================================
 # PLOT FUNCTIONS
 # =============================================================================
 def Plot_contourf(G_Grid, G_Long, G_Lat, AX=0, levels=75, proj=ccrs.PlateCarree, map_color="jet"):
     """
-    Display of G_Grid, with coordinates G_Long and G_Lat 
+    Display of G_Grid, with coordinates G_Long and G_Lat
     map_colors = ["jet", "terrain", "gist_earth"]
     """
     if (AX==0): AX = plt.gca()
     alpha = 1
-    
+
     data = AX.contourf(G_Long, G_Lat, G_Grid,
                        levels = levels, alpha = alpha,
                        transform = proj(), cmap=plt.get_cmap(map_color))
-    CBAR = plt.colorbar(mappable=data, ax=AX, cmap=plt.get_cmap(map_color), 
-                        orientation='horizontal', pad=0.10)    
+    CBAR = plt.colorbar(mappable=data, ax=AX, cmap=plt.get_cmap(map_color),
+                        orientation='horizontal', pad=0.10)
     return CBAR
 
 
 def Plot_surface (G_Grid, G_Long, G_Lat, AX=0, map_color="jet"):
     """
-    3D Display of G_Grid surface, with coordinates G_Long and G_Lat 
+    3D Display of G_Grid surface, with coordinates G_Long and G_Lat
     map_colors = ["jet", "terrain", "gist_earth"]
     """
     if (AX==0): AX = plt.gca()
     alpha = 1
-    
-    data = AX.plot_surface(G_Long, G_Lat, G_Grid, 
+
+    data = AX.plot_surface(G_Long, G_Lat, G_Grid,
                            alpha = alpha, antialiased=False,
                            cmap=plt.get_cmap(map_color))
     AX.set_xlabel("Longitude",rotation=90)
     AX.set_ylabel("Latitude",rotation=90)
-    CBAR = plt.colorbar(mappable=data, ax=AX, cmap=plt.get_cmap(map_color), 
-                        orientation='horizontal', pad=0.10)    
+    CBAR = plt.colorbar(mappable=data, ax=AX, cmap=plt.get_cmap(map_color),
+                        orientation='horizontal', pad=0.10)
     return CBAR
 
 
 def Plot_surface_3D (G_Grid, G_Long, G_Lat, AX=0, ratio=0.15, map_color="jet"):
     """
-    Ball representation of G_Grid + radius, with coordinates G_Long and G_Lat 
+    Ball representation of G_Grid + radius, with coordinates G_Long and G_Lat
     map_colors = ["jet", "terrain", "gist_earth"]
     ratio=0: sphere earth. ratio = 1: chaos earth
     """
     if (AX==0): AX = plt.gca()
     AX.figure.set_size_inches((6,6))
-    
+
     ranges = abs(G_Grid.max() - G_Grid.min())
     R = (G_Grid - G_Grid.min())*ratio + ranges*(1-ratio)
-    X, Y, Z = conv.sph2cart_Grid(R, G_Long, G_Lat) #G_Grid + 
+    X, Y, Z = conv.sph2cart_Grid(R, G_Long, G_Lat) #G_Grid +
     norm = colors.Normalize()
     cmap = cm.get_cmap(map_color)
     m = cm.ScalarMappable(cmap=cmap)
     AX.plot_surface(X, Y, Z, rstride=1, cstride=1, facecolors=cmap(norm(G_Grid)) )
     m.set_array(G_Grid)
-    
+
     Add_white_box(AX, X, Y, Z)
     AX.set_xticklabels('')
     AX.set_yticklabels('')
     AX.set_zticklabels('')
 #    AX.axis('off')
-    CBAR = plt.colorbar(mappable=m, ax=AX, cmap=cmap, 
+    CBAR = plt.colorbar(mappable=m, ax=AX, cmap=cmap,
                         orientation='horizontal', pad=-0.10)
     return CBAR
 
@@ -162,7 +162,7 @@ def Add_Gridlines(AX, proj=ccrs.PlateCarree):
     if (proj != ccrs.PlateCarree):
         AX.gridlines(color="gray", alpha=0.4)
     else:
-        GL = AX.gridlines(crs=proj(), draw_labels=True, linewidth=1, 
+        GL = AX.gridlines(crs=proj(), draw_labels=True, linewidth=1,
                           color='gray', alpha=0.4, linestyle='--')
         GL.xlabels_top = False
         GL.ylabels_left = False
@@ -199,7 +199,7 @@ def get_limits(G_Long, G_Lat):
 # =============================================================================
 def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
     """
-    Creates a Matplotlib figure with a map of the Earth, colored continents 
+    Creates a Matplotlib figure with a map of the Earth, colored continents
     and oceans, showing parallels and meridians
     """
     FIG = plt.figure(figsize=(11,4))
@@ -207,52 +207,52 @@ def Map_Earth ():  #proj_crs=ccrs.Mollweide ):
     limits=np.array([0,180,0,90])
     FIG, AX1 = Make_Map_Fig(ccrs.Mollweide,   [FIG.number], 121, (11,4), limits)
     FIG, AX2 = Make_Map_Fig(ccrs.PlateCarree, [FIG.number], 122, (11,4), limits)
- 
-    plt.suptitle("Maps of the Earth - The endless possibilities of Cartopy")        
+
+    plt.suptitle("Maps of the Earth - The endless possibilities of Cartopy")
     plt.show(block=False)
-    
+
     # =========================================================================
     plt.axes(AX1)
     plt.title("Mollweide projection, stock_img", fontsize=10)
-    AX1.set_global() 
+    AX1.set_global()
     AX1.gridlines()
     AX1.coastlines(linewidth = 1.5)
-    AX1.stock_img()
+    # AX1.stock_img()
 
     # =========================================================================
     plt.axes(AX2)
     plt.title("PlateCarree projection, LAND & OCEAN(110m) COASTLINE(50m) features", fontsize=10)
     AX2.set_extent([-7, 4, 47, 54], crs=ccrs.PlateCarree())
-    Add_Gridlines(AX2)    
+    Add_Gridlines(AX2)
     Add_Credits(AX1)
-    
+
     water_color = "lightcyan"
     land_color = "peachpuff"
     AX2.add_feature(cfeature.LAND, facecolor = land_color)
     AX2.add_feature(cfeature.OCEAN, facecolor = water_color)
-    
-    high_res_coastline = cfeature.NaturalEarthFeature(
-            category = "physical", name = "coastline", scale='50m')
-    AX2.add_feature(high_res_coastline, edgecolor = "black", facecolor = "None", linewidth = 0.6)
 
-    
+    # high_res_coastline = cfeature.NaturalEarthFeature(
+    #         category = "physical", name = "coastline", scale='50m')
+    # AX2.add_feature(high_res_coastline, edgecolor = "black", facecolor = "None", linewidth = 0.6)
+
+
 
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-#    Map_Earth()
-    
-    
-#    limits= np.array([-180, 180, -90, 90])          # WORLD
-#    limits= np.array([-7, 15, 40, 54])              # CHANNEL
-#    limits= np.array([-25, 30, 15, 65])             # WC EUROPE AND NW AFRICA
-#    limits= np.array([100, 170, -50, 10])           # AUSTRALIA
-#    limits= np.array([-180, 180, -90, -40])         # ANTARCTICA
-    limits= np.array([115, 140, -15, 5])         # SULAWESI
-    Make_Map(limits=limits)
-    
-#    Make_Map_3D()
-    
+    Map_Earth()
+
+
+    # limits= np.array([-180, 180, -90, 90])          # WORLD
+    # limits= np.array([-7, 15, 40, 54])              # CHANNEL
+    # limits= np.array([-25, 30, 15, 65])             # WC EUROPE AND NW AFRICA
+    # limits= np.array([100, 170, -50, 10])           # AUSTRALIA
+    # limits= np.array([-180, 180, -90, -40])         # ANTARCTICA
+    # limits= np.array([115, 140, -15, 5])         # SULAWESI
+    # Make_Map(limits=limits)
+
+    # Make_Map_3D()
+
     print("\nGH_displayCoef done")
 
