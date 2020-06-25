@@ -1,5 +1,5 @@
 # ==== Grav Harm 3 ====
-<p class="text-justify"> 
+<div style="text-align: justify">
 ## About this tool
 This tool has been developped to strengthen our claims, here at the TOLOSAT Gravimetry Payload, for phases A and B of this CubeSat mission. I have late-night-baptized this tool:
 __"Grav Harm 3"__
@@ -155,4 +155,4 @@ The difference with the computed undulation can be calculated.
 * Javier Navarro Montilla
 * (Add yourselves folks)
 
-</p>
+</div>
