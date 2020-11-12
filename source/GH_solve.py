@@ -36,7 +36,7 @@ import GH_geoMath      as gmath
 # =============================================================================
 # FUNCTIONS FOR Sph Harm SOLVE
 # =============================================================================
-def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
+def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3 m):
     """
     Returns the matrix of the gravitational potential gradient.
     Watch out, it gets big fast.
@@ -55,8 +55,8 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
 
     """
     # constants
-    R = 6378136.3 # m
-    GM = 3986004.415*10**8 # m**3 s**-2
+    R = 6378.1363 # km
+    GM = 398600.4418 # km**3 s**-2
     # wiki says : gm = 6.673*10**-11*5.975*10**24 = 398711749999999.94
 
     N_points = len(Pos) # number of points
@@ -106,7 +106,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3):
     return M_PotGrad
 
 
-def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3):
+def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3 m):
     """
     Returns the matrix of the gravitational potential gradient.
     Watch out, it gets big fast.
@@ -125,8 +125,8 @@ def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3):
 
     """
     # constants
-    R = 6378136.3 # m
-    GM = 3986004.415*10**8 # m**3 s**-2
+    R = 6378.1363 # km
+    GM = 398600.4418 # km**3 s**-2
     # wiki says : gm = 6.673*10**-11*5.975*10**24 = 398711749999999.94
 
     N_points = len(Pos) # number of points
@@ -217,7 +217,7 @@ def TEST_Gen_Matrix():
     file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     days = 0.0001
     Pos, Time = imp.Fetch_Pos(file_name, days)
-    Mat = Get_PotGradMatrix(2,Pos)
+    Mat = Get_PotGradMatrix(60,Pos)
     print(Mat)
     return Mat
 
@@ -229,7 +229,7 @@ if __name__ == '__main__':
     np.set_printoptions(linewidth=np.inf, precision=2)
 
     Mat = TEST_Gen_Matrix()
-    print("\n\nnp.linalg.det(Mat.T @ Mat) =", np.linalg.det(Mat.T @ Mat))
+    #print("\n\nnp.linalg.det(Mat.T @ Mat) =", np.linalg.det(Mat.T @ Mat))
 
 
     print("\nGH_solve done\n")
