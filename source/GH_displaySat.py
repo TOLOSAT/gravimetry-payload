@@ -189,8 +189,8 @@ def Plot_pos_spe_acc(Pos, Spe, Acc, Time):
 # TEST FUNCTIONS
 # =============================================================================
 def TEST_Plots ():
-#    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
-    file_name = "ISS_EarthMJ2000Eq_15jours_60sec.e"
+    file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
+    # file_name = "ISS_EarthMJ2000Eq_15jours_60sec.e"
     days = 15
     Pos, Time = imp.Fetch_Pos(file_name, days)
     Title = f"Test_Plots: {file_name} for {days} days"
