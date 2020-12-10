@@ -7,7 +7,9 @@ from math import factorial
 
 
 def savitzky_golay(y, window_size, order, deriv=0, rate=1):
-
+    ###-----------------###
+    #Use the Savitzky-Golay method to determine the accelerations from a cloud of positions (y)
+    ###-----------------###
     order_range = range(order+1)
     half_window = (window_size -1) // 2
     # precompute coefficients
