@@ -22,13 +22,22 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     y = np.concatenate((firstvals, y, lastvals))
     return np.convolve( m[::-1], y, mode='valid')
 
+def correcRef(Pos,Vit, Acc, omegaTerre = 7292115E-11):
+    '''Corrects acceleration for coriolis and centrifugal forces in terrestrial
+    referential'''
+    AccCorrec = np.copy(Acc)
+    AccCorrec[:,0] += - 2*omegaTerre*Vit[:,1] - omegaTerre**2*Pos[:,0]
+    AccCorrec[:,1] +=   2*omegaTerre*Vit[:,0] - omegaTerre**2*Pos[:,1]
+
+    return PosCorrec
+
 
 # In[43]:
 
 
 t = np.linspace(-4, 4, 500)
-y = np.sin(t) + np.random.normal(0, 0.025, t.shape) 
-d2ysg = savitzky_golay(y, window_size=50, order=4, deriv = 2, rate = t[0] - t[1])
+y = np.sin(t) + np.random.normal(0, 0.025, t.shape)
+d2ysg = savitzky_golay(y, window_size=250, order=5, deriv = 2, rate = t[0] - t[1])
 
 import matplotlib.pyplot as plt
 plt.plot(t, y, label='Noisy signal')
