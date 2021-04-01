@@ -5,6 +5,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 from math import factorial
+from scipy.linalg import toeplitz
+
 
 import GH_import       as imp
 #import GH_convert      as conv
@@ -35,6 +37,29 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     lastvals = y[-1] + np.abs(y[-half_window-1:-1][::-1] - y[-1])
     y = np.concatenate((firstvals, y, lastvals))
     return np.convolve( m[::-1], y, mode='valid')
+
+def savitzky_golay_mat(Nmeasures, order, window_size, deriv = 0, rate = 1):
+
+    order_range = range(order+1)
+    half_window = (window_size - 1)//2
+
+    b = np.mat([[k**i for i in order_range] for k in range(-half_window, half_window+1)])
+    m = np.linalg.pinv(b).A[deriv] / (rate**deriv) * factorial(deriv)
+    print(m)
+
+    index = (half_window  + min(Nmeasures - 1,  half_window))
+
+    print(m[0:2])
+
+    M = toeplitz(np.concatenate((m[half_window : index + 1 ],np.zeros(max((0,Nmeasures - half_window - 1 ) )) )))
+
+    return M
+
+
+
+
+
+
 
 def correcRef(Pos,Vit, Acc, omegaTerre = 7292115E-11):
     '''Corrects acceleration for coriolis and centrifugal forces in terrestrial
