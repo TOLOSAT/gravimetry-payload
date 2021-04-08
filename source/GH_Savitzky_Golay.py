@@ -38,6 +38,7 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     y = np.concatenate((firstvals, y, lastvals))
     return np.convolve( m[::-1], y, mode='valid')
 
+
 def savitzky_golay_mat(Nmeasures, order, window_size, deriv = 0, rate = 1):
 
     order_range = range(order+1)

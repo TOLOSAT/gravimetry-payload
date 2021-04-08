@@ -176,6 +176,12 @@ def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3 m):
     return M_PotGrad
 
 
+def proj_ort(M,y):
+    return y - M@np.linalg.lstsq(M,y)[0]
+
+
+
+
 def Solve_Coef (lmax, Pos, Acc):
     """
     Returns the solved for coefficients to the spherical harmonic approximation
@@ -200,8 +206,8 @@ def Solve_Coef (lmax, Pos, Acc):
 
     M = Get_PotGradMatrix(lmax, Pos) # get M_PotGrad
 
-    Solved_coef = npl.solve(M.T.dot(M), M.T.dot(Acc_line.T)) #[1:]))
-#    Solved_coef = npl.solve(M, Acc_line)
+   # Solved_coef = npl.solve(M.T.dot(M), M.T.dot(Acc_line.T)) #[1:]))
+    Solved_coef = npl.lstsq(M, Acc_line)
 
     Acc_solved = M[:-1, :-1].dot(Solved_coef[:-1]) # change this "-1" to a "-3"?
 

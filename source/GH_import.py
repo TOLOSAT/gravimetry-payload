@@ -53,7 +53,7 @@ def Get_Time (format_="%Y%m%d_%H%M%S"):
 # =============================================================================
 # FUNCTIONS TO FETCH FILES
 # =============================================================================
-def Fetch_Pos (file_name, days=0.7, data_path="../data"):
+def Fetch_Pos (file_name, days=0.7, data_path="../data", spherical = True ):
     """
     Imports coordinates from file_name text file (generated from GMAT)
 
@@ -78,7 +78,10 @@ def Fetch_Pos (file_name, days=0.7, data_path="../data"):
     pts = np.transpose(np.array([x,y,z]))
     if L >= len(pts):
         L = len(pts) # this is not necessary in python
-    Pos = cart2sphA(pts[:L])
+    if spherical :
+        Pos = cart2sphA(pts[:L])
+    else:
+        Pos = pts[:L]
     Time = t[:L]
     return Pos, Time
 

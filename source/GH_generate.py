@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 
 import GH_import       as imp
 import GH_convert      as conv
+import GH_Savitzky_Golay as sg
 #import GH_generate     as gen
 import GH_solve        as solv
 #import GH_displayGeoid as dgeo
@@ -66,7 +67,28 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
     return Acc_sim
 
 
+
+def Gen_Acc_2(Pos,t):
+    x,y,z = Pos.T
+    ax = sg.savitzky_golay(x,20,3,1,t[1]-t[0])
+    ay = sg.savitzky_golay(y,20,3,1,t[1]-t[0])
+    az = sg.savitzky_golay(z,20,3,1,t[1]-t[0])
+    return conv.cart2sphA(np.array([ax,ay,az]).T)
+
+
+
+
+
+
+
+
+
+
+
+
 def Gen_Acc (Pos, t):
+
+
     """
     calculates the acceleration of each axis using a basic doudle derivation
 
