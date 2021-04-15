@@ -68,12 +68,20 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
 
 
 
-def Gen_Acc_2(Pos,t):
+def Gen_Acc_2(Pos,Vit,t):
     x,y,z = Pos.T
     ax = sg.savitzky_golay(x,20,3,1,t[1]-t[0])
     ay = sg.savitzky_golay(y,20,3,1,t[1]-t[0])
     az = sg.savitzky_golay(z,20,3,1,t[1]-t[0])
-    return conv.cart2sphA(np.array([ax,ay,az]).T)
+
+    Acc = np.array([ax,ay,az]).T
+
+
+    Acc = sg.correcRef(Pos,Vit,Acc)
+
+
+
+    return Acc
 
 
 

@@ -70,7 +70,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3 m):
     print(f"Generating BAM of shape = {M_PotGrad.shape}") # BAM =  "Big Ass Matrix"
 
     for i in range (0, N_points):
-        term.printProgressBar(i+1, N_points)
+        #term.printProgressBar(i+1, N_points)
 
         r, theta, phi = Pos[i] #spherical coordinates at the first point
         Plm_z, Plm_dz = gmath.Pol_Legendre(lmax, lmax, cos(phi))

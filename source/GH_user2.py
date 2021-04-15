@@ -59,20 +59,22 @@ from GH_import import data_path #= "../data"
 
 
 file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
-lmax = 5
+lmax = 10
 
 
 
-Pos,t = imp.Fetch_Pos(file_name, 5, spherical=False)
+Pos,Vit, t = imp.Fetch_Pos_Vit(file_name, 5, spherical=False)
 
 Pos_sphere = conv.cart2sphA(Pos)
 
-acc = conv.Make_Line(gen.Gen_Acc_2(Pos,t))
+acc = gen.Gen_Acc_2(Pos,Vit,t)
 
-mat = solv.Get_PotGradMatrix(lmax, Pos_sphere)
+getMat = lambda lmax : solv.Get_PotGradMatrix(lmax, Pos_sphere)
 
+hc, hs = imp.Fetch_Coef()
 
-
+hc = hc.flatten()
+hc = np.sort(hc)
 
 
 

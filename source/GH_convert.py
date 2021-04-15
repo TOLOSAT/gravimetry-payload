@@ -54,6 +54,8 @@ def cart2sph (x,y,z):
     elevation = np.arctan2(z, np.sqrt(x**2 + y**2)) # theta
     azimuth   = np.arctan2(y,x)                     # phi
     return radius, elevation, azimuth
+
+
 def sph2cart222 (r,theta,phi): # cannot find where and when this function was used
     """ converts spherical coordinates to carthesian
     """
@@ -109,6 +111,9 @@ def Make_Line (arr):
     """ Returns the array with all rows appended
     """
     return np.reshape(arr, (1, arr.size))
+
+
+
 
 
 def Make_Array (line, col = 3):

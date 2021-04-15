@@ -84,6 +84,50 @@ def Fetch_Pos (file_name, days=0.7, data_path="../data", spherical = True ):
         Pos = pts[:L]
     Time = t[:L]
     return Pos, Time
+    
+    
+
+
+def Fetch_Pos_Vit (file_name, days=0.7, data_path="../data", spherical = True ):
+    """
+    Imports coordinates from file_name text file (generated from GMAT)
+
+    Input:
+        file_name: well, the file's name! remove all header text
+        days: what time duration the outplut file should correspond to
+              regardless of the sampling rate
+        data_path: path to go and fetch the file
+    Output:
+        Pos: The position of the satellite in spherical coordinates
+        Time: Associated time sampling of each position
+
+    """
+    Eph = np.loadtxt(f"{data_path}/{file_name}")
+    t = np.array(Eph[:,0]) #time in seconds
+    x = np.array(Eph[:,1]) #  \
+    y = np.array(Eph[:,2]) #  | cordinates, in km
+    z = np.array(Eph[:,3]) # /
+    vx = np.array(Eph[:,4])
+    vy = np.array(Eph[:,5])
+    vz = np.array(Eph[:,6])
+    
+    dt = np.int(t[1]*100)/100
+    L = np.int(days*(86400/dt))
+    # convert coord system and shorten array if needed
+    pts = np.transpose(np.array([x,y,z]))
+    
+    ptsVit = np.transpose(np.array([vx,vy,vz]))
+    
+    if L >= len(pts):
+        L = len(pts) # this is not necessary in python
+    if spherical :
+        Pos = cart2sphA(pts[:L])
+        Vit = cart2sphA(ptsVit[:L])
+    else:
+        Pos = pts[:L]
+        Vit = ptsVit[:L]
+    Time = t[:L]
+    return Pos,Vit, Time
 
 
 def Fetch_Coef (data="subset"):
@@ -115,8 +159,8 @@ def Fetch_Topo_Coef (data="subset"):
         HC_topo = np.loadtxt(f"{data_path}/Height_Coef_cos_deg2190.txt")
         HS_topo = np.loadtxt(f"{data_path}/Height_Coef_sin_deg2190.txt")
     else:
-        HC_topo = np.loadtxt(f"{data_path}/Height_Coef_cos_deg49.txt")
-        HS_topo = np.loadtxt(f"{data_path}/Height_Coef_sin_deg49.txt")
+        HC_topo = np.loadtxt(f"{data_path}/GeoPot_Coef_cos_deg30.txt")
+        HS_topo = np.loadtxt(f"{data_path}/GeoPot_Coef_sin_deg30.txt")
     return HC_topo, HS_topo
 
 
