@@ -112,6 +112,14 @@ def Make_Line (arr):
     """
     return np.reshape(arr, (1, arr.size))
 
+def Make_Line_acc(acc):
+    L = len(acc[:,0])
+    line = np.zeros(3*L)
+    j = 0
+    for i in acc:
+        line[3*j: 3*(j+1)] = i
+        j +=1
+    return line
 
 
 
