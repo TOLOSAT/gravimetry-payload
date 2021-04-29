@@ -116,7 +116,7 @@ def Demo_Map_Topo(lmax_topo, HC_topo, HS_topo, mins, levels, title, limits):
 
 def TEST_Map_Topo():
     HC_topo, HS_topo = imp.Fetch_Topo_Coef()
-    lmax_topo = 15
+    lmax_topo = 25
     mins = 600
     levels = 75
     title = f"TEST map of topography"

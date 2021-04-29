@@ -67,10 +67,10 @@ if __name__ == '__main__':
 
     """ The original satellite path """
     # file_name = "ISS_Earthfixed_1jour_1sec.e"
-    # file_name = "ISS_Earthfixed_1jour_60sec.e"
+    file_name = "ISS_Earthfixed_1jour_60sec.e"
     # file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     # file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
-    file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
+    #file_name = "Polar_400km_EarthFixed_7jours_5sec.e"
     days = 0.1
 
     """ data solving """
@@ -92,8 +92,9 @@ if __name__ == '__main__':
 #%%
     time_str = imp.Get_Time()
 
-    HC, HS = imp.Fetch_Coef()
-    HC_topo, HS_topo = imp.Fetch_Topo_Coef()
+
+    #HC, HS = imp.Fetch_Coef()
+    #HC_topo, HS_topo = imp.Fetch_Topo_Coef()
 
     Pos_sim, Time = imp.Fetch_Pos(file_name, days)
     # Acc_sim = gen.Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
