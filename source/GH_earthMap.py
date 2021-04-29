@@ -1,14 +1,10 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
     The functions in this script all regard matters related to matplotlib
     figures and cartopy maps. This script replaces previous works done with the
     discontinued Basemap library.
-
 # =============================================================================
 """
 # =============================================================================
@@ -43,7 +39,7 @@ import GH_convert      as conv
 # =============================================================================
 # SETUP
 # =============================================================================
-colors.DivergingNorm(vmin=-10000, vcenter=0., vmax=10000)
+colors.TwoSlopeNorm(vmin=-10000, vcenter=0., vmax=10000)
 
 
 # =============================================================================
@@ -255,4 +251,3 @@ if __name__ == '__main__':
     # Make_Map_3D()
 
     print("\nGH_displayCoef done")
-

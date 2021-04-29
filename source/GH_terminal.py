@@ -1,13 +1,9 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
     The functions in this script are used to write text to the terminal
     with a nice printout
-
 # =============================================================================
 """
 
@@ -37,14 +33,12 @@ def printProgressBar (iteration, total, length=20, decimals=1):
     """
     Prints a progress bar. Original code from:
         https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
-
     Call in a loop to create a progress bar in the terminal
     Input:
         iteration: current iteration (Int)
         total: total iterations (Int)
         length: character length of bar
         decimals: positive number of decimals in percent complete
-
     """
     prefix="Progress:" #
     suffix="Complete" #
@@ -83,4 +77,3 @@ if __name__ == '__main__':
     TEST_ProgressBar()
 
     print("\nGH_export done")
-

@@ -1,13 +1,9 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
-    The functions in this script are used to calculate values about 
+    The functions in this script are used to calculate values about
     Earth, Geophysics, and mathematics
-
 # =============================================================================
 """
 
@@ -43,24 +39,24 @@ from GH_convert import cart2sphA
 class Constants:
     """
     A variable with all the constants inside it
-    Many equations come from the geoid cook book pdf found in documentation, 
+    Many equations come from the geoid cook book pdf found in documentation,
     also at: http://mitgcm.org/~mlosch/geoidcookbook.pdf
     More about WGS84 at: https://earth-info.nga.mil/GandG///wgs84/gravitymod/egm2008/egm08_wgs84.html
-    """   
+    """
     G = 6.673E-11 # m^3/s^2/kg : Gravitational constant
     g = 9.80665 # m/s^2 : average surface acceleration
-    ro = 5515 # kg/m^3 : earth average density 
+    ro = 5515 # kg/m^3 : earth average density
     W_0 = 62636856.0 # m^2/s^2 : average geopotential (US value, must find better)
     W_GH = 62601662.83663869 # m^2/s^2 : average geopotential at topographic surface calculated using GH3 (in GH_harmonics)
-    
-    
+
+
     # WGS84 reference ellipsoid model
     ref_e = "WGS 84" # https://en.wikipedia.org/wiki/World_Geodetic_System
     GM_e = 3986004.418E8 # m^3/s^2 : standard gravitational parameter
     wo = 7292115E-11 # rad/s : angular velocity of Earth
     a_e = 6378137.00 # m : equatorial radius or ellipsoid model
     f = 1/298.257223563 # flat parameter
-    
+
     b_e = a_e * (1-f) # m : polar radius
     E = np.sqrt(a_e**2 - b_e**2) # linear eccentricity
     e_1 = E/a_e
@@ -68,7 +64,7 @@ class Constants:
     m = wo**2 * a_e*2 * b_e / GM_e # just to simplify the code
     g_a = GM_e/(a_e*b_e) * (1 - 3/2*m - 3/14*e_2*m) # m/s^2 : gravity acc. at equator
     g_b = GM_e/(a_e**2) * (1 - m - 3/7*e_2*m) # m/s^2 : gravity acc. at poles
-    
+
     # EGS2008 potential model
     ref_g = "EGS2008"
     a_g = 6378136.3 # m : Reference radius for the potential model
@@ -83,7 +79,7 @@ def Get_Ellipsoid_Radius (Lat):
     """
     Returns the radius of the reference elipsoid in meters
     https://gis.stackexchange.com/questions/20200/how-do-you-compute-the-earths-radius-at-a-given-geodetic-latitude
-    
+
     Input:
         Lat: latitude, inclination from the z axis in radians
     Output:
@@ -92,18 +88,18 @@ def Get_Ellipsoid_Radius (Lat):
     a = 6378137 # m : equatorial radius
     f = 1/298.257223563 # flat parameter
     b = a * (1-f) # m : polar radius
-    
+
     Lat = pi/2 - Lat # THIS IS TEMPORARY AND MUST CHANGE
-    
+
     deno = np.sqrt(a**2*sin(Lat)**2 + b**2*cos(Lat)**2)
     R = a*b/deno
-    
+
 #    numer = (a**2*cos(Lat))**2 + (b**2*sin(Lat))**2
 #    denom = (a   *cos(Lat))**2 + (b   *sin(Lat))**2
 #    R = np.sqrt(numer/denom)
-    
+
 #    R = a*(1-f*sin(Lat)**2)
-    
+
     return R
 
 
@@ -114,11 +110,11 @@ def Get_Normal_Gravity (Lat):
     making sense
     """
     c = Constants()
-    g_a=c.g_a; g_b=c.g_b 
-    
-    f = (g_a - g_b)/g_a    
+    g_a=c.g_a; g_b=c.g_b
+
+    f = (g_a - g_b)/g_a
     g_0_lat = g_a*(1-f*cos(Lat)**2)
-    
+
     return g_0_lat
 
 
@@ -129,10 +125,10 @@ def Get_Normal_Gravity2 (Lat):
     """
     c = Constants()
     a=c.a; b=c.b; g_a=c.g_a; g_b=c.g_b; e=c.e_1
-    
+
     k = (b*g_b - a*g_a) / a*g_a
     g_0_lat = g_a * (1 + k**2 * sin(Lat)**2) / np.sqrt(1 - e**2 * sin(Lat)**2)
-    
+
     return g_0_lat
 
 
@@ -145,39 +141,39 @@ def ALF_norm_gcb (N, M, phi):
     returns an array[m+1,n+1] of the values of the Associated Legendre Function
     of all integer degrees l and order m, at point x
     Array is normalized, equations from the geoid cook book
-    This method is called the "standard forward colums method" explained in: 
+    This method is called the "standard forward colums method" explained in:
     https://link.springer.com/article/10.1007/s00190-002-0216-2
-    
-    todo: 
+
+    todo:
         compute the derivatives as well
         figure out if it is cos(phi) or sin(phi)
         the thing maxes out at some point
     """
     t = sin(phi)
     u = cos(phi)
-    
+
     POL = np.zeros((N+1, M+1))
     POL[0,0] = 1
-    POL[1,0] = t 
+    POL[1,0] = t
     POL[1,1] = u * np.sqrt(3)
-        
+
     a_nm = lambda n, m : np.sqrt( (2*n+1)*(2*n-1) / ((n-m)*(n+m)) )
     b_nm = lambda n, m : np.sqrt( (2*n+1)*(n+m-1)*(n-m-1) / ((n-m)*(n+m)*(2*n-3)) )
-    
+
     for n in range(2, M+1):
-        POL[n,n] = u*np.sqrt((2*n+1)/(2*n))*POL[n-1,n-1]    
+        POL[n,n] = u*np.sqrt((2*n+1)/(2*n))*POL[n-1,n-1]
 #    for m in range(1, M+1):
 #        prod_i = 1
 #        for i in range (1, m): prod_i = prod_i * np.sqrt( (2*i + 1) / (2*i) )
 #        POL[m,m] = u**m * np.sqrt(3) * prod_i
-    
+
     for n in range (1, N+1): # m
         POL[n, 0] = a_nm(n,0) * t * POL[n-1,0] - b_nm(n,0)*POL[n-2,0]
 
     for m in range (1, M+1): # m
         for n in range (m+1, N+1): # n
             POL[n, m] = a_nm(n,m)*t*POL[n-1,m] - b_nm(n,m)*POL[n-2,m]
-    
+
     return POL
 
 
@@ -226,21 +222,21 @@ def dichotomy_grad (f, arg_before, z_e, arg_after, w_0, de, grad):
     arg_before, arg_after : f function arguments that come before and after z_e
     z_e : firstguess for the value to be tested
     w_0: target value for w
-    de : delta error  
+    de : delta error
     grad : gradient
     """
     w_i = f(*arg_before, z_e, *arg_after)
     di = w_0 - w_i
-    z_i = z_e    
+    z_i = z_e
     c = 0
-#    print(f"dicho start\nw_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; "); 
+#    print(f"dicho start\nw_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; ");
     while (abs(di) >= de):
-        c+=1        
+        c+=1
         z_i += di/grad
         w_i = f(*arg_before, z_i, *arg_after)
-        di = w_0 - w_i        
-#        sleep(1); 
-#        print(f"w_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; "); 
+        di = w_0 - w_i
+#        sleep(1);
+#        print(f"w_0={w_0:.2f}; z_i={z_i:.2f}; w_i={w_i:.2f}; di={di:.2f}; add={(di/grad):.2f}; ");
 #    print(f"dichotomy_grad: {c} steps")
     return z_i
 
@@ -260,11 +256,11 @@ def TEST_Constants():
     print(f"g = {cts.g} m/s^2")
     f = Get_Normal_Gravity(pi/180 * 50)
     print(f"g_0 at Lat = 50 is {f}")
-    
-    
+
+
 def TEST_gravity ():
     Lats = np.arange(-90, 91, 10)
-    Grav1 = Get_Normal_Gravity(Lats*pi/180)    
+    Grav1 = Get_Normal_Gravity(Lats*pi/180)
     Grav2 = Get_Normal_Gravity2(Lats*pi/180)
     plt.figure()
     plt.clf()
@@ -289,10 +285,10 @@ def TEST_Normalize():
 def TEST_Normalize2():
     """ yes, all zeros are in the output. """
     lmax = 100; Norm_lm = np.zeros((lmax+1,lmax+1))
-    for l in range (0,lmax+1): 
+    for l in range (0,lmax+1):
         for m in range(0,l+1):
             Norm_lm[l,m] = Normalize(l, m) -Normalize1(l, m)
-    return Norm_lm    
+    return Norm_lm
 
 
 def TEST_APF():
@@ -308,27 +304,26 @@ def TEST_APF():
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    
+
 #    TEST_Radius()
-    
+
 #    TEST_Constants()
-    
+
 #    TEST_gravity()
-    
+
     Nn_lm2 = TEST_Normalize()
 #    zeros_ = TEST_Normalize2()
-    
+
 #    a = Normalize(590, 60)
 #    b = Normalize(591, 60)
 #    c = Normalize(590, 61)
-    
-    
+
+
 #    alf_mat = TEST_APF()
     aa = ALF_norm_gcb(200, 200, 1)
-    
-    Plm_z, Plm_dz = lpmn (10, 10,pi)
-    
-    
-    
-    print("\nGH_import done")
 
+    Plm_z, Plm_dz = lpmn (10, 10,pi)
+
+
+
+    print("\nGH_import done")

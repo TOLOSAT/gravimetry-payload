@@ -1,23 +1,15 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
     The purpose of this script is to display various graphs and maps about
     Geoid coefficients
-
     Generally used variables:
-
         lmax   = maximum degree to calculate to for the geopotantial
         HC, HS = Geopotential stokes coefficients
         lmax_topo, HC_topo, HS_topo = same, but for topography.
-
         limits = [Western_long, Eastern_long, Southern_lat, Northern_lat]
         mins = The grid resolution in arc minutes
-
-
 # =============================================================================
 """
 # =============================================================================
@@ -48,47 +40,36 @@ import GH_earthMap     as emap
 # =============================================================================
 def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
     print("plotting coeff difference")
-
-
     #resize the official coef
     HC, HS = imp.Fetch_Coef()
     HS_nm_sz = HS[:len(HS_nm_slv), :len(HS_nm_slv)]
     HC_nm_sz = HC[:len(HC_nm_slv), :len(HC_nm_slv)]
-
     #subtract calculated coeffs
     HS_nm_sz -= HS_nm_slv
     HC_nm_sz -= HC_nm_slv
-
     fig_HC = plt.figure(fig_num)
     plt.clf()
     plt.suptitle("Harmonic coeff difference between official and solved; degree: "+str(len(HS_nm_sz)-1))
-
     for n in range (0, len(HC_nm_sz)):
         Ms_n = np.arange(0, n+1)
-
         HC_ni = HC_nm_sz[n, :n+1]
         HS_ni = HS_nm_sz[n, :n+1]
-
         plt.subplot(211)
         plt.plot(Ms_n, HC_ni,'-*', label='n='+str(n))
-
         plt.subplot(212)
         plt.plot(Ms_n, HS_ni,'-*', label='n='+str(n))
-
     plt.subplot(211)
     plt.ylabel("COSINE coeff diff")
     plt.grid(True)
 #    plt.xlabel("order m of derivation (log)")
 #    plt.ylabel("value of HC_nm")
     plt.legend(loc = 'upper right', title = 'Degree n', fontsize = 5)
-
     plt.subplot(212)
     plt.ylabel("SINE coeff diff")
     plt.grid(True)
     plt.xlabel("order m of derivation (log)")
 #    plt.ylabel("value of HS_nm")
 #    plt.legend(loc = 'lower right', title = 'Degree n', fontsize = 5)
-
     plt.show()
 '''
 
@@ -188,7 +169,6 @@ def Map_Geoid_grid(detail="grid geoid l100", title="Geoid undulation High resolu
     plot_specs = f"{G_Grid.size} points; {detail}; {levels} color levels"
     plt.title(plot_specs, fontsize=10)
     CBAR.set_label("Geoid height in m")
-
     FIG3, AX3 = emap.Make_Map_3D()
     CBAR = emap.Plot_surface(G_Grid, G_Long, G_Lat, AX3)
     plt.figure(FIG2.number)
@@ -257,5 +237,3 @@ if __name__ == '__main__':
 
 
     print("\nGH_displayGeoid done")
-
-

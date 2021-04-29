@@ -1,13 +1,9 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
     The purpose of this script is to generate data arrays for satellite
     trajectory
-
 # =============================================================================
 """
 # =============================================================================
@@ -41,7 +37,6 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
     """
     Generates simulated acceleration values from known coefficients
     and known positions
-
     Input:
         lmax: max order desired
         HC: cosine coefficients array
@@ -99,7 +94,6 @@ def Gen_Acc (Pos, t):
 
     """
     calculates the acceleration of each axis using a basic doudle derivation
-
     Input:
         Pos: trail of postion
         t: time stamp of Pos
@@ -153,4 +147,3 @@ if __name__ == '__main__':
     Test_gen_acc ()
 
     print("\nGH_generate done")
-

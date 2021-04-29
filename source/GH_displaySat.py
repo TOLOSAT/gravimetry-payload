@@ -1,13 +1,9 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
     The purpose of this script is to display various graphs and maps about
     Satellite trajectories
-
 topo: implement earth rotation. precession ?
 # =============================================================================
 """
@@ -67,7 +63,6 @@ def Plot2D_PosEarthfixed (Pos, Title="No given title"):
 def Plot3D_Pos (fignum, Pos, Title):
     """
     This functions creates a matplotlib figure and plots Pos in 3D.
-
     Input:
         Pos: array in spherical coordinates of the satellite position
         Title: The title to be displayed on the plot
@@ -205,4 +200,3 @@ if __name__ == '__main__':
     TEST_Plots()
 
     print("\nGH_displaySat done")
-

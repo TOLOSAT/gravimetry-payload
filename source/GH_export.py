@@ -1,12 +1,8 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
     The functions in this script are used to export and create array files
-
 todo:
     Something is wrong with: Store_temp_GLl
 # =============================================================================
@@ -40,7 +36,6 @@ import matplotlib.pyplot as plt
 def Store_Array(data, title, path="../Rendered"):
     """
     Stores an array into a text file that can later be imported again
-
     Input:
         data: the array in question
         title: a string, of the desired title for the file.
@@ -63,10 +58,10 @@ def Store_Array(data, title, path="../Rendered"):
 
 
 def Store_temp_GLl(G_Grid, G_Long, G_Lat, detail=""):
-    """ 
+    """
     Stores arrays into text files for future import
-    Should be used with imp.Load_GLl() 
-    If you want to keep the arrays, move them into the Randered/grid directory, 
+    Should be used with imp.Load_GLl()
+    If you want to keep the arrays, move them into the Randered/grid directory,
     or they might get written over
     """
     temp_GLl_path = "../Rendered/grid"
@@ -103,23 +98,22 @@ def TEST_store_temp():
     B = np.ones((2,5))*2
     C = np.ones((5,2))*3
     Store_temp_GLl(A, B, C)
-    
-    
+
+
 
 # =============================================================================
 # MAIN
 # =============================================================================
 if __name__ == '__main__':
-    
+
 #    TEST_store_temp()
-    
-    
-    
+
+
+
     '''
     Store_temp_GLl(G_Grid, G_Long, G_Lat, "TESTrr0")
     '''
-    
-    
-    
-    print("\nGH_export done")
 
+
+
+    print("\nGH_export done")

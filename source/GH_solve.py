@@ -1,13 +1,9 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
     The functions in this script are used to solve to the spherical harmonic
     Stokes coefficients.
-
 todo: write acc_matrix generation AND geopot_matrix generation
 # =============================================================================
 """
@@ -42,17 +38,14 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3 m):
     Watch out, it gets big fast.
     Multiplying it with the appropriate column vector of coefficients
     will return the acceleration at the given coordinates.
-
         *There are no geoid coefficients for l=0, l=1*
         *There are no sine coefficients for m=0*
-
     Input:
         lmax: max order
         Pos: array of N_points positions in spherical coordinates (r, theta, phi)
         *R: Reference radius in meters*
     Output:
         M_PotGrad: the matrix of the coefficients
-
     """
     # constants
     R = 6378.1363 # km
@@ -70,7 +63,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3 m):
     print(f"Generating BAM of shape = {M_PotGrad.shape}") # BAM =  "Big Ass Matrix"
 
     for i in range (0, N_points):
-        #term.printProgressBar(i+1, N_points)
+        term.printProgressBar(i+1, N_points)
 
         r, theta, phi = Pos[i] #spherical coordinates at the first point
         Plm_z, Plm_dz = gmath.Pol_Legendre(lmax, lmax, cos(phi))
@@ -112,17 +105,14 @@ def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3 m):
     Watch out, it gets big fast.
     Multiplying it with the appropriate column vector of coefficients
     will return the acceleration at the given coordinates.
-
         *There are no geoid coefficients for l=0, l=1*
         *There are no sine coefficients for m=0*
-
     Input:
         lmax: max order
         Pos: array of N_points positions in spherical coordinates (r, theta, phi)
         *R: Reference radius in meters*
     Output:
         M_PotGrad: the matrix of the coefficients
-
     """
     # constants
     R = 6378.1363 # km
@@ -186,15 +176,12 @@ def Solve_Coef (lmax, Pos, Acc):
     """
     Returns the solved for coefficients to the spherical harmonic approximation
     of the Acc accelerations at Pos positions. Uses the least square methods
-
     Input:
         lmax: maximum degree to be solved for
         Pos: list of N_points positions in spherical coordinates (r, theta, phi)
         Acc: list of N_points accelerations in spherical coordinates (a_r, a_theta, a_phi)
     Output:
         Solved_Coef: line array of solved coefficients
-
-
 # =============================================================================
 # # ISSUES:
         - Diverges beyond lmax = 8
@@ -239,5 +226,3 @@ if __name__ == '__main__':
 
 
     print("\nGH_solve done\n")
-
-

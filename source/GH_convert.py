@@ -1,13 +1,9 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
     The functions in this script are used to convert variables in their nature,
     or in their shapes.
-
 # =============================================================================
 """
 # =============================================================================
@@ -54,8 +50,6 @@ def cart2sph (x,y,z):
     elevation = np.arctan2(z, np.sqrt(x**2 + y**2)) # theta
     azimuth   = np.arctan2(y,x)                     # phi
     return radius, elevation, azimuth
-
-
 def sph2cart222 (r,theta,phi): # cannot find where and when this function was used
     """ converts spherical coordinates to carthesian
     """
@@ -122,8 +116,6 @@ def Make_Line_acc(acc):
     return line
 
 
-
-
 def Make_Array (line, col = 3):
     """ Returns the line list in an array of col columns
     """
@@ -135,7 +127,6 @@ def Make_Array (line, col = 3):
 def Make_Array_Coef (lmax, CS):
     """
     Returns the arrays of the solved Cosine and Sine coefficients
-
     Input:
         CS: line array filled in coefficients in such manner :
         CS = [c00,c10,c11,c20,c21,c22, ... s11,s21,s22,s31,s32,s33 ... ]
@@ -145,7 +136,6 @@ def Make_Array_Coef (lmax, CS):
         HC_coef: solved spherical harmonic cosine coefficients
         HS_coef: solved spherical harmonic sine coefficients
             To fetch use: HS_coef(l,m) = {SIN_lm_coef}
-
     """
 #    Cos_len = int( (lmax+1)*(lmax+2) /2 ) # c00,c10,c11,c20,c21,c22, ...
 #    Sin_len = int( (lmax  )*(lmax+1) /2 ) # s11,s21,s22,s31,s32,s33, ...
@@ -170,13 +160,11 @@ def Make_Array_Coef (lmax, CS):
 def Make_Line_Coef (lmax, HC, HS):
     """
     Returns the line array filled of Cosine and Sine coefficients
-
     Input:
         HC: spherical harmonic cosine coefficients
         HS: spherical harmonic sine coefficients
     Output:
         CS: line array filled in coefficients
-
     """
     Cos_len = int( (lmax+1)*(lmax+2) /2 ) -3 # c20,c21,c22, ...
     Sin_len = int( (lmax  )*(lmax+1) /2 ) -1 # s21,s22,s31,s32,s33, ...
@@ -244,4 +232,3 @@ if __name__ == '__main__':
     CS = TEST_Line_Array()
 
     print("\nGH_convert done")
-

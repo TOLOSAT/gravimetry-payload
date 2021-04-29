@@ -1,35 +1,26 @@
 """
-
 @authors:
-
 # =============================================================================
  Information:
-
     The purpose of this script is to calculate the sums from spherical
     harmonic coefficients, and generate grids of data mapped out over the
     surface of the Earth
-
     Generally used variables:
         R, Lat, Long  = coordinates in the geographic (geodesic) CRS
         R, theta, phi = coordinates in the geocentric CRS - ISO convention
         	R     <=> R    = radius in km ; [0, inf()]
         	theta <=> LAT  = inclination around the z axis in radians; [0, pi]
         	phi   <=> LONG = azimuth around the z axis in radians; [0, 2*pi]
-
         a_e, R_e, GM_e = relative to the reference ellipsoid
         a_g, R_g, GM_g = relative to the geopotential model
         lmax   = maximum degree to calculate to for the geopotantial
         HC, HS = Geopotential stokes coefficients
         lmax_topo, HC_topo, HS_topo = same, but for topography.
-
         limits = [Western_long, Eastern_long, Southern_lat, Northern_lat]
         mins = The grid resolution in arc minutes
-
 debug:
     the Sph Harm canot be computed for degrees above 154.
     for l = 155 and beyond, it does not work
-
-
 # =============================================================================
 """
 # =============================================================================
@@ -170,7 +161,6 @@ def Get_Geoid_Height (R_e, phi, theta,    lmax, HC, HS):
     The solution is calculated up to degree lmax in the HC HS model
     The cosine coefficients for even l and m=0 are corrected to remove the
     reference ellipsoid from the results
-
     Equations come from the geoid cook book
     """
     cst = gmath.Constants()
@@ -204,17 +194,14 @@ def Get_Geoid_Height2 (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_
     """
     This function returns the potential at given height/phi/theta coordinates
     The solution is calculated up to degree lmax in the HC HS model
-
     Equations from the GFZ handbook, eq.116
     """
     c = gmath.Constants()
     a_g=c.a_g; GM_g=c.GM_g; # g_e=c.g
     G=c.G; ro=c.ro;
-
     g_e = gmath.Get_Normal_Gravity(phi)
 #    phi_gc = conv.geodes2geocen(phi)
     phi_gc = phi
-
     Sum_geo = 0
     P_lm, _ = gmath.Pol_Legendre(lmax, lmax, sin(phi_gc) )
     for l in range (2, lmax+1):
@@ -222,7 +209,6 @@ def Get_Geoid_Height2 (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_
         for m in range (0, l+1):
             Sum2 += (HC[l,m]*cos(m*theta)+HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
         Sum_geo +=  (a_g/R_e)**l * Sum2
-
     Sum_topo = 0
     P_lm, _ = gmath.Pol_Legendre(lmax_topo, lmax_topo, cos(phi))
     for l in range (0, lmax_topo+1):
@@ -230,9 +216,7 @@ def Get_Geoid_Height2 (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_
         for m in range (0, l+1):
             Sum2 += (HC_topo[l,m]*cos(m*theta) + HS_topo[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize(l, m)
         Sum_topo += Sum2
-
     Geo_H = GM_g/(R_e*g_e) * Sum_geo  -  2*pi*G*ro/g_e * (R_e*Sum_topo)**2
-
     return Geo_H
 '''
 
@@ -630,4 +614,3 @@ if __name__ == '__main__':
 
 
     print("\nGH_harmonics done")
-

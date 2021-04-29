@@ -138,4 +138,3 @@ def testCorrecRef(file_name, days=0.7, data_path="../data"):
 # plt.plot(t, d2ysg, 'r', label='Filtered signal')
 # plt.legend()
 # plt.show()
-
