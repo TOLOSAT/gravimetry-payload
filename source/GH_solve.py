@@ -66,7 +66,7 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3 m):
         term.printProgressBar(i+1, N_points)
 
         r, theta, phi = Pos[i] #spherical coordinates at the first point
-        Plm_z, Plm_dz = gmath.Pol_Legendre(lmax, lmax, cos(phi))
+        Plm_z, Plm_dz = gmath.Pol_Legendre(lmax, lmax, sin(theta))
 
         j = 0
         k = Cos_len
@@ -74,14 +74,14 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3 m):
         for l in range (2, lmax+1):
             for m in range (0, l+1):
                 # These equations were found in the GFZ document page 23
-                W_r     = GM/r**2 * (R/r)**l * l/r * Plm_z[m, l]
-                W_theta = GM/r * (R/r)**l * m
-                W_phi   = GM/r * (R/r)**l * sin(phi)*Plm_dz[m, l]
+                W_r     = -GM/r**2 * (R/r)**l * (l+1) * Plm_z[m, l]
+                W_phi = GM/r * (R/r)**l * m
+                W_theta   = GM/r * (R/r)**l * Plm_dz[m, l]
 
                 Sub_mat = np.zeros ((3,1))
-                Sub_mat = [ cos(m*theta)*W_r,
-                            -sin(m*theta)*W_theta,
-                            cos(m*theta)*W_phi] # multiply by: COS_lm_coef
+                Sub_mat = [ cos(m*phi)*W_r,
+                            cos(m*phi)*W_theta,
+                            -sin(m*phi)*W_phi] # multiply by: COS_lm_coef
 
                 M_PotGrad [3*i : 3*(i+1), j] = Sub_mat
                 j += 1
@@ -89,9 +89,9 @@ def Get_PotGradMatrix (lmax, Pos): #"R = 6378136.3 m):
                 # for m of non-null, we get a sine coefficient
                 if (m != 0):
                     Sub_mat = np.zeros ((3,1))
-                    Sub_mat = [ sin(m*theta)*W_r,
-                                cos(m*theta)*W_theta,
-                                sin(m*theta)*W_phi] # multiply by: SIN_lm_coef
+                    Sub_mat = [ sin(m*phi)*W_r,
+                                sin(m*phi)*W_theta,
+                                cos(m*phi)*W_phi] # multiply by: SIN_lm_coef
 
                     M_PotGrad [3*i : 3*(i+1), k] = Sub_mat
                     k += 1
@@ -122,7 +122,7 @@ def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3 m):
     N_points = len(Pos) # number of points
 
     Cos_len = int( (lmax+1)*(lmax+2) /2 ) -3 # c20,c21,c22,c30,c31,c32, ...
-    Sin_len = int( (lmax  )*(lmax+1) /2 ) -1 # s21,s22,s31,s32,s33, ...
+    Sin_len = int( (lmax  )*(lmax+1) /2 )  # s21,s22,s31,s32,s33, ...
 #    print("cos sin lengths =",Cos_len, ",",Sin_len)
     N_coef = Cos_len + Sin_len
 
@@ -138,17 +138,17 @@ def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3 m):
         j = 0
         k = Cos_len
 
-        for l in range (2, lmax +1):
+        for l in range (0, lmax +1):
             for m in range (0, l +1):
                 # These equations were found in the GFZ document page 23
                 W_r = - GM/r**2 * (R/r)**l * (l+1) * Plm_z[m, l]
-                W_theta = W_r * m * r / (l+1)
-                W_phi = GM/r * (R/r)**l * cos(phi)*Plm_dz[m, l]
+                W_phi = -W_r * m * r / (l+1)
+                W_theta = GM/r * (R/r)**l * Plm_dz[m, l]
 
                 Sub_mat = np.zeros ((3,1))
-                Sub_mat = [ cos(m*theta)*W_r,
-                            -sin(m*theta)*W_theta,
-                            cos(m*theta)*W_phi] # multiply by: COS_lm_coef
+                Sub_mat = [ cos(m*phi)*W_r,
+                            cos(m*phi)*W_theta,
+                            -sin(m*phi)*W_phi] # multiply by: COS_lm_coef
 
                 M_PotGrad [3*i : 3*(i+1), j] = Sub_mat
                 j += 1
@@ -156,9 +156,9 @@ def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3 m):
                 # for m of non-null, we get a sine coefficient
                 if (m != 0):
                     Sub_mat = np.zeros ((3,1))
-                    Sub_mat = [ sin(m*theta)*W_r,
-                                cos(m*theta)*W_theta,
-                                sin(m*theta)*W_phi] # multiply by: SIN_lm_coef
+                    Sub_mat = [ sin(m*phi)*W_r,
+                                sin(m*phi)*W_theta,
+                                cos(m*phi)*W_phi] # multiply by: SIN_lm_coef
 
                     M_PotGrad [3*i : 3*(i+1), k] = Sub_mat
                     k += 1

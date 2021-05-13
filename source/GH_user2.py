@@ -71,7 +71,7 @@ acc = gen.Gen_Acc_2(Pos,Vit,t)
 acc = conv.cart2sphA(acc)
 
 acc = conv.Make_Line_acc(acc)
-getMat = lambda lmax : solv.Get_PotGradMatrix(lmax, Pos_sphere)
+getMat = lambda lmax : solv.Get_PotGradMatrix2(lmax, Pos_sphere)
 
 hc, hs = imp.Fetch_Coef()
 
