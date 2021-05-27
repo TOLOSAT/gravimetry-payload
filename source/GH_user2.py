@@ -30,6 +30,15 @@ todo: replace "acc" by "geopot" lol
 future stuff:
     earth rotation
     approx drag and shit (solar radiation, tidal effects)
+    
+Instruction after executing the code : here are the commands to execute on the terminal : 
+    - A = getMat(n), with n a natural integer : we advise n=7.
+    - res = np.linalg.lstsq(A, acc)
+    - acc_solved = A@res[0] : acc_solved represents the vector of the solved acceleration in spherical coordinates. 
+    Then acc_solved = [acc_rad(0),acc_theta(0),acc_phi(0),...]. Then plot the result.
+    If you want to plot for example only the radial acceleration, execute this command : 
+    - plt.plot([acc_solved[3*i] for i in range(len(acc_solved)//3)])
+   
 # =============================================================================
 """
 
