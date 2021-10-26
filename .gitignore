@@ -8,3 +8,9 @@ Rendered
 Documentation
 temp
 .spyproject
+doc/latexDoc/notes.pdf
+doc/latexDoc/notes.log
+doc/latexDoc/notes.aux
+doc/latexDoc/latex_doc.out
+doc/latexDoc/latex_doc.log
+doc/latexDoc/latex_doc.aux
