@@ -1,19 +1,197 @@
-\documentclass[10pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
+\documentclass{article}
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with`a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
 \usepackage{amsmath}
-\usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
-\title{TOLOSAT GRAVIMETRY PAYLOAD}
-
-\author{Gravimetry section}
-
+\title{Tolosat's Gravimetry Payload Report}
+\author{}
 
 \begin{document}
 \maketitle
 
+\begin{abstract}
+Tolosat's gravimetry payload aims to a build a spherical harmonic model of the Earth's gravitational potential.
+
+\end{abstract}
+
+\section{Introduction}
+Accurate knowledge of the gravitational potential of the Earth, 
+on a global scale and at very high resolution, is a fundamental prerequisite 
+for various geodetic, geophysical and oceanographic investigations and applications. 
+Over the past 50 or so years, continuing improvements and refinements to the 
+basic gravitational modeling theory have been paralleled by the availability 
+of more accurate and complete data and by dramatic improvements in the 
+computational resources available for numerical modeling studies. 
+
+These advances have brought the state-of-the-art from the early spherical harmonic models of degree 8 
+\cite{1952Tegf}
+
+\section{Method for unnoised model}
+
+The Earth's external gravitational potential, V, 
+at a point P defined by its geocentric distance (r), 
+geocentric co-latitude ($\theta$) (defined as 90°-latitude), 
+and longitude ($\lambda$), is given by:
+\begin{equation}
+        V (r, \theta, \lambda) = \frac{GM}{r}  \left[1 + \sum_{n = 2}^{\infty} \left(\frac{R}{r}\right)^{n} \sum_{m = 0}^{n} P_{nm}(cos(\theta)) \left[C_{nm}cos(m\lambda) + S_{nm} sin(m\lambda)\right]    \right] 
+\end{equation}
+
+where
+\begin{equation*}
+    \left\{
+                \begin{array}{ll}
+                R = \text{the Earth’s equatorial radius} \\
+                \\
+                P_{nm} = \text{the fully normalized associated Legendre
+    functions of degree n and order m}\\
+    \\
+                C_{nm} S_{nm} \text{the geopotential harmonic coefficients. }
+                \end{array}
+    \right .
+\end{equation*}
 
 
+We rewrite the geopotentiel harmonic series  (1) :
+
+\begin{equation}
+    V(r) = \sum_{n,m } \left[ C_{nm} V_{nm}^{c}(r) + S_{nm} V_{nm}^{s}(r) \right]  
+\end{equation}
+
+This form shows explicitly the linearity of teh harmonic coefficients $C_{nm}$ et $S_{nm}$ \\
+
+
+The acceleration approach is based on the Newton's second law of motion, which links the acceleration vector to the gradient of the gravitational potential.
+
+we obtain : 
+\[
+\frac{d^2 r}{d t^2} = a_{grav} + a_{\text{lunisolar perturbations}} + a_{\text{solid Earth and ocean tides}} + a_{\text{correction due to general relativity}} + a_{\text{non gravitational acceleration}}
+\]
+
+\subsection{A hypothesis on the accelerations}
+
+We studied the weigth and importance of the accelarations. We conclude: 
+\begin{equation*}
+    a_{grav}  >>> a_{others} 
+\end{equation*}
+So,for the rest of the work we will concider that any accelerations other than $a_grav$ is negligeable.
+
+\subsection{A numerical approximation of the second derivative of the position}
+\begin{equation}
+    \frac{d^2 r}{dt^2} \approx \frac{d^2 Q(r_{gps})}{dt^2} = F * r_{gps} 
+\end{equation}
+
+Where $r_{gps}$ is the GPS position. We do this approximation using a polynomial smoothing filter.
+
+We use as a filter the Savitzky-Golay filter 
+
+% idea We can elaborate the idea of SG filter
+
+
+\vspace{1 cm}
+
+We obtain the observation equation
+
+\begin{equation}
+    \frac{d^2 Q (r_{gps})}{dt^2} - a_{other} = \sum_{n,m }   \left[ C_{nm} \bigtriangledown V_{nm}^{c}(r) + S_{nm} \bigtriangledown V_{nm}^{s}(r) \right]  
+\end{equation}
+By solving this system, we obtain the harmonic coefficients. 
+
+We wrtie the model:
+\begin{equation}
+    y = A x    
+\end{equation}
+
+the vector of observations $y = \frac{d^2 Q(r_{gps})}{dt^2}$\\
+
+the design matrix $A = \left[ \nabla V_{nm}^c ; \nabla V_{nm}^s \right]  $\\
+
+the estimated parameters $x= \left[C_{nm} ; S_{nm}\right]$ 
+
+Intuitively, one can think about solving the problem with: 
+
+\begin{equation*}
+    x = (A^TA)^{-1} A^T y
+\end{equation*}
+
+However, the dimensions of the matrix A are big. Numerical calculus would be very sensible to numerical errors. 
+
+We use a classic least square method to solve this problem. 
+\subsection{Resultats}
+Our first experineces showed that this model is very sensible towards small variations of $\theta ,  \phi$.
+
+We suggest to use a projection on a space. 
+
+Let this projection be: 
+
+\begin{equation}
+    \begin{array}{l|rcl}
+        P_E : & \mathbb{R}^3 & \longrightarrow &\mathbb{R}^3   \\
+            
+        & \left(\begin{array}{ll}
+                r \\
+                \theta \\
+                \phi
+                \end{array}
+            \right )   & \longmapsto & \left(
+                \begin{array}{ll}
+                r \\
+                0 \\
+                0
+                \end{array}
+            \right ) \end{array}
+\end{equation}
+
+In other words, we focus on the radial acceleration. 
+
+Let \begin{equation*}
+    A x = y \Leftrightarrow P_E A x =P_E y = \tilde{y}  
+    \implies x \approx  \tilde{x} = Px
+\end{equation*}
+
+
+\section{Method for noised model }
+
+Let us suppose, for instance, that the measurements of the positions are noised. 
+
+\textit{i.e} 
+
+
+
+\begin{align*}
+    p &= \tilde{p} + \epsilon \\ 
+    Sp &= S\tilde{p} + S\epsilon \text{\hspace{1 cm}where S is the Savitzky Golay Filter }\\
+    x &= \tilde{x} + S\epsilon\\
+    x &= (A^TA)^{-1} A^T  S \tilde{p} +  (A^TA)^{-1} A^T  S \epsilon 
+\end{align*}
+
+If we suppose that $ \epsilon \sim \mathcal{N}(0, \sigma I) $ we can obtain , 
+
+\[   \epsilon_2 = Q \epsilon   \text{\hspace*{1 cm}} \mathbb{E}[\epsilon \epsilon^T]  = \sigma^2 Q Q^T  
+\]
+
+
+
+\textbf{Note that we should add in the equation a matrix B of noise decorrelation  }
+
+
+
+
+
+
+
+\newpage
+\bibliographystyle{plain}
+\bibliography{biblio}
 
 
 \end{document}
