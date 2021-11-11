@@ -68,25 +68,7 @@ import GH_export       as exp
 from GH_import import data_path #= "../data"
 
 
-file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
-lmax = 10
 
-
-
-Pos,Vit, t = imp.Fetch_Pos_Vit(file_name, 5, spherical=False)
-
-Pos_sphere = conv.cart2sphA(Pos)
-
-acc = gen.Gen_Acc_2(Pos,Vit,t)
-acc = conv.cart2sphA(acc)
-
-acc = conv.Make_Line_acc(acc)
-getMat = lambda lmax : solv.Get_PotGradMatrix2(lmax, Pos_sphere)
-
-hc, hs = imp.Fetch_Coef()
-
-hc = hc.flatten()
-hc = np.sort(hc)
 
 
 def GetPartialMatrix(M, comp = 0):
@@ -101,8 +83,56 @@ def GetPartialMatrix(M, comp = 0):
     
     return np.array([[M[3*i + comp ,j ] for j in range(len(M[1])) ] for i in range(len(M)//3)])
 
+def main():
+    
+    file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
+    lmax = 10
+
+    Pos,Vit, t = imp.Fetch_Pos_Vit(file_name, 5, spherical=False)
+
+    Pos_sphere = conv.cart2sphA(Pos)
+
+    acc = gen.Gen_Acc_2(Pos,Vit,t)
+    acc = conv.cart2sphA(acc)
+    
+    acc = conv.Make_Line_acc(acc)
+    getMat = lambda lmax : solv.Get_PotGradMatrix2(lmax, Pos_sphere)
+
+    hc, hs = imp.Fetch_Coef()
+
+    hc = hc.flatten()
+    hc = np.sort(hc)
+    
+    
+    M = getMat(lmax)
+    
+    Mradial = GetPartialMatrix(M)
+    
+    Res = np.linalg.lstsq(M, acc)
+    
+    accRadial = [acc[3*i] for i in range(len(acc)//3)]
+    ResRadial = np.linalg.lstsq(Mradial, accRadial)
+    
+    acc_solved = M.dot(Res[0])
+    
+    accRadial_solved = M.dot(ResRadial[0])
+    
+    acc_solved_R = [acc_solved[3*i] for i in range(len(acc)//3)]
+    
+    accRadial_solved_R = [accRadial_solved[3*i] for i in range(len(acc)//3)]
+    
+    plt.figure()
+    plt.plot(acc_solved_R, label="Full Order Matrix")
+    plt.plot(accRadial_solved_R, label = "Radial Part Matrix")
+    plt.legend()
+    plt.show()
+    
+    return accRadial, acc_solved_R, accRadial_solved_R, M, Mradial
 
 
+
+if __name__ == "__main__":
+    res = main()
 
 
 
