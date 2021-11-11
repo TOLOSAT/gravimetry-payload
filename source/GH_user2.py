@@ -89,7 +89,17 @@ hc = hc.flatten()
 hc = np.sort(hc)
 
 
-
+def GetPartialMatrix(M, comp = 0):
+    """ Take only the rows corresponding
+    to the Radial part
+        - Input : Gravimetry potential matrix
+                     Component = 0 , 1 , 2
+        
+        - Output Gravimetry potential with only radial part
+        """
+    assert type(comp) ==int , "Comp is not an Integer"
+    
+    return np.array([[M[3*i + comp ,j ] for j in range(len(M[1])) ] for i in range(len(M)//3)])
 
 
 
