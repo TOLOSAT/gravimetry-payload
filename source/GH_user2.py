@@ -77,7 +77,9 @@ def GetPartialMatrix(M, comp = 0):
         - Input : Gravimetry potential matrix
                      Component = 0 , 1 , 2
         
-        - Output Gravimetry potential with only radial part
+        - Output Gravimetry potential with : - radial part if comp == 0
+                                             - theta part if comp == 1
+                                             - phi part if comp == 2
         """
     assert type(comp) ==int , "Comp is not an Integer"
     
