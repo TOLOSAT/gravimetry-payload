@@ -88,6 +88,8 @@ def GetPartialMatrix(M, comp = 0):
 def main():
     
     file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
+    
+    """ Define the Legendre polynom degree """
     lmax = 10
 
     Pos,Vit, t = imp.Fetch_Pos_Vit(file_name, 5, spherical=False)
@@ -105,8 +107,10 @@ def main():
     hc = hc.flatten()
     hc = np.sort(hc)
     
+    """Generate the grad Potential matrix"""
+    #M = getMat(lmax)
     
-    M = getMat(lmax)
+    M = np.load(imp.data_path + "\potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
     
     Mradial = GetPartialMatrix(M)
     
