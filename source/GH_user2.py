@@ -100,6 +100,8 @@ def main():
     acc = conv.cart2sphA(acc)
     
     acc = conv.Make_Line_acc(acc)
+    
+    
     getMat = lambda lmax : solv.Get_PotGradMatrix2(lmax, Pos_sphere)
 
     hc, hs = imp.Fetch_Coef()
@@ -107,10 +109,19 @@ def main():
     hc = hc.flatten()
     hc = np.sort(hc)
     
+<<<<<<< Updated upstream
     """Generate the grad Potential matrix"""
     #M = getMat(lmax)
     
     M = np.load(imp.data_path + "\potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
+=======
+
+    
+    #M = getMat(lmax)
+    
+    M = np.load(imp.data_path + "/potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
+    
+>>>>>>> Stashed changes
     
     Mradial = GetPartialMatrix(M)
     
@@ -128,8 +139,9 @@ def main():
     accRadial_solved_R = [accRadial_solved[3*i] for i in range(len(acc)//3)]
     
     plt.figure()
-    plt.plot(acc_solved_R, label="Full Order Matrix")
-    plt.plot(accRadial_solved_R, label = "Radial Part Matrix")
+    #plt.plot(acc_solved_R, label="Full Order Matrix")
+    plt.plot(accRadial_solved_R[10:], label = "Radial Part Matrix")
+    plt.plot(accRadial[10:], label = "theoretical")
     plt.legend()
     plt.show()
     
