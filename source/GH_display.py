@@ -47,7 +47,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy import pi, sin, cos
 
-from GH_solve2 import *
+from GH_solve import *
 from GH_generate import *
 
 

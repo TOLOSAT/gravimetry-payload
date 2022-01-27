@@ -109,19 +109,12 @@ def main():
     hc = hc.flatten()
     hc = np.sort(hc)
     
-<<<<<<< Updated upstream
     """Generate the grad Potential matrix"""
     #M = getMat(lmax)
     
     M = np.load(imp.data_path + "\potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
-=======
 
-    
-    #M = getMat(lmax)
-    
-    M = np.load(imp.data_path + "/potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
-    
->>>>>>> Stashed changes
+
     
     Mradial = GetPartialMatrix(M)
     
@@ -156,6 +149,25 @@ if __name__ == "__main__":
 
 
 
+def inv(A,y, epsilon, nIter, x_0, mu, pas = 0.5):
+    x = x_0[:]
+    
+    
+    L = []
+    
+    err = 10.*epsilon + 1
+    
+    for i in range(nIter):
+        if( err < epsilon ):
+            return x
+        x = x - pas*(2.* A.T@( A@x - y) + mu * ( x - x_0))
+        err = np.linalg.norm(A@x - y)
+        L.append(err)
+    
+    plt.plot(L)
+        
+    return x
+        
 
 
 

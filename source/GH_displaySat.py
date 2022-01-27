@@ -112,6 +112,7 @@ def Plot_Acc_Sim_Solv (Time, Acc_sim, Acc_solved, component, title):
         component = 0, 1, 2 : r, theta, phi
         title: plot title
     """
+    
     FIG = plt.figure()
     plt.clf()
 
