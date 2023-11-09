@@ -19,7 +19,7 @@
             using GH_displayCoef
     5.  Plot Satellite positions and accelerations in space
             using GH_displaySat
-todo: replace "acc" by "geopot" lol
+todo: replace "acc" by "geopot" 
 future stuff:
     earth rotation
     approx drag and shit (solar radiation, tidal effects)
