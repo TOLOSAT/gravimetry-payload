@@ -66,8 +66,8 @@ def Fetch_Pos (file_name, days=0.7, data_path="../data", spherical = True ):
     x = np.array(Eph[:,1]) #  \
     y = np.array(Eph[:,2]) #  | cordinates, in km
     z = np.array(Eph[:,3]) # /
-    dt = np.int(t[1]*100)/100
-    L = np.int(days*(86400/dt))
+    dt = int(t[1]*100)/100
+    L = int(days*(86400/dt))
     # convert coord system and shorten array if needed
     pts = np.transpose(np.array([x,y,z]))
     if L >= len(pts):
