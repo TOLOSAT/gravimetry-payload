@@ -33,8 +33,6 @@ import globalVars as gv
 # FUNCTIONS FOR Sph Harm SOLVE
 # =============================================================================
 
-
-
 def Get_PotGradMatrix2 (lmax, Pos):
     """
     Returns the matrix of the gravitational potential gradient.
@@ -99,13 +97,6 @@ def Get_PotGradMatrix2 (lmax, Pos):
                     k += 1
 
     return M_PotGrad
-
-
-def proj_ort(M,y):
-    return y - M@np.linalg.lstsq(M,y)[0]
-
-
-
 
 def Solve_Coef (lmax, Pos, Acc):
     """
