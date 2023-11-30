@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     Pos_sim, Time = imp.Fetch_Pos(file_name, days)
     # Acc_sim = gen.Gen_Sim_Acc(lmax_gen, HC, HS, Pos_sim)
-    Acc_sim, _ = gen.Gen_Acc(Pos_sim, Time)
+    Acc_sim, _ = gen.Gen_Acc_2(Pos_sim, Time)
 
 
 #%% # Do math...
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
 #     Mapping the coefficients
     title2 = f"Map of original geopotential"
-    MAP_GEN = dgeo.Map_Geoid(mins, levels, title2, lmax_gen,   HC,     HS    )
+    MAP_GEN = dgeo.Map_Geoid(mins, levels, title2, lmax_gen, HC_sim, HS_sim)
 
     title3 = f"Map of solved geopotential"
     MAP_SIM = dgeo.Map_Geoid(mins, levels, title3, lmax_solve, HC_sim, HS_sim)

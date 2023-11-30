@@ -66,8 +66,8 @@ def Fetch_Pos (file_name, days=0.7, data_path="../data", spherical = True ):
     x = np.array(Eph[:,1]) #  \
     y = np.array(Eph[:,2]) #  | cordinates, in km
     z = np.array(Eph[:,3]) # /
-    dt = np.int(t[1]*100)/100
-    L = np.int(days*(86400/dt))
+    dt = int(t[1]*100)/100
+    L = int(days*(86400/dt))
     # convert coord system and shorten array if needed
     pts = np.transpose(np.array([x,y,z]))
     if L >= len(pts):
@@ -82,14 +82,15 @@ def Fetch_Pos (file_name, days=0.7, data_path="../data", spherical = True ):
 
 
 
-def Fetch_Pos_Vit (file_name, days=0.7, data_path="../data", spherical = True ):
+def Fetch_Pos_Vit (file_name, days, data_path, spherical):
     """
     Imports coordinates from file_name text file (generated from GMAT)
     Input:
         file_name: well, the file's name! remove all header text
-        days: what time duration the outplut file should correspond to
+        days: (float) what time duration the outplut file should correspond to
               regardless of the sampling rate
         data_path: path to go and fetch the file
+        spherical: (boolean) wether or not we use a spherical coordinates
     Output:
         Pos: The position of the satellite in spherical coordinates
         Time: Associated time sampling of each position
@@ -97,17 +98,17 @@ def Fetch_Pos_Vit (file_name, days=0.7, data_path="../data", spherical = True ):
     Eph = np.loadtxt(f"{data_path}/{file_name}")
     t = np.array(Eph[:,0]) #time in seconds
     x = np.array(Eph[:,1]) #  \
-    y = np.array(Eph[:,2]) #  | cordinates, in km
-    z = np.array(Eph[:,3]) # /
+    y = np.array(Eph[:,2]) #  | coordinates, in km
+    z = np.array(Eph[:,3]) #  /
     vx = np.array(Eph[:,4])
     vy = np.array(Eph[:,5])
     vz = np.array(Eph[:,6])
 
-    dt = np.int(t[1]*100)/100
-    L = np.int(days*(86400/dt))
+    dt = int(t[1]*100)/100 # 2 significant numbers here 
+    L = int(days*(86400/dt)) # total length of experiment in time steps
+    
     # convert coord system and shorten array if needed
     pts = np.transpose(np.array([x,y,z]))
-
     ptsVit = np.transpose(np.array([vx,vy,vz]))
 
     if L >= len(pts):
@@ -119,7 +120,7 @@ def Fetch_Pos_Vit (file_name, days=0.7, data_path="../data", spherical = True ):
         Pos = pts[:L]
         Vit = ptsVit[:L]
     Time = t[:L]
-    return Pos,Vit, Time
+    return Pos,Vit,Time, dt
 
 
 def Fetch_Coef (data="subset"):

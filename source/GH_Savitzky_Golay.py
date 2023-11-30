@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 from math import factorial
 from scipy.linalg import toeplitz
-
+from scipy.signal import savgol_filter
 
 import GH_import       as imp
 #import GH_convert      as conv
@@ -20,12 +20,16 @@ import GH_export       as exp
 #import GH_harmonics    as harm
 #import GH_geoMath      as gmath
 #import GH_earthMap     as emap
+import globalVars as gv
 
+"""
+    Use the Savitzky-Golay method to determine the accelerations from a cloud of positions (y)
+"""
 
 def savitzky_golay(y, window_size, order, deriv=0, rate=1):
-    ###-----------------###
-    #Use the Savitzky-Golay method to determine the accelerations from a cloud of positions (y)
-    ###-----------------###
+    res = savgol_filter(y, window_size,order,deriv,rate,mode='nearest') #Merci Scipy
+    
+    """
     order_range = range(order+1)
     half_window = (window_size -1) // 2
     # precompute coefficients
@@ -36,7 +40,9 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     firstvals = y[0] - np.abs( y[1:half_window+1][::-1] - y[0] )
     lastvals = y[-1] + np.abs(y[-half_window-1:-1][::-1] - y[-1])
     y = np.concatenate((firstvals, y, lastvals))
-    return np.convolve( m[::-1], y, mode='valid')
+    res = np.convolve( m[::-1], y, mode='valid')
+    """
+    return res
 
 
 def savitzky_golay_mat(Nmeasures, order, window_size, deriv = 0, rate = 1):
@@ -56,18 +62,12 @@ def savitzky_golay_mat(Nmeasures, order, window_size, deriv = 0, rate = 1):
 
     return M
 
-
-
-
-
-
-
-def correcRef(Pos,Vit, Acc, omegaTerre = 7292115E-11):
+def correcRef(Pos,Vit, Acc):
     '''Corrects acceleration for coriolis and centrifugal forces in terrestrial
     referential'''
     AccCorrec = np.copy(Acc)
-    AccCorrec[:,0] += - 2*omegaTerre*Vit[:,1] - omegaTerre**2*Pos[:,0]
-    AccCorrec[:,1] +=   2*omegaTerre*Vit[:,0] - omegaTerre**2*Pos[:,1]
+    AccCorrec[:,0] += - 2*gv.omegaEarth*Vit[:,1] - gv.omegaEarth**2*Pos[:,0]
+    AccCorrec[:,1] +=   2*gv.omegaEarth*Vit[:,0] - gv.omegaEarth**2*Pos[:,1]
 
     return AccCorrec
 
