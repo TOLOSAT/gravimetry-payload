@@ -65,11 +65,7 @@ import GH_export       as exp
 #import GH_earthMap     as emap
 
 
-from GH_import import data_path #= "../data"
-
-
-
-
+from GH_import import data_path #= "..\data"
 
 def GetPartialMatrix(M, comp = 0):
     """ Take only the rows corresponding
@@ -85,39 +81,35 @@ def GetPartialMatrix(M, comp = 0):
     
     return np.array([[M[3*i + comp ,j ] for j in range(len(M[1])) ] for i in range(len(M)//3)])
 
-def main():
+"""
+    Là on va utiliser Savitsky-Golay pour déduire des 
+    accélérations (accel_sg) à partir de positions (pas sûr du process, on est en sphériques...)
+    puis comparer ces mêmes accéls à celles données en résolvant le système linéaire 
+    donné par les coeffs du EGM2008 et accel_sg en résultat. Je vois pas trop le but...    
     
+    TRUC A TESTER : géoïde avec coeffs calculés vs avec coeffs donnés...
+"""
+def main():
+    path ="../data"
     file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
     
-    """ Define the Legendre polynom degree """
-    lmax = 10
+    lmax = 10 # Legendre polynomial degree
 
-    Pos,Vit, t = imp.Fetch_Pos_Vit(file_name, 5, spherical=False)
-
-    Pos_sphere = conv.cart2sphA(Pos)
-
-    acc = gen.Gen_Acc_2(Pos,Vit,t)
+    Pos,Vit,Time,dt = imp.Fetch_Pos_Vit(file_name, 5, path, False) # Read data from the file
+    Pos_sph = conv.cart2sphA(Pos)
+   
+    # Uses Savitzky-Golay filter to get the acceleration
+    acc = gen.Gen_Acc_2(Pos,Vit,dt) 
     acc = conv.cart2sphA(acc)
-    
     acc = conv.Make_Line_acc(acc)
-    
-    
-    getMat = lambda lmax : solv.Get_PotGradMatrix2(lmax, Pos_sphere)
 
-    hc, hs = imp.Fetch_Coef()
-
-    hc = hc.flatten()
-    hc = np.sort(hc)
-    
     """Generate the grad Potential matrix"""
-    #M = getMat(lmax)
-    
-    M = np.load(imp.data_path + "\potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
-
-
-    
+    getMat = lambda lmax : solv.Get_PotGradMatrix2(lmax, Pos_sph)
+    M = getMat(lmax)
+   
+    # Reference data 
+    #M = np.load(imp.data_path + "\potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
     Mradial = GetPartialMatrix(M)
-    
     Res = np.linalg.lstsq(M, acc)
     
     accRadial = [acc[3*i] for i in range(len(acc)//3)]
@@ -132,10 +124,11 @@ def main():
     accRadial_solved_R = [accRadial_solved[3*i] for i in range(len(acc)//3)]
     
     plt.figure()
-    #plt.plot(acc_solved_R, label="Full Order Matrix")
-    plt.plot(accRadial_solved_R[10:], label = "Radial Part Matrix")
-    plt.plot(accRadial[10:], label = "theoretical")
+    plt.plot(acc_solved_R, label="Derived from reference data")
+    plt.plot(accRadial_solved_R[10:], label = "Derived from partial reference data")
+    plt.plot(accRadial[10:], label = "SG calculated data")
     plt.legend()
+    plt.title("Comparaison des résultats")
     plt.show()
     
     return accRadial, acc_solved_R, accRadial_solved_R, M, Mradial

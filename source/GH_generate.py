@@ -63,30 +63,17 @@ def Gen_Sim_Acc (lmax, HC, HS, Pos):
 
 
 
-def Gen_Acc_2(Pos,Vit,t):
+def Gen_Acc_2(Pos,Vit,dt):
     x,y,z = Pos.T
-    ax = sg.savitzky_golay(x,20,3,1,t[1]-t[0])
-    ay = sg.savitzky_golay(y,20,3,1,t[1]-t[0])
-    az = sg.savitzky_golay(z,20,3,1,t[1]-t[0])
+    # Filter parameters : use of 20 values and cubic polynomial function
+    ax = sg.savitzky_golay(x,20,3,2,dt)
+    ay = sg.savitzky_golay(y,20,3,2,dt)
+    az = sg.savitzky_golay(z,20,3,2,dt)
 
     Acc = np.array([ax,ay,az]).T
-
-
     Acc = sg.correcRef(Pos,Vit,Acc)
 
-
-
     return Acc
-
-
-
-
-
-
-
-
-
-
 
 
 def Gen_Acc (Pos, t):

@@ -27,15 +27,13 @@ import GH_terminal     as term
 #import GH_harmonics    as harm
 import GH_geoMath      as gmath
 #import GH_earthMap     as emap
-
+import globalVars as gv
 
 # =============================================================================
 # FUNCTIONS FOR Sph Harm SOLVE
 # =============================================================================
 
-
-
-def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3 m):
+def Get_PotGradMatrix2 (lmax, Pos):
     """
     Returns the matrix of the gravitational potential gradient.
     Watch out, it gets big fast.
@@ -51,9 +49,8 @@ def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3 m):
         M_PotGrad: the matrix of the coefficients
     """
     # constants
-    R = 6378.1363 # km
-    GM = 398600.4418 # km**3 s**-2
-    # wiki says : gm = 6.673*10**-11*5.975*10**24 = 398711749999999.94
+    R = gv.radiusEarth/1000 # km
+    GM = gv.muEarth # km**3 s**-2
 
     N_points = len(Pos) # number of points
 
@@ -101,13 +98,6 @@ def Get_PotGradMatrix2 (lmax, Pos): #"R = 6378136.3 m):
 
     return M_PotGrad
 
-
-def proj_ort(M,y):
-    return y - M@np.linalg.lstsq(M,y)[0]
-
-
-
-
 def Solve_Coef (lmax, Pos, Acc):
     """
     Returns the solved for coefficients to the spherical harmonic approximation
@@ -127,7 +117,7 @@ def Solve_Coef (lmax, Pos, Acc):
 
     Acc_line = conv.Make_Line(Acc)
 
-    M = Get_PotGradMatrix(lmax, Pos) # get M_PotGrad
+    M = Get_PotGradMatrix2(lmax, Pos) # get M_PotGrad
 
    # Solved_coef = npl.solve(M.T.dot(M), M.T.dot(Acc_line.T)) #[1:]))
     Solved_coef = npl.lstsq(M, Acc_line)
@@ -146,7 +136,7 @@ def TEST_Gen_Matrix():
     file_name = "Polar_400km_EarthFixed_1jour_1sec.e"
     days = 0.0001
     Pos, Time = imp.Fetch_Pos(file_name, days)
-    Mat = Get_PotGradMatrix(60,Pos)
+    Mat = Get_PotGradMatrix2(60,Pos)
     print(Mat)
     return Mat
 
