@@ -118,7 +118,7 @@ def Plot_Acc_Sim_Solv (Time, Acc_sim, Acc_solved, component, title):
 
     plt.title(title)
     plt.xlabel("time (s)")
-    plt.ylabel("acceleration (?)")
+    plt.ylabel("acceleration (m/s²)")
 
     plt.plot(Time[:Acc_sim.shape[0]], Acc_sim[:,component], "ro-", alpha=0.3, label="simulated")
 
