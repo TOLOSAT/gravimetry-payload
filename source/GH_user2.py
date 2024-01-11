@@ -124,9 +124,11 @@ def main():
     accRadial_solved_R = [accRadial_solved[3*i] for i in range(len(acc)//3)]
     
     plt.figure()
-    plt.plot(acc_solved_R, label="Derived from reference data")
-    plt.plot(accRadial_solved_R[10:], label = "Derived from partial reference data")
-    plt.plot(accRadial[10:], label = "SG calculated data")
+    plt.plot(Time,acc_solved_R, label="Derived from reference data")
+    plt.plot(Time[10:],accRadial_solved_R[10:], label = "Derived from partial reference data")
+    plt.plot(Time[10:],accRadial[10:], label = "SG calculated data")
+    plt.ylabel("Radial acceleration (m/s**2)")
+    plt.xlabel("Time (s)")
     plt.legend()
     plt.title("Comparaison des résultats")
     plt.show()
