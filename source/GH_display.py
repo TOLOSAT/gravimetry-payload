@@ -49,13 +49,13 @@ from numpy import pi, sin, cos
 
 from GH_solve import *
 from GH_generate import *
-
+from GH_import import *
 
 # =============================================================================
 # DISPLAY FUNCTIONS  
 # =============================================================================
 def Plot_Array_Diff(HS_nm_slv, HC_nm_slv, fig_num = 6):
-    print("plotting coeff difference")
+    print("Plotting coeff difference")
     
     
     #resize the official coef
