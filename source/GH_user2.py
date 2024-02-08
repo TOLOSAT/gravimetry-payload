@@ -11,7 +11,7 @@
     Use your python skills to understand how this tool has been coded.
 
     Change your variables, do your maths, and do your science.
-    Let's go to space, y'all
+    Let's go to space, y'all.
 
     Process :
     1.  Generate the acceleration values (from orbit data or raw simulation)
@@ -24,8 +24,6 @@
             using GH_displayCoef
     5.  Plot Satellite positions and accelerations in space
             using GH_displaySat
-
-todo: replace "acc" by "geopot" lol
 
 future stuff:
     earth rotation
@@ -42,10 +40,6 @@ Instruction after executing the code : here are the commands to execute on the t
 Here is the link to the files we use for this code : https://drive.google.com/drive/folders/1XgGn2QoFGJ-u_m4aoL2No-PmxIRraLg6?fbclid=IwAR04xPEqi1h-eGWR_inJfHa4dp8dzG7NPlgHcNKYfz0OT1v0uU7ADew9VR4
 # =============================================================================
 """
-
-
-
-
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -84,13 +78,10 @@ def GetPartialMatrix(M, comp = 0):
 """
     Là on va utiliser Savitsky-Golay pour déduire des 
     accélérations (accel_sg) à partir de positions (pas sûr du process, on est en sphériques...)
-    puis comparer ces mêmes accéls à celles données en résolvant le système linéaire 
-    donné par les coeffs du EGM2008 et accel_sg en résultat. Je vois pas trop le but...    
-    
     TRUC A TESTER : géoïde avec coeffs calculés vs avec coeffs donnés...
 """
 def main():
-    path ="../data"
+    path ="/home/mehdi/Dev/Tolosat/g ravimetry-payload/data"
     file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
     
     lmax = 10 # Legendre polynomial degree
@@ -109,29 +100,6 @@ def main():
    
     # Reference data 
     #M = np.load(imp.data_path + "\potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
-    Mradial = GetPartialMatrix(M)
-    Res = np.linalg.lstsq(M, acc)
-    
-    accRadial = [acc[3*i] for i in range(len(acc)//3)]
-    ResRadial = np.linalg.lstsq(Mradial, accRadial)
-    
-    acc_solved = M.dot(Res[0])
-    
-    accRadial_solved = M.dot(ResRadial[0])
-    
-    acc_solved_R = [acc_solved[3*i] for i in range(len(acc)//3)]
-    
-    accRadial_solved_R = [accRadial_solved[3*i] for i in range(len(acc)//3)]
-    
-    plt.figure()
-    plt.plot(acc_solved_R, label="Derived from reference data")
-    plt.plot(accRadial_solved_R[10:], label = "Derived from partial reference data")
-    plt.plot(accRadial[10:], label = "SG calculated data")
-    plt.legend()
-    plt.title("Comparaison des résultats")
-    plt.show()
-    
-    return accRadial, acc_solved_R, accRadial_solved_R, M, Mradial
 
 
 

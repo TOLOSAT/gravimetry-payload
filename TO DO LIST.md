@@ -6,6 +6,3 @@ Here is a non-exhaustive list of tasks that have to be done in ths code
 * Continue bibliography
 * adapt the code based on the desired census and geoid model
 
-* do not mind this note. I am a transending penguin.
-*test théophile 2
-test antoine 1
