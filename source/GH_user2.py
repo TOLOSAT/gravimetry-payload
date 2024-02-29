@@ -89,17 +89,45 @@ def main():
     Pos,Vit,Time,dt = imp.Fetch_Pos_Vit(file_name, 5, path, False) # Read data from the file
     Pos_sph = conv.cart2sphA(Pos)
    
-    # Uses Savitzky-Golay filter to get the acceleration
+    # Uses Savitzky-Golay filter to get the radial acceleration
     acc = gen.Gen_Acc_2(Pos,Vit,dt) 
     acc = conv.cart2sphA(acc)
-    acc = conv.Make_Line_acc(acc)
+    acc = conv.Make_Line_acc(acc)    
+    accRadial = [acc[3*i] for i in range(len(acc)//3)] # radial acceleration directly give by the SG filter
 
+
+    # getting the radial acceleration from the full grad potential matrix and the full acceleration
     """Generate the grad Potential matrix"""
     getMat = lambda lmax : solv.Get_PotGradMatrix2(lmax, Pos_sph)
-    M = getMat(lmax)
+    M = getMat(lmax) # The full grad potential matrix
+    Res = np.linalg.lstsq(M, acc) # Solve the linear system with the full matrix      
+    acc_solved = M.dot(Res[0]) # acceleration from the solved system
+    acc_solved_R = [acc_solved[3*i] for i in range(len(acc)//3)] # radial acceleration from the solved system
    
+    # getting the radial acceleration from the partial grad potential matrix and the radial acceleration
+    Mradial = GetPartialMatrix(M) # The partial grad potential matrix (only the radial part)  
+    ResRadial = np.linalg.lstsq(Mradial, accRadial) # Solve the linear system with the partial matrix  
+    accRadial_solved = M.dot(ResRadial[0]) # acceleration from the solved system   
+    accRadial_solved_R = [accRadial_solved[3*i] for i in range(len(acc)//3)] # radial component of the acceleration
+    
     # Reference data 
     #M = np.load(imp.data_path + "\potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
+<<<<<<< HEAD
+=======
+    
+
+    plt.figure()
+    plt.plot(Time,acc_solved_R, label="Derived from reference data")
+    plt.plot(Time[10:],accRadial_solved_R[10:], label = "Derived from partial reference data")
+    plt.plot(Time[10:],accRadial[10:], label = "SG calculated data")
+    plt.ylabel("Radial acceleration (m/s**2)")
+    plt.xlabel("Time (s)")
+    plt.legend()
+    plt.title("Comparaison des résultats")
+    plt.show()
+    
+    return accRadial, acc_solved_R, accRadial_solved_R, M, Mradial
+>>>>>>> 478834d3a4ab931330d79fdaa41ffdd59aa0b970
 
 
 
