@@ -112,8 +112,6 @@ def main():
     
     # Reference data 
     #M = np.load(imp.data_path + "\potGradMatrix_Polar_400km_EarthFixed_15jours_5sec.npy")
-<<<<<<< HEAD
-=======
     
 
     plt.figure()
@@ -127,8 +125,6 @@ def main():
     plt.show()
     
     return accRadial, acc_solved_R, accRadial_solved_R, M, Mradial
->>>>>>> 478834d3a4ab931330d79fdaa41ffdd59aa0b970
-
 
 
 if __name__ == "__main__":
