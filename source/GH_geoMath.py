@@ -81,24 +81,13 @@ def Get_Ellipsoid_Radius (Lat):
     https://gis.stackexchange.com/questions/20200/how-do-you-compute-the-earths-radius-at-a-given-geodetic-latitude
 
     Input:
-        Lat: latitude, inclination from the z axis in radians
+        Lat: Geodetic latitude in radians
     Output:
         R: Radius in meters
     """
-    a = 6378137 # m : equatorial radius
-    f = 1/298.257223563 # flat parameter
-    b = a * (1-f) # m : polar radius
 
-    Lat = pi/2 - Lat # THIS IS TEMPORARY AND MUST CHANGE
-
-    deno = np.sqrt(a**2*sin(Lat)**2 + b**2*cos(Lat)**2)
-    R = a*b/deno
-
-#    numer = (a**2*cos(Lat))**2 + (b**2*sin(Lat))**2
-#    denom = (a   *cos(Lat))**2 + (b   *sin(Lat))**2
-#    R = np.sqrt(numer/denom)
-
-#    R = a*(1-f*sin(Lat)**2)
+    deno = np.sqrt(Constants.a_e**2*sin(Lat)**2 + Constants.b_e**2*cos(Lat)**2)
+    R = Constants.a_e*Constants.b_e/deno
 
     return R
 
@@ -191,20 +180,17 @@ def Normalize (l, m):
     Returns the normalization coefficient of degree l and order m
     Equation obtained from the GCB
     """
-    k = 2
-    if (m == 0) : k = 1
     P1 = math.factorial(l - m)
-    P2 = k*(2*l + 1)
-    P3 = math.factorial(l + m)
+    P2 = (2*l + 1)
+    P3 = 2*math.factorial(l + m)
     N = np.sqrt(P1*P2/P3)
     return N
-
 
 def Normalize1 (l, m):
     """
     Returns the normalization coefficient of degree l and order m
     Equation obtained from the documentation that came with the EGM2008 coeffs
-    thisfunction zeros out below 2e-162
+    this function zeros out below 2e-162
     """
     d_om = 0
     if (m == 0) : d_om = 1

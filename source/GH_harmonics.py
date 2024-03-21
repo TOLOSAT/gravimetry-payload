@@ -53,7 +53,7 @@ def init_grid (mins=0, limits=np.array([-180, 180, -90, 90])):
     """
     Initiates the grid variables based on the number of points wanted
     within the given limits
-    gris step is in minutes, 60 min = 1 degree
+    grid step is in minutes, 60 min = 1 degree
     """
     dim = limits * pi/180
 
@@ -111,7 +111,7 @@ def Gen_Grid (mins, Get_FUNCTION, in_args, limits=np.array([-180, 180, -90, 90])
 # =============================================================================
 # FUNCTIONS TO CALCULATE SPHERICAL HARMONIC SUMS
 # =============================================================================
-def Get_Topo_Height (R_e, phi, theta,   lmax_topo, HC_topo, HS_topo):
+def Get_Topo_Height (R_e, phi, theta, lmax_topo, HC_topo, HS_topo):
     """
     This function returns the height of Earth's estimated topography at phi/theta
     coordinates
@@ -132,21 +132,21 @@ def Get_Topo_Height (R_e, phi, theta,   lmax_topo, HC_topo, HS_topo):
     return Sum1
 
 
-def Get_Geo_Pot (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
+def Get_Geo_Pot (R_e, phi, theta, lmax, HC_geo, HS_geo, lmax_topo, HC_topo, HS_topo):
     """
     This function returns the potential at given height/phi/theta coordinates
     The solution is calculated up to degree lmax in the HC HS model
     """
     cst = gmath.Constants()
 
-    R_t = R_e #+ Get_Topo_Height (R_e, phi, theta,    lmax_topo, HC_topo, HS_topo)
+    R_t = R_e + Get_Topo_Height (R_e, phi, theta, lmax_topo, HC_topo, HS_topo)
     Sum1 = 0
     P_lm, _ = gmath.Pol_Legendre(lmax, lmax, cos(phi))
 #    LPNM = gmath.ALF_norm_gcb(lmax, lmax, phi)
     for l in range (2, lmax+1):
         Sum2 = 0
         for m in range (0, 1): # l+1
-            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize1(l, m)
+            Sum2 += (HC_geo[l,m]*cos(m*theta) + HS_geo[l,m]*sin(m*theta)) * P_lm[m, l] * gmath.Normalize1(l, m)
 #            Sum2 += (HC[l,m]*cos(m*theta) + HS[l,m]*sin(m*theta)) * LPNM[l, m]
         Sum1 += (cst.a_g/R_t)**l * Sum2
 
@@ -155,7 +155,7 @@ def Get_Geo_Pot (R_e, phi, theta,    lmax, HC, HS, lmax_topo, HC_topo, HS_topo):
     return geopot
 
 
-def Get_Geoid_Height (R_e, phi, theta,    lmax, HC, HS):
+def Get_Geoid_Height (R_e, phi, theta, lmax, HC, HS):
     """
     This function returns the potential at given height/phi/theta coordinates
     The solution is calculated up to degree lmax in the HC HS model

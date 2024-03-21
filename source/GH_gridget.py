@@ -82,7 +82,7 @@ def get_step():
     return dlat_out, dlon_out
 
 
-def get_files(path_out=path_out, nout=nout):
+def get_files(path_in = path_in, n_in = n_in,path_out=path_out, nout=nout):
     """ Returns the files to be handled
     """
     fnul1  = f"{path_in}/{n_in}"

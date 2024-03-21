@@ -5,6 +5,7 @@
 
     WIP 
 """
+import numpy as np
 
 global omegaEarth
 global radiusEarth 

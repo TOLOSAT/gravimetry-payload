@@ -49,39 +49,6 @@ def Get_Time (format_="%Y%m%d_%H%M%S"):
 # =============================================================================
 # FUNCTIONS TO FETCH FILES
 # =============================================================================
-def Fetch_Pos (file_name, days=0.7, data_path="../data", spherical = True ):
-    """
-    Imports coordinates from file_name text file (generated from GMAT)
-    Input:
-        file_name: well, the file's name! remove all header text
-        days: what time duration the outplut file should correspond to
-              regardless of the sampling rate
-        data_path: path to go and fetch the file
-    Output:
-        Pos: The position of the satellite in spherical coordinates
-        Time: Associated time sampling of each position
-    """
-    Eph = np.loadtxt(f"{data_path}/{file_name}")
-    t = np.array(Eph[:,0]) #time in seconds
-    x = np.array(Eph[:,1]) #  \
-    y = np.array(Eph[:,2]) #  | cordinates, in km
-    z = np.array(Eph[:,3]) # /
-    dt = int(t[1]*100)/100
-    L = int(days*(86400/dt))
-    # convert coord system and shorten array if needed
-    pts = np.transpose(np.array([x,y,z]))
-    if L >= len(pts):
-        L = len(pts) # this is not necessary in python
-    if spherical :
-        Pos = cart2sphA(pts[:L])
-    else:
-        Pos = pts[:L]
-    Time = t[:L]
-    return Pos, Time
-
-
-
-
 def Fetch_Pos_Vit (file_name, days, data_path, spherical):
     """
     Imports coordinates from file_name text file (generated from GMAT)
@@ -93,7 +60,9 @@ def Fetch_Pos_Vit (file_name, days, data_path, spherical):
         spherical: (boolean) wether or not we use a spherical coordinates
     Output:
         Pos: The position of the satellite in spherical coordinates
+        Vit: The speed of the satellite
         Time: Associated time sampling of each position
+        dt: Time step between two measurements
     """
     Eph = np.loadtxt(f"{data_path}/{file_name}")
     t = np.array(Eph[:,0]) #time in seconds
@@ -120,17 +89,16 @@ def Fetch_Pos_Vit (file_name, days, data_path, spherical):
         Pos = pts[:L]
         Vit = ptsVit[:L]
     Time = t[:L]
-    return Pos,Vit,Time, dt
+    return Pos,Vit,Time,dt
 
 
-def Fetch_Coef (data="subset"):
+def Fetch_Geo_Coef (data="subset"):
     """
     Returns the spherical harmonic coefficients for Earth's Geopotential
     Data originally extracted from : EGM2008_to2190_ZeroTide.txt
     These coef are already normalized
-    A subset is returned unless full coefficient matrix is specified
+    A subset of the first 30 harmonics is returned unless full coefficient matrix is specified
     """
-    data_path = "../data"
     if (data == "full"):
         HC = np.loadtxt(f"{data_path}/GeoPot_Coef_cos_deg2190.txt")
         HS = np.loadtxt(f"{data_path}/GeoPot_Coef_sin_deg2190.txt")
@@ -145,9 +113,8 @@ def Fetch_Topo_Coef (data="subset"):
     Returns the spherical harmonic coefficients for Earth's Topography
     Data originally extracted from : Coeff_Height_and_Depth_to2190_DTM2006.txt
     These coef are already normalized
-    A subset is returned unless full coefficient matrix is specified
+    A subset of the first 30 harmonics is returned unless full coefficient matrix is specified
     """
-    data_path = "../data"
     if (data == "full"):
         HC_topo = np.loadtxt(f"{data_path}/Height_Coef_cos_deg2190.txt")
         HS_topo = np.loadtxt(f"{data_path}/Height_Coef_sin_deg2190.txt")

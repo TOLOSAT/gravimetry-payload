@@ -29,12 +29,14 @@ from numpy import pi, sin, cos
 # =============================================================================
 # FUNCTIONS FOR COORDINATES MANIPULATION
 # =============================================================================
+
 def thph2lola (theta, phi):
     """ converts radians to geographical long/lat (geodetic)
     """
     Lat = (pi/2 - theta) * 180/pi
     Long = (phi - pi) * 180/pi
     return Long, Lat
+
 def lola2thph (Lat, Long):
     """ converts geographical long/lat to radians
     """
@@ -50,13 +52,7 @@ def cart2sph (x,y,z):
     elevation = np.arctan2(z, np.sqrt(x**2 + y**2)) # theta
     azimuth   = np.arctan2(y,x)                     # phi
     return radius, elevation, azimuth
-def sph2cart222 (r,theta,phi): # cannot find where and when this function was used
-    """ converts spherical coordinates to carthesian
-    """
-    x=r*cos(theta)*cos(phi)
-    y=r*cos(theta)*sin(phi)
-    z=r*sin(theta)
-    return x, y, z
+
 def sph2cart (r,theta,phi):
     """ converts spherical coordinates to carthesian, ISO convention
     """
@@ -83,12 +79,10 @@ def sph2cart_Grid(G_Grid, G_Long, G_Lat):
 def geodes2geocen (Lat_gd):
     """converts geodetic (or geographic) latitude into geocentric latitude
     """
-    a = 6378137 # m
     f = 1/298.257223563  # Some constants
-    b = a * (1-f) # m
-#    Lat_gc = np.arctan( (b/a)**2 * np.tan(Lat_gd))
     Lat_gc = np.arctan(np.tan(Lat_gd) * (1-f)**2)
     return Lat_gc
+
 def geocen2geodes (Lat_gd):
     """converts geocentric latitude into geodetic (or geographic) latitude
     """

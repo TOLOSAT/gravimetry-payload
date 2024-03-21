@@ -81,7 +81,7 @@ def GetPartialMatrix(M, comp = 0):
     TRUC A TESTER : géoïde avec coeffs calculés vs avec coeffs donnés...
 """
 def main():
-    path ="/home/mehdi/Dev/Tolosat/g ravimetry-payload/data"
+    path ="/home/mehdi/Dev/Tolosat/gravimetry-payload/data"
     file_name = "Polar_400km_EarthFixed_15jours_5sec.e"
     
     lmax = 10 # Legendre polynomial degree
@@ -128,31 +128,7 @@ def main():
 
 
 if __name__ == "__main__":
-    res = main()
-
-
-
-
-
-def inv(A,y, epsilon, nIter, x_0, mu, pas = 0.5):
-    x = x_0[:]
-    
-    
-    L = []
-    
-    err = 10.*epsilon + 1
-    
-    for i in range(nIter):
-        if( err < epsilon ):
-            return x
-        x = x - pas*(2.* A.T@( A@x - y) + mu * ( x - x_0))
-        err = np.linalg.norm(A@x - y)
-        L.append(err)
-    
-    plt.plot(L)
-        
-    return x
-        
+    res = main()        
 
 
 
