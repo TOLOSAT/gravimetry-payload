@@ -109,9 +109,9 @@ def gradient_Vnm_c_spherical(n, m, r, theta, phi):
 
     #gradient computation
     Gradient = [
-        - pnm[m, n] * np.cos(m * phi) * G * M * (n + 1) * R ** n / (r ** (n + 2)) * normalization_factor,
-        - 1 / r * np.cos(m * phi) * np.sin(theta) * dpnm[m, n] * G * M * R ** n / (r ** (n + 1)) * normalization_factor,
-        - 1 / (r * np.sin(theta)) * np.sin(m * phi) * pnm[m, n] * np.cos(m * phi) * G * M * R ** n / (r ** (n + 1)) * normalization_factor
+        - pnm[m, n] * np.cos(m * phi) * G * M * (n + 1) * R ** n / (r ** (n + 2)) * normalization_factor * (-1)**m,
+        - 1 / r * np.cos(m * phi) * np.sin(theta) * dpnm[m, n] * G * M * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m,
+        - 1 / (r * np.sin(theta)) * np.sin(m * phi) * pnm[m, n] * np.cos(m * phi) * G * M * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m
     ]
 
     return Gradient
@@ -134,9 +134,9 @@ def gradient_Vnm_s_spherical(n, m, r, theta, phi):
 
     #Gradient computation
     Gradient = [
-        - pnm[m, n] * np.sin(m * phi) * G * M * (n + 1) * R ** n / (r ** (n + 2)) * normalization_factor,
-        - 1 / r * np.sin(m * phi) * np.sin(theta) * dpnm[m, n] * G * M * R ** n / (r ** (n + 1)) * normalization_factor,
-        + 1 / (r * np.sin(theta)) * np.cos(m * phi) * pnm[m, n] * np.cos(m * phi) * G * M * R ** n / (r ** (n + 1)) * normalization_factor
+        - pnm[m, n] * np.sin(m * phi) * G * M * (n + 1) * R ** n / (r ** (n + 2)) * normalization_factor * (-1)**m,
+        - 1 / r * np.sin(m * phi) * np.sin(theta) * dpnm[m, n] * G * M * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m,
+        + 1 / (r * np.sin(theta)) * np.cos(m * phi) * pnm[m, n] * np.cos(m * phi) * G * M * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m,
     ]
 
     return Gradient
@@ -209,7 +209,7 @@ def GeoPot(coefficients, theta, phi, order):
             - geopotential """
 
     latitude = np.pi/2 - theta
-    r_e = np.sqrt(((gv.a_e**2 * np.cos(latitude))**2 + (gv.b_e**2 * np.sin(theta))**2)/((gv.a_e * np.cos(latitude))**2 + (gv.b_e * np.sin(theta))**2))
+    r_e = np.sqrt(((gv.a_e**2 * np.cos(latitude))**2 + (gv.b_e**2 * np.sin(latitude))**2)/((gv.a_e * np.cos(latitude))**2 + (gv.b_e * np.sin(latitude))**2))
     gpot = 0
     i = 0
 
@@ -219,7 +219,7 @@ def GeoPot(coefficients, theta, phi, order):
             normalization_factor = np.sqrt((2 * n + 1) * np.math.factorial(n - m) / (2 * np.math.factorial(n + m)))
 
             pnm, dpnm = lpmn(m, n, np.cos(theta))
-            gpot += gv.GM_e * gv.a_e**n / r_e**(n+1) * pnm[m, n] * (coefficients[i] * np.cos(m * phi) + coefficients[i+1] * np.sin(m * phi))
+            gpot += gv.GM_e * gv.a_e**n / r_e**(n+1) * pnm[m, n] * (coefficients[i] * np.cos(m * phi) + coefficients[i+1] * np.sin(m * phi)) * (-1)**m
 
             i += 2
 
@@ -236,7 +236,7 @@ def GeoPotDiff(coefficients, theta, phi, order):
              - geopotential anomalies """
 
     latitude = np.pi/2 - theta
-    r_e = np.sqrt(((gv.a_e**2 * np.cos(latitude))**2 + (gv.b_e**2 * np.sin(theta))**2)/((gv.a_e * np.cos(latitude))**2 + (gv.b_e * np.sin(theta))**2))
+    r_e = np.sqrt(((gv.a_e**2 * np.cos(latitude))**2 + (gv.b_e**2 * np.sin(latitude))**2)/((gv.a_e * np.cos(latitude))**2 + (gv.b_e * np.sin(latitude))**2))
     gpot = 0
     i = 8
 
@@ -248,7 +248,7 @@ def GeoPotDiff(coefficients, theta, phi, order):
                 normalization_factor = np.sqrt((2 * n + 1) * np.math.factorial(n - m) / (2 * np.math.factorial(n + m)))
 
                 pnm, dpnm = lpmn(m, n, np.cos(theta))
-                gpot += gv.GM_e * gv.a_e**n / r_e**(n+1) * pnm[m, n] * (coefficients[i] * np.cos(m * phi) + coefficients[i+1] * np.sin(m * phi))
+                gpot += gv.GM_e * gv.a_e**n / r_e**(n+1) * pnm[m, n] * (coefficients[i] * np.cos(m * phi) + coefficients[i+1] * np.sin(m * phi)) * (-1)**m
 
                 i += 2
 
