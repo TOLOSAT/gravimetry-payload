@@ -2,6 +2,7 @@ import numpy as np
 import scipy.signal as sp
 from scipy.special import lpmn
 import PG_globalVars as gv
+import statsmodels.api as sm
 
 G = 1
 M = 1
@@ -9,9 +10,10 @@ R = 1
 
 SG_window_size = 5  #window_size : the length of the filter window (i.e. the number of coefficients) for SG filter
 SG_order = 2        #order : the order of the polynomial used to fit the samples for SG filter
+ar_order = 4
 
 
-# COMMENT : If we wanted to do this properly, we would do an analysis of the error introduced by the Savitzky-Golay filter
+# COMMENT : If we wanted to do this properly, we would do an analysis of the error introduced by the Savitzky-Golay filter,
 #           and we would compare it to the error introduced by the finite difference method
 # https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf
 # https://www.mat.univie.ac.at/~westra/associatedlegendrefunctions.pdf
@@ -255,12 +257,23 @@ def GeoPotDiff(coefficients, theta, phi, order):
     return r_e, gpot
 
 
+def linear_transformation_matrix_2(accelerations):
+    x_cov = sm.tsa.acovf(accelerations[0],nlag=len(accelerations[0]))
+    y_cov = sm.tsa.acovf(accelerations[1], nlag=len(accelerations[1]))
+    z_cov = sm.tsa.acovf(accelerations[2], nlag=len(accelerations[2]))
+
+    M = np.zeros((3*len(accelerations[0]),3*len(accelerations[0])))
+    pass
+
+
+
 #########################################################################################
 #                                  NOT USED FUNCTIONS                                   #
 #########################################################################################
 
 
 def sav_filt_spherical(data, window_size, order):
+
     [r, theta, phi, time] = data
     data_len = len(r)
 

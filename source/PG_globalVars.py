@@ -1,26 +1,26 @@
 import numpy as np
 
-g = 9.80665 #m/s^2 reference acceleration
+g = 9.80665                         # m/s^2 reference acceleration
 
 # WGS84 reference ellipsoid model
-ref_e = "WGS 84" # https://en.wikipedia.org/wiki/World_Geodetic_System
-GM_e = 3986004.418E8 # m^3/s^2 : standard gravitational parameter
-wo = 7292115E-11 # rad/s : angular velocity of Earth
+ref_e = "WGS 84"                    # https://en.wikipedia.org/wiki/World_Geodetic_System
+GM_e = 3986004.418E8                # m^3/s^2 : standard gravitational parameter
+wo = 7292115E-11                    # rad/s : angular velocity of Earth
 a_e = 6378137.00 # m : equatorial radius or ellipsoid model
 f = 1/298.257223563 # flat parameter
 
-b_e = a_e * (1-f) # m : polar radius
-E = np.sqrt(a_e**2 - b_e**2) # linear eccentricity
+b_e = a_e * (1-f)                                   # m : polar radius
+E = np.sqrt(a_e**2 - b_e**2)                        # linear eccentricity
 e_1 = E/a_e
 e_2 = E/b_e
-m = wo**2 * a_e*2 * b_e / GM_e # just to simplify the code
-g_a = GM_e/(a_e*b_e) * (1 - 3/2*m - 3/14*e_2*m) # m/s^2 : gravity acc. at equator
-g_b = GM_e/(a_e**2) * (1 - m - 3/7*e_2*m) # m/s^2 : gravity acc. at poles
+m = wo**2 * a_e*2 * b_e / GM_e                      # just to simplify the code
+g_a = GM_e/(a_e*b_e) * (1 - 3/2*m - 3/14*e_2*m)     # m/s^2 : gravity acc. at equator
+g_b = GM_e/(a_e**2) * (1 - m - 3/7*e_2*m)           # m/s^2 : gravity acc. at poles
 
 # EGS2008 potential model
 ref_g = "EGS2008"
-a_g = 6378136.3 # m : Reference radius for the potential model
-GM_g = 3986004.415E8 # m^3/s^2 : standard gravitational parameter in the potential model
+a_g = 6378136.3                     # m : Reference radius for the potential model
+GM_g = 3986004.415E8                # m^3/s^2 : standard gravitational parameter in the potential model
 
 
 coeffs = [1, 0,
