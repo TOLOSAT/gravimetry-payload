@@ -3,12 +3,11 @@ import scipy.signal as sp
 from scipy.special import lpmn
 import PG_globalVars as gv
 
-G = 1
-M = 1
-R = 1
+G = gv.GM_e
+R = gv.a_e
 
-SG_window_size = 5  #window_size : the length of the filter window (i.e. the number of coefficients) for SG filter
-SG_order = 2        #order : the order of the polynomial used to fit the samples for SG filter
+SG_window_size = 9  #window_size : the length of the filter window (i.e. the number of coefficients) for SG filter
+SG_order = 6        #order : the order of the polynomial used to fit the samples for SG filter
 
 
 # COMMENT : If we wanted to do this properly, we would do an analysis of the error introduced by the Savitzky-Golay filter
@@ -25,10 +24,11 @@ def SG_filt_cartesian(data, d_order):
             - the approximated accelerations in cartesians coordinates // Bezdek 2014"""
 
     [x, y, z, time] = data
+    timestep = time[1]-time[0]
 
-    acc_x = sp.savgol_filter(x, SG_window_size, SG_order, d_order)
-    acc_y = sp.savgol_filter(y, SG_window_size, SG_order, d_order)
-    acc_z = sp.savgol_filter(z, SG_window_size, SG_order, d_order)
+    acc_x = sp.savgol_filter(x, SG_window_size, SG_order, d_order, timestep)
+    acc_y = sp.savgol_filter(y, SG_window_size, SG_order, d_order, timestep)
+    acc_z = sp.savgol_filter(z, SG_window_size, SG_order, d_order, timestep)
 
     return acc_x, acc_y, acc_z
 
@@ -42,11 +42,10 @@ def SG_d2_matrix_cartesian(data):
 
     for i in range(len(x)):
         for k in range(SG_window_size):
-
             if len(x) > i + k - (SG_window_size - 1) // 2 >= 0:
-                SGM[i][(i + k - (SG_window_size - 1) // 2)] = coeffs[k]                         # construction of the X lines
-                SGM[i + len(x)][(i + k - (SG_window_size - 1) // 2)] = coeffs[k]        # construction of the Y lines
-                SGM[i + 2 * len(x)][(i + k - (SG_window_size - 1) // 2)] = coeffs[k]    # construction of the Z lines
+                SGM[i][(i + k - (SG_window_size - 1) // 2)] = coeffs[k]                              # construction of the X lines
+                SGM[i + len(x)][(i + k - (SG_window_size - 1) // 2) + len(x)] = coeffs[k]            # construction of the Y lines
+                SGM[i + 2 * len(x)][(i + k - (SG_window_size - 1) // 2) + 2 * len(x)] = coeffs[k]    # construction of the Z lines
 
     return SGM
 
@@ -101,7 +100,8 @@ def gradient_Vnm_c_spherical(n, m, r, theta, phi):
     """
 
     #full and semi normalisation
-    normalization_factor = np.sqrt((2 * n + 1) * np.math.factorial(n - m) / (2 * np.math.factorial(n + m)))
+    normalization_factor = 1
+    #normalization_factor = np.sqrt((2 * n + 1) * np.math.factorial(n - m) / (2 * np.math.factorial(n + m)))
     normalization_factor_schmidt = np.sqrt(2 * np.math.factorial(n - m) / np.math.factorial(n + m))
 
     #calculation of Legendre associated functions with parameters in [0,n] X [0,m], dpmn is the array of the derivatives values
@@ -109,9 +109,9 @@ def gradient_Vnm_c_spherical(n, m, r, theta, phi):
 
     #gradient computation
     Gradient = [
-        - pnm[m, n] * np.cos(m * phi) * G * M * (n + 1) * R ** n / (r ** (n + 2)) * normalization_factor * (-1)**m,
-        - 1 / r * np.cos(m * phi) * np.sin(theta) * dpnm[m, n] * G * M * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m,
-        - 1 / (r * np.sin(theta)) * np.sin(m * phi) * pnm[m, n] * np.cos(m * phi) * G * M * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m
+        - pnm[m, n] * np.cos(m * phi) * G * (n + 1) * R ** n / (r ** (n + 2)) * normalization_factor * (-1)**m,
+        - 1 / r * np.cos(m * phi) * np.sin(theta) * dpnm[m, n] * G * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m,
+        - 1 / (r * np.sin(theta)) * m * np.sin(m * phi) * pnm[m, n] * G * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m
     ]
 
     return Gradient
@@ -126,7 +126,8 @@ def gradient_Vnm_s_spherical(n, m, r, theta, phi):
             - sphrerical gradient of potential Vnm(s) // Bezdek 2014"""
 
     # full and semi normalisation
-    normalization_factor = np.sqrt((2 * n + 1) * np.math.factorial(n - m) / (2 * np.math.factorial(n + m)))
+    normalization_factor = 1
+    #normalization_factor = np.sqrt((2 * n + 1) * np.math.factorial(n - m) / (2 * np.math.factorial(n + m)))
     normalization_factor_schmidt = np.sqrt(2 * np.math.factorial(n - m) / np.math.factorial(n + m))
 
     # calculation of Legendre associated functions with parameters in [0,n] X [0,m], dpmn is the array of the derivatives values
@@ -134,16 +135,15 @@ def gradient_Vnm_s_spherical(n, m, r, theta, phi):
 
     #Gradient computation
     Gradient = [
-        - pnm[m, n] * np.sin(m * phi) * G * M * (n + 1) * R ** n / (r ** (n + 2)) * normalization_factor * (-1)**m,
-        - 1 / r * np.sin(m * phi) * np.sin(theta) * dpnm[m, n] * G * M * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m,
-        + 1 / (r * np.sin(theta)) * np.cos(m * phi) * pnm[m, n] * np.cos(m * phi) * G * M * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m,
+        - pnm[m, n] * np.sin(m * phi) * G * (n + 1) * R ** n / (r ** (n + 2)) * normalization_factor * (-1)**m,
+        - 1 / r * np.sin(m * phi) * np.sin(theta) * dpnm[m, n] * G * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m,
+        + 1 / (r * np.sin(theta)) * m * np.cos(m * phi) * pnm[m, n] * G * R ** n / (r ** (n + 1)) * normalization_factor * (-1)**m,
     ]
 
     return Gradient
 
 
 def linear_regression_solution(accelerations, data, order):
-
     """ parameters :
             -  accelerations : the approximated accelerations in cartesians coordinates [[acc_x],[acc_y], [acc_z]
             -  data : GPS data in spherical coordinates
@@ -153,24 +153,24 @@ def linear_regression_solution(accelerations, data, order):
             - array containing the coefficient of the spherical harmonics representation // Bezdek 2014 + wikipedia Geopot. model
             ex: [C_00, S_00, C_10, S_10, C_11, S_11]"""
 
-    [r, theta, phi, time] = data
+    [r, theta, phi, time] = data  #GPS data in spherical coordinates
 
     # test to assure we have coherents number of R3 vectors
     assert (len(accelerations[0]) == len(r))
 
     n_coeff = (order + 1) * (order + 2)  # number of harmonics coefficients
-    n_mesured_values = len(accelerations) // 3  # number of acc mesured
+    n_mesured_values = len(accelerations[0])  # number of acc mesured
 
-    # matrix of the linear problem :  Acc = design_matrix * Coeff
-    design_matrix = np.zeros((len(accelerations), n_coeff))
+    # matrix of the linear problem :  Accelerations = design_matrix * Coefficients
+    design_matrix = np.zeros((len(accelerations[0])*3, n_coeff))
 
     c = 0
     for n in range(order+1):
         for m in range(n+1):
-            vnm_c = [[], [], []]
-            vnm_s = [[], [], []]
+            vnm_c = [[], [], [], list(time)]
+            vnm_s = [[], [], [], list(time)]
 
-            #SG filtering of gradients data
+            # construction of gradient data in cartesian coordinates
             for i in range(n_mesured_values):
                 v_c = vector_from_spherical_to_cartesian(gradient_Vnm_c_spherical(n, m, r[i], theta[i], phi[i]), theta[i], phi[i])
                 v_s = vector_from_spherical_to_cartesian(gradient_Vnm_s_spherical(n, m, r[i], theta[i], phi[i]), theta[i], phi[i])
@@ -178,24 +178,36 @@ def linear_regression_solution(accelerations, data, order):
                     vnm_c[k].append(v_c[k])
                     vnm_s[k].append(v_s[k])
 
+            # SG filtering of gradients data
             vnm_c_f = SG_filt_cartesian(vnm_c, 0)
             vnm_s_f = SG_filt_cartesian(vnm_s, 0)
 
-            # construction of the matrix
+            # construction of the  design matrix
             for j in range(n_mesured_values):
                 for l in range(3):
-                    design_matrix[j + l * n_mesured_values / 3][c] = vnm_c_f[l][j]
-                    design_matrix[j + l * n_mesured_values / 3][c+1] = vnm_s_f[l][j]
+                    design_matrix[j + l * n_mesured_values][c] = vnm_c_f[l][j]
+                    design_matrix[j + l * n_mesured_values][c+1] = vnm_s_f[l][j]
+            c += 2
 
-    # construction of the accelerations vector and linear transformation matrix
+    print(np.linalg.matrix_rank(design_matrix[:,[0,6,8,9,10,11]]))
+
+    # construction of the accelerations vector and linear transformation matrix (go see Bezdek and GLS method on wikipedia)
     acc_vector = accelerations[0] + accelerations[1] + accelerations[2]
     lt_matrix = linear_transformation_matrix(data)
 
     #linear transformation of the problem
     transformed_design_matrix = np.matmul(lt_matrix, design_matrix)
     transformed_acc_vector = np.matmul(lt_matrix, acc_vector)
+    #deletion of the null coefficients
+    zeros = [1, 2, 3, 4, 5, 7]
+    reduced_transformed_design_matrix = np.delete(transformed_design_matrix, zeros, axis=1)
 
-    return np.linalg.lstsq(transformed_design_matrix, transformed_acc_vector)
+    print("acc")
+    print(acc_vector)
+    print(np.matmul(design_matrix, np.transpose(gv.coeffs[0:12])))
+    print(reduced_transformed_design_matrix)
+    #resolution of the system
+    return np.linalg.lstsq(reduced_transformed_design_matrix, transformed_acc_vector, rcond=None)
 
 
 def GeoPot(coefficients, theta, phi, order):
@@ -208,11 +220,13 @@ def GeoPot(coefficients, theta, phi, order):
         output :
             - geopotential """
 
+    #calculation of usefull earth parameters
     latitude = np.pi/2 - theta
     r_e = np.sqrt(((gv.a_e**2 * np.cos(latitude))**2 + (gv.b_e**2 * np.sin(latitude))**2)/((gv.a_e * np.cos(latitude))**2 + (gv.b_e * np.sin(latitude))**2))
     gpot = 0
     i = 0
 
+    #computation of the potential
     for n in range(order+1):
         for m in range(n+1):
 
