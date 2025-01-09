@@ -13,8 +13,8 @@ from statistics import mean
 import PG_maths
 import PG_globalVars as gv
 
-h_order = 5  # harmonic order
-num = 400  # number of points for the grid
+h_order = 5     # harmonic order
+num = 400       # number of points for the grid
 
 
 #########################################################################################
@@ -233,3 +233,5 @@ def Geoid_scaled2(coeffs, scaling_factor=10000, coastlines=True):
 
     fig = go.Figure(data)
     fig.show()
+
+
