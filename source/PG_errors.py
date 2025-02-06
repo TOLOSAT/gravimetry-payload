@@ -9,8 +9,10 @@ import matplotlib.pyplot as plt
 #Here the objective is to make error propagation
 # WORK IN PROGRESS
 
-order = 30
+# Order up to which to compute the coefficients of the spherical harmonics representation of the geoid
+order = 30 
 
+# Cartesian coordinates from which the computation is done 
 file = open("gnv.txt", "rt")
 
 T = []
